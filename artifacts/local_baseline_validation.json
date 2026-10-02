@@ -1,0 +1,618 @@
+{
+  "model": "tfidf-logreg-c304614d53",
+  "dataset": "same 27 validation excerpts; first2000chars",
+  "predictions": [
+    {
+      "complaint_id": "2322131",
+      "actual_product": "Checking or savings account",
+      "actual_issue": "Deposits and withdrawals",
+      "product": "Credit card",
+      "issue": "Billing disputes",
+      "product_score": 0.4283,
+      "tokens_input": 0,
+      "tokens_output": 0,
+      "schema_valid": true,
+      "latency_ms": 1.1685420176945627,
+      "inference_latency_ms": 1.1685420176945627
+    },
+    {
+      "complaint_id": "2148739",
+      "actual_product": "Checking or savings account",
+      "actual_issue": "Deposits and withdrawals",
+      "product": "Checking or savings account",
+      "issue": "Managing an account",
+      "product_score": 0.5317,
+      "tokens_input": 0,
+      "tokens_output": 0,
+      "schema_valid": true,
+      "latency_ms": 0.8122079889290035,
+      "inference_latency_ms": 0.8122079889290035
+    },
+    {
+      "complaint_id": "2354244",
+      "actual_product": "Checking or savings account",
+      "actual_issue": "Deposits and withdrawals",
+      "product": "Checking or savings account",
+      "issue": "Deposits and withdrawals",
+      "product_score": 0.7357,
+      "tokens_input": 0,
+      "tokens_output": 0,
+      "schema_valid": true,
+      "latency_ms": 1.0650420445017517,
+      "inference_latency_ms": 1.0650420445017517
+    },
+    {
+      "complaint_id": "2108884",
+      "actual_product": "Checking or savings account",
+      "actual_issue": "Managing an account",
+      "product": "Checking or savings account",
+      "issue": "Managing an account",
+      "product_score": 0.6042,
+      "tokens_input": 0,
+      "tokens_output": 0,
+      "schema_valid": true,
+      "latency_ms": 0.7678749971091747,
+      "inference_latency_ms": 0.7678749971091747
+    },
+    {
+      "complaint_id": "2413020",
+      "actual_product": "Checking or savings account",
+      "actual_issue": "Managing an account",
+      "product": "Checking or savings account",
+      "issue": "Deposits and withdrawals",
+      "product_score": 0.7864,
+      "tokens_input": 0,
+      "tokens_output": 0,
+      "schema_valid": true,
+      "latency_ms": 0.8241249597631395,
+      "inference_latency_ms": 0.8241249597631395
+    },
+    {
+      "complaint_id": "2283444",
+      "actual_product": "Checking or savings account",
+      "actual_issue": "Managing an account",
+      "product": "Credit card",
+      "issue": "Other",
+      "product_score": 0.413,
+      "tokens_input": 0,
+      "tokens_output": 0,
+      "schema_valid": true,
+      "latency_ms": 1.0469160042703152,
+      "inference_latency_ms": 1.0469160042703152
+    },
+    {
+      "complaint_id": "1414351",
+      "actual_product": "Checking or savings account",
+      "actual_issue": "Problems caused by my funds being low",
+      "product": "Checking or savings account",
+      "issue": "Problems caused by my funds being low",
+      "product_score": 0.7652,
+      "tokens_input": 0,
+      "tokens_output": 0,
+      "schema_valid": true,
+      "latency_ms": 0.758624984882772,
+      "inference_latency_ms": 0.758624984882772
+    },
+    {
+      "complaint_id": "1730693",
+      "actual_product": "Checking or savings account",
+      "actual_issue": "Problems caused by my funds being low",
+      "product": "Checking or savings account",
+      "issue": "Problems caused by my funds being low",
+      "product_score": 0.9337,
+      "tokens_input": 0,
+      "tokens_output": 0,
+      "schema_valid": true,
+      "latency_ms": 0.8535830420441926,
+      "inference_latency_ms": 0.8535830420441926
+    },
+    {
+      "complaint_id": "2044917",
+      "actual_product": "Checking or savings account",
+      "actual_issue": "Problems caused by my funds being low",
+      "product": "Checking or savings account",
+      "issue": "Problems caused by my funds being low",
+      "product_score": 0.686,
+      "tokens_input": 0,
+      "tokens_output": 0,
+      "schema_valid": true,
+      "latency_ms": 0.8967079920694232,
+      "inference_latency_ms": 0.8967079920694232
+    },
+    {
+      "complaint_id": "2805730",
+      "actual_product": "Credit card",
+      "actual_issue": "Billing disputes",
+      "product": "Credit card",
+      "issue": "Fees or interest",
+      "product_score": 0.5452,
+      "tokens_input": 0,
+      "tokens_output": 0,
+      "schema_valid": true,
+      "latency_ms": 1.1643330217339098,
+      "inference_latency_ms": 1.1643330217339098
+    },
+    {
+      "complaint_id": "2795000",
+      "actual_product": "Credit card",
+      "actual_issue": "Billing disputes",
+      "product": "Credit card",
+      "issue": "Billing disputes",
+      "product_score": 0.8072,
+      "tokens_input": 0,
+      "tokens_output": 0,
+      "schema_valid": true,
+      "latency_ms": 0.9764579590409994,
+      "inference_latency_ms": 0.9764579590409994
+    },
+    {
+      "complaint_id": "1502800",
+      "actual_product": "Credit card",
+      "actual_issue": "Billing disputes",
+      "product": "Credit card",
+      "issue": "Fees or interest",
+      "product_score": 0.7007,
+      "tokens_input": 0,
+      "tokens_output": 0,
+      "schema_valid": true,
+      "latency_ms": 0.7618750096298754,
+      "inference_latency_ms": 0.7618750096298754
+    },
+    {
+      "complaint_id": "2791467",
+      "actual_product": "Credit card",
+      "actual_issue": "Fees or interest",
+      "product": "Credit card",
+      "issue": "Fees or interest",
+      "product_score": 0.702,
+      "tokens_input": 0,
+      "tokens_output": 0,
+      "schema_valid": true,
+      "latency_ms": 0.7370829698629677,
+      "inference_latency_ms": 0.7370829698629677
+    },
+    {
+      "complaint_id": "2788976",
+      "actual_product": "Credit card",
+      "actual_issue": "Fees or interest",
+      "product": "Checking or savings account",
+      "issue": "Problems caused by my funds being low",
+      "product_score": 0.4279,
+      "tokens_input": 0,
+      "tokens_output": 0,
+      "schema_valid": true,
+      "latency_ms": 0.6903330213390291,
+      "inference_latency_ms": 0.6903330213390291
+    },
+    {
+      "complaint_id": "2730516",
+      "actual_product": "Credit card",
+      "actual_issue": "Fees or interest",
+      "product": "Credit card",
+      "issue": "Other",
+      "product_score": 0.7108,
+      "tokens_input": 0,
+      "tokens_output": 0,
+      "schema_valid": true,
+      "latency_ms": 0.759042042773217,
+      "inference_latency_ms": 0.759042042773217
+    },
+    {
+      "complaint_id": "2035021",
+      "actual_product": "Credit card",
+      "actual_issue": "Other",
+      "product": "Credit card",
+      "issue": "Other",
+      "product_score": 0.4885,
+      "tokens_input": 0,
+      "tokens_output": 0,
+      "schema_valid": true,
+      "latency_ms": 0.8084580185823143,
+      "inference_latency_ms": 0.8084580185823143
+    },
+    {
+      "complaint_id": "1848588",
+      "actual_product": "Credit card",
+      "actual_issue": "Other",
+      "product": "Credit card",
+      "issue": "Billing disputes",
+      "product_score": 0.4917,
+      "tokens_input": 0,
+      "tokens_output": 0,
+      "schema_valid": true,
+      "latency_ms": 0.6769589963369071,
+      "inference_latency_ms": 0.6769589963369071
+    },
+    {
+      "complaint_id": "2423114",
+      "actual_product": "Credit card",
+      "actual_issue": "Other",
+      "product": "Credit card",
+      "issue": "Other",
+      "product_score": 0.5615,
+      "tokens_input": 0,
+      "tokens_output": 0,
+      "schema_valid": true,
+      "latency_ms": 0.6907909992150962,
+      "inference_latency_ms": 0.6907909992150962
+    },
+    {
+      "complaint_id": "2720083",
+      "actual_product": "Credit reporting",
+      "actual_issue": "Improper use of your report",
+      "product": "Credit reporting",
+      "issue": "Improper use of your report",
+      "product_score": 0.6839,
+      "tokens_input": 0,
+      "tokens_output": 0,
+      "schema_valid": true,
+      "latency_ms": 0.7808330119587481,
+      "inference_latency_ms": 0.7808330119587481
+    },
+    {
+      "complaint_id": "2667802",
+      "actual_product": "Credit reporting",
+      "actual_issue": "Improper use of your report",
+      "product": "Credit reporting",
+      "issue": "Improper use of your report",
+      "product_score": 0.6964,
+      "tokens_input": 0,
+      "tokens_output": 0,
+      "schema_valid": true,
+      "latency_ms": 0.6463329773396254,
+      "inference_latency_ms": 0.6463329773396254
+    },
+    {
+      "complaint_id": "2664750",
+      "actual_product": "Credit reporting",
+      "actual_issue": "Improper use of your report",
+      "product": "Credit reporting",
+      "issue": "Improper use of your report",
+      "product_score": 0.7626,
+      "tokens_input": 0,
+      "tokens_output": 0,
+      "schema_valid": true,
+      "latency_ms": 0.6246249540708959,
+      "inference_latency_ms": 0.6246249540708959
+    },
+    {
+      "complaint_id": "1395306",
+      "actual_product": "Credit reporting",
+      "actual_issue": "Incorrect information on your report",
+      "product": "Credit reporting",
+      "issue": "Incorrect information on your report",
+      "product_score": 0.6525,
+      "tokens_input": 0,
+      "tokens_output": 0,
+      "schema_valid": true,
+      "latency_ms": 0.6752500194124877,
+      "inference_latency_ms": 0.6752500194124877
+    },
+    {
+      "complaint_id": "2838693",
+      "actual_product": "Credit reporting",
+      "actual_issue": "Incorrect information on your report",
+      "product": "Credit reporting",
+      "issue": "Incorrect information on your report",
+      "product_score": 0.5042,
+      "tokens_input": 0,
+      "tokens_output": 0,
+      "schema_valid": true,
+      "latency_ms": 0.6531249964609742,
+      "inference_latency_ms": 0.6531249964609742
+    },
+    {
+      "complaint_id": "2702769",
+      "actual_product": "Credit reporting",
+      "actual_issue": "Incorrect information on your report",
+      "product": "Credit reporting",
+      "issue": "Incorrect information on your report",
+      "product_score": 0.5239,
+      "tokens_input": 0,
+      "tokens_output": 0,
+      "schema_valid": true,
+      "latency_ms": 0.8098750258795917,
+      "inference_latency_ms": 0.8098750258795917
+    },
+    {
+      "complaint_id": "2701422",
+      "actual_product": "Credit reporting",
+      "actual_issue": "Problem with a credit reporting company's investigation into an existing problem",
+      "product": "Credit reporting",
+      "issue": "Incorrect information on your report",
+      "product_score": 0.8027,
+      "tokens_input": 0,
+      "tokens_output": 0,
+      "schema_valid": true,
+      "latency_ms": 0.7296670228242874,
+      "inference_latency_ms": 0.7296670228242874
+    },
+    {
+      "complaint_id": "2551710",
+      "actual_product": "Credit reporting",
+      "actual_issue": "Problem with a credit reporting company's investigation into an existing problem",
+      "product": "Credit reporting",
+      "issue": "Incorrect information on your report",
+      "product_score": 0.7488,
+      "tokens_input": 0,
+      "tokens_output": 0,
+      "schema_valid": true,
+      "latency_ms": 0.6474169786088169,
+      "inference_latency_ms": 0.6474169786088169
+    },
+    {
+      "complaint_id": "2847370",
+      "actual_product": "Credit reporting",
+      "actual_issue": "Problem with a credit reporting company's investigation into an existing problem",
+      "product": "Credit reporting",
+      "issue": "Incorrect information on your report",
+      "product_score": 0.595,
+      "tokens_input": 0,
+      "tokens_output": 0,
+      "schema_valid": true,
+      "latency_ms": 0.7188749732449651,
+      "inference_latency_ms": 0.7188749732449651
+    }
+  ],
+  "completed": 27,
+  "product": {
+    "accuracy": 0.8888888888888888,
+    "precision_macro": 0.8916666666666666,
+    "recall_macro": 0.8888888888888888,
+    "f1_macro": 0.8885448916408668,
+    "labels": [
+      "Checking or savings account",
+      "Credit card",
+      "Credit reporting"
+    ],
+    "macro_convention": "Macro averaged over ground-truth labels; abstentions reduce recall. Confusion matrix includes abstentions.",
+    "per_class": {
+      "Checking or savings account": {
+        "precision": 0.875,
+        "recall": 0.7777777777777778,
+        "f1-score": 0.8235294117647058,
+        "support": 9.0
+      },
+      "Credit card": {
+        "precision": 0.8,
+        "recall": 0.8888888888888888,
+        "f1-score": 0.8421052631578947,
+        "support": 9.0
+      },
+      "Credit reporting": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 9.0
+      },
+      "accuracy": 0.8888888888888888,
+      "macro avg": {
+        "precision": 0.8916666666666666,
+        "recall": 0.8888888888888888,
+        "f1-score": 0.8885448916408668,
+        "support": 27.0
+      },
+      "weighted avg": {
+        "precision": 0.8916666666666666,
+        "recall": 0.8888888888888888,
+        "f1-score": 0.8885448916408668,
+        "support": 27.0
+      }
+    },
+    "confusion_matrix": [
+      [
+        7,
+        2,
+        0
+      ],
+      [
+        1,
+        8,
+        0
+      ],
+      [
+        0,
+        0,
+        9
+      ]
+    ]
+  },
+  "issue": {
+    "accuracy": 0.5555555555555556,
+    "precision_macro": 0.4907407407407407,
+    "recall_macro": 0.5555555555555556,
+    "f1_macro": 0.5068783068783068,
+    "labels": [
+      "Billing disputes",
+      "Deposits and withdrawals",
+      "Fees or interest",
+      "Improper use of your report",
+      "Incorrect information on your report",
+      "Managing an account",
+      "Other",
+      "Problem with a credit reporting company's investigation into an existing problem",
+      "Problems caused by my funds being low"
+    ],
+    "macro_convention": "Macro averaged over ground-truth labels; abstentions reduce recall. Confusion matrix includes abstentions.",
+    "per_class": {
+      "Billing disputes": {
+        "precision": 0.3333333333333333,
+        "recall": 0.3333333333333333,
+        "f1-score": 0.3333333333333333,
+        "support": 3.0
+      },
+      "Deposits and withdrawals": {
+        "precision": 0.5,
+        "recall": 0.3333333333333333,
+        "f1-score": 0.4,
+        "support": 3.0
+      },
+      "Fees or interest": {
+        "precision": 0.3333333333333333,
+        "recall": 0.3333333333333333,
+        "f1-score": 0.3333333333333333,
+        "support": 3.0
+      },
+      "Improper use of your report": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 3.0
+      },
+      "Incorrect information on your report": {
+        "precision": 0.5,
+        "recall": 1.0,
+        "f1-score": 0.6666666666666666,
+        "support": 3.0
+      },
+      "Managing an account": {
+        "precision": 0.5,
+        "recall": 0.3333333333333333,
+        "f1-score": 0.4,
+        "support": 3.0
+      },
+      "Other": {
+        "precision": 0.5,
+        "recall": 0.6666666666666666,
+        "f1-score": 0.5714285714285714,
+        "support": 3.0
+      },
+      "Problem with a credit reporting company's investigation into an existing problem": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1-score": 0.0,
+        "support": 3.0
+      },
+      "Problems caused by my funds being low": {
+        "precision": 0.75,
+        "recall": 1.0,
+        "f1-score": 0.8571428571428571,
+        "support": 3.0
+      },
+      "accuracy": 0.5555555555555556,
+      "macro avg": {
+        "precision": 0.4907407407407407,
+        "recall": 0.5555555555555556,
+        "f1-score": 0.5068783068783068,
+        "support": 27.0
+      },
+      "weighted avg": {
+        "precision": 0.49074074074074076,
+        "recall": 0.5555555555555556,
+        "f1-score": 0.5068783068783068,
+        "support": 27.0
+      }
+    },
+    "confusion_matrix": [
+      [
+        1,
+        0,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        3,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        3,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        2,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        3,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        3
+      ]
+    ]
+  },
+  "joint_accuracy": 0.5555555555555556,
+  "json_schema_valid_rate": 1.0,
+  "errors": 0,
+  "inference_latency_ms_p50": 0.7618750096298754,
+  "inference_latency_ms_p95": 1.1345457285642624,
+  "latency_ms_mean": 0.8053687418362608,
+  "latency_ms_p50": 0.7618750096298754,
+  "latency_ms_p95": 1.1345457285642624,
+  "input_tokens": 0,
+  "output_tokens": 0
+}

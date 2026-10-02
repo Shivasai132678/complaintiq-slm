@@ -1,0 +1,51 @@
+{
+  "runtime": "Homebrew llama.cpp0.5.0 build11146 commit7fe450e19 Darwinarm64",
+  "device": "Apple M1 8GB unified memory",
+  "app_running": "ComplaintIQ baseline API on127.0.0.1:8501",
+  "server_flags": [
+    "-c",
+    "2048",
+    "-ngl",
+    "99",
+    "-t",
+    "4",
+    "-b",
+    "256",
+    "-ub",
+    "128",
+    "--parallel",
+    "1",
+    "--host",
+    "127.0.0.1",
+    "--port",
+    "8504",
+    "--jinja",
+    "--reasoning",
+    "off"
+  ],
+  "models": [
+    {
+      "id": "Qwen/Qwen2.5-1.5B-Instruct",
+      "repository": "Qwen/Qwen2.5-1.5B-Instruct-GGUF",
+      "revision": "91cad51170dc346986eccefdc2dd33a9da36ead9",
+      "file": "models/qwen2.5-1.5b/qwen2.5-1.5b-instruct-q4_k_m.gguf",
+      "sha256": "6a1a2eb6d15622bf3c96857206351ba97e1af16c30d7a74ee38970e434e9407e",
+      "bytes": 1117320736,
+      "retained": true
+    },
+    {
+      "id": "Qwen/Qwen3.5-0.8B",
+      "repository": "unsloth/Qwen3.5-0.8B-GGUF",
+      "revision": "6ab461498e2023f6e3c1baea90a8f0fe38ab64d0",
+      "file": "models/qwen3.5-0.8b/Qwen3.5-0.8B-Q4_K_M.gguf",
+      "sha256": "bd258782e35f7f458f8aced1adc053e6e92e89bc735ba3be89d38a06121dc517",
+      "bytes": 532517120,
+      "retained": false
+    }
+  ],
+  "test_set_used": false,
+  "training_run": false,
+  "metal_device_verified": "MTL0: Apple M1",
+  "selected_for_fine_tuning": "Qwen/Qwen2.5-1.5B-Instruct",
+  "cleanup": "Qwen3.5 GGUF and its download metadata removed; both inference servers stopped; Qwen2.5 GGUF retained."
+}

@@ -1,5 +1,7 @@
 # Training later on a free GPU
 
+**October 2 model selection:** local comparison selected Qwen2.5-1.5B-Instruct for fine-tuning. The existing notebook/script still target the previous Qwen3-4B model and must be adapted before execution. Do not run the older target unchanged. See `docs/LOCAL_MODEL_COMPARISON.md` for measured results.
+
 `train_qwen3_colab.ipynb` is a prepared, unexecuted training notebook. The working assignment application uses the measured classical baseline until you explicitly configure a local GGUF. No SLM has been fine-tuned or evaluated in this repository yet.
 
 1. Open the notebook in Google Colab or Kaggle and select a free GPU runtime. Free GPU access is availability/quota dependent; do not enable paid billing.

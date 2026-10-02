@@ -8,7 +8,7 @@ Training and model setup are deferred at the user's request. The completed appli
 
 The default backend is a real **TF-IDF + Logistic Regression baseline**, trained at startup from bundled public CFPB narratives. It requires no GPU or hosted API. The app explicitly labels this backend.
 
-The optional local **Qwen3-4B-Instruct-2507 GGUF** backend uses a user-supplied checkpoint. A cloud QLoRA training workflow is included separately. A supplied original checkpoint is not a fine-tuned model. No fine-tuning completion or SLM accuracy is claimed unless an actual trained checkpoint and evaluation report are produced. Model weights are not bundled or automatically downloaded, respecting the 8 GB M1/storage constraints.
+The selected fine-tuning candidate is **Qwen2.5-1.5B-Instruct**, based on actual local validation runs. See [docs/LOCAL_MODEL_COMPARISON.md](docs/LOCAL_MODEL_COMPARISON.md). The optional local **GGUF** backend uses a user-supplied checkpoint. A cloud QLoRA training workflow is included separately. A supplied original checkpoint is not a fine-tuned model. No fine-tuning completion or SLM accuracy is claimed unless an actual trained checkpoint and evaluation report are produced. Model weights are not bundled or automatically downloaded, respecting the 8 GB M1/storage constraints.
 
 ## Run locally
 
@@ -44,7 +44,7 @@ This command uses held-out public records for demonstration, not for retraining.
 - Unsupported labels, missing weights, or invalid model outputs produce an explicit error/review state. The app never silently substitutes the baseline for an SLM request.
 - No invented confidence or regulatory-risk percentages.
 
-Local SLM inference requires a compatible `llama-cpp-python` install and a valid GGUF file. The legacy Streamlit interface supports setting a local model path in its sidebar. The new web API intentionally exposes only the verified baseline while model setup is deferred. Use short context and one request at a time on the M1; memory and speed for a 4B checkpoint remain to be measured locally. Model selection and output schema are version-controlled in `complaintiq/models.py`.
+Local SLM inference requires a compatible `llama-cpp-python` install and a valid GGUF file. The legacy Streamlit interface supports setting a local model path in its sidebar. The new web API intentionally exposes only the verified baseline while model setup is deferred. Use short context and one request at a time on the M1; the selected 1.5B GGUF was measured through a standalone llama.cpp server alongside the app. The in-process Python SLM integration and fine-tuned checkpoint remain to be verified. Model selection and output schema are version-controlled in `complaintiq/models.py`.
 
 ## Verification
 
