@@ -1,0 +1,307 @@
+{
+  "model": "tfidf-logreg-c304614d53",
+  "backend": "baseline",
+  "evaluated_at": "2026-09-30T11:32:07.689662+00:00",
+  "test_size": 153,
+  "data_manifest": "data/manifest.json",
+  "status": "measured",
+  "product": {
+    "accuracy": 0.8823529411764706,
+    "precision_macro": 0.912108843537415,
+    "recall_macro": 0.8823529411764706,
+    "f1_macro": 0.896963696369637,
+    "labels": [
+      "Checking or savings account",
+      "Credit card",
+      "Credit reporting",
+      "Unknown"
+    ],
+    "macro_convention": "Macro averaged over ground-truth labels; abstentions reduce recall. Confusion matrix includes abstentions.",
+    "per_class": {
+      "Checking or savings account": {
+        "precision": 0.92,
+        "recall": 0.9019607843137255,
+        "f1-score": 0.9108910891089109,
+        "support": 51.0
+      },
+      "Credit card": {
+        "precision": 0.8775510204081632,
+        "recall": 0.8431372549019608,
+        "f1-score": 0.86,
+        "support": 51.0
+      },
+      "Credit reporting": {
+        "precision": 0.9387755102040817,
+        "recall": 0.9019607843137255,
+        "f1-score": 0.92,
+        "support": 51.0
+      },
+      "micro avg": {
+        "precision": 0.9121621621621622,
+        "recall": 0.8823529411764706,
+        "f1-score": 0.8970099667774086,
+        "support": 153.0
+      },
+      "macro avg": {
+        "precision": 0.912108843537415,
+        "recall": 0.8823529411764706,
+        "f1-score": 0.896963696369637,
+        "support": 153.0
+      },
+      "weighted avg": {
+        "precision": 0.9121088435374148,
+        "recall": 0.8823529411764706,
+        "f1-score": 0.896963696369637,
+        "support": 153.0
+      }
+    },
+    "confusion_matrix": [
+      [
+        46,
+        4,
+        0,
+        1
+      ],
+      [
+        3,
+        43,
+        3,
+        2
+      ],
+      [
+        1,
+        2,
+        46,
+        2
+      ],
+      [
+        0,
+        0,
+        0,
+        0
+      ]
+    ]
+  },
+  "issue": {
+    "accuracy": 0.5555555555555556,
+    "precision_macro": 0.5498677248677248,
+    "recall_macro": 0.5555555555555556,
+    "f1_macro": 0.5457091664901512,
+    "labels": [
+      "Billing disputes",
+      "Deposits and withdrawals",
+      "Fees or interest",
+      "Improper use of your report",
+      "Incorrect information on your report",
+      "Managing an account",
+      "Needs review",
+      "Other",
+      "Problem with a credit reporting company's investigation into an existing problem",
+      "Problems caused by my funds being low"
+    ],
+    "macro_convention": "Macro averaged over ground-truth labels; abstentions reduce recall. Confusion matrix includes abstentions.",
+    "per_class": {
+      "Billing disputes": {
+        "precision": 0.6428571428571429,
+        "recall": 0.5294117647058824,
+        "f1-score": 0.5806451612903226,
+        "support": 17.0
+      },
+      "Deposits and withdrawals": {
+        "precision": 0.6,
+        "recall": 0.7058823529411765,
+        "f1-score": 0.6486486486486487,
+        "support": 17.0
+      },
+      "Fees or interest": {
+        "precision": 0.7142857142857143,
+        "recall": 0.8823529411764706,
+        "f1-score": 0.7894736842105263,
+        "support": 17.0
+      },
+      "Improper use of your report": {
+        "precision": 0.6666666666666666,
+        "recall": 0.8235294117647058,
+        "f1-score": 0.7368421052631579,
+        "support": 17.0
+      },
+      "Incorrect information on your report": {
+        "precision": 0.25,
+        "recall": 0.11764705882352941,
+        "f1-score": 0.16,
+        "support": 17.0
+      },
+      "Managing an account": {
+        "precision": 0.5714285714285714,
+        "recall": 0.47058823529411764,
+        "f1-score": 0.5161290322580645,
+        "support": 17.0
+      },
+      "Other": {
+        "precision": 0.42857142857142855,
+        "recall": 0.35294117647058826,
+        "f1-score": 0.3870967741935484,
+        "support": 17.0
+      },
+      "Problem with a credit reporting company's investigation into an existing problem": {
+        "precision": 0.45,
+        "recall": 0.5294117647058824,
+        "f1-score": 0.4864864864864865,
+        "support": 17.0
+      },
+      "Problems caused by my funds being low": {
+        "precision": 0.625,
+        "recall": 0.5882352941176471,
+        "f1-score": 0.6060606060606061,
+        "support": 17.0
+      },
+      "micro avg": {
+        "precision": 0.5743243243243243,
+        "recall": 0.5555555555555556,
+        "f1-score": 0.5647840531561462,
+        "support": 153.0
+      },
+      "macro avg": {
+        "precision": 0.5498677248677248,
+        "recall": 0.5555555555555556,
+        "f1-score": 0.5457091664901512,
+        "support": 153.0
+      },
+      "weighted avg": {
+        "precision": 0.5498677248677248,
+        "recall": 0.5555555555555556,
+        "f1-score": 0.5457091664901512,
+        "support": 153.0
+      }
+    },
+    "confusion_matrix": [
+      [
+        9,
+        0,
+        2,
+        1,
+        1,
+        0,
+        1,
+        3,
+        0,
+        0
+      ],
+      [
+        0,
+        12,
+        0,
+        0,
+        0,
+        3,
+        0,
+        0,
+        0,
+        2
+      ],
+      [
+        1,
+        0,
+        15,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        14,
+        1,
+        1,
+        0,
+        0,
+        1,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        4,
+        2,
+        0,
+        1,
+        1,
+        9,
+        0
+      ],
+      [
+        1,
+        4,
+        0,
+        0,
+        0,
+        8,
+        0,
+        1,
+        0,
+        3
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        3,
+        0,
+        3,
+        0,
+        0,
+        2,
+        1,
+        6,
+        1,
+        1
+      ],
+      [
+        0,
+        0,
+        1,
+        2,
+        4,
+        0,
+        1,
+        0,
+        9,
+        0
+      ],
+      [
+        0,
+        4,
+        0,
+        0,
+        0,
+        0,
+        1,
+        2,
+        0,
+        10
+      ]
+    ]
+  },
+  "joint_accuracy": 0.5555555555555556,
+  "latency_ms_mean": 0.9261538587309712,
+  "review_rate": 0.032679738562091505,
+  "input_tokens": 0,
+  "output_tokens": 0,
+  "errors": 0,
+  "limitations": "Small historical balanced sample; normalized exact duplicates removed, near-duplicate/template leakage remains possible. No performance claim on current workloads."
+}

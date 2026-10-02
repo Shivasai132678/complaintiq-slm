@@ -1,0 +1,22 @@
+/* ComplaintIQ presentation styling. */
+.stApp { background: #f5f7fb; color: #14223b; }
+[data-testid="stSidebar"] { background: #102139; }
+[data-testid="stSidebar"] * { color: #edf3fc; }
+[data-testid="stSidebar"] input { color: #14223b; }
+.block-container { padding-top: 2.5rem; padding-bottom: 2rem; max-width: 1250px; }
+h1 { letter-spacing: -0.055em; font-weight: 800 !important; }
+h2, h3 { letter-spacing: -0.025em; }
+[data-testid="stMetric"] { background: white; border: 1px solid #e1e7f0; padding: 1rem 1.2rem; border-radius: 12px; }
+[data-testid="stMetricLabel"] { color: #52647c; }
+[data-testid="stMetricValue"] { font-size: 1.55rem; }
+.stButton button[kind="primary"], .stFormSubmitButton button[kind="primary"] { background: #2864dc; border: 0; }
+.result-card { background: white; border: 1px solid #e1e7f0; border-radius: 12px; padding: 1.15rem 1.25rem; margin-bottom: 1rem; }
+.result-label { font-size: .72rem; letter-spacing: .09em; font-weight: 700; color: #61738a; text-transform: uppercase; }
+.result-value { font-size: 1.1rem; line-height: 1.5; font-weight: 650; margin-top: .4rem; }
+.eyebrow { color: #2864dc; letter-spacing: .14em; font-size: .72rem; font-weight: 750; margin-bottom: .4rem; }
+/* Native sidebar selects use the configured light theme. Keep their text readable. */
+[data-testid="stSidebar"] [data-baseweb="select"] * { color: #14223b; }
+[data-testid="stSidebar"] [data-baseweb="input"] input { color: #14223b; }
+[data-testid="stSidebar"] [data-testid="stTextInput"] input::placeholder { color: #61738a; }
+/* This workstation is presented locally; deployment controls are unnecessary. */
+[data-testid="stAppDeployButton"] { display: none; }

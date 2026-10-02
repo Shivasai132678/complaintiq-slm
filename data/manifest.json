@@ -1,0 +1,82 @@
+{
+  "source": "Official CFPB published narratives archive",
+  "source_url": "https://files.consumerfinance.gov/f/documents/CCDB_Export_1_December_2011_through_April_2018.zip",
+  "archive_page": "https://www.consumerfinance.gov/foia-requests/foia-electronic-reading-room/cfpb-consumer-complaint-database-narratives-archive/",
+  "retrieved_date": "2026-09-30",
+  "archive_sha256": "9d4fabeb5db925ce4303e81ab448f44531303a995aec1a935abc09156f2fc533",
+  "archive_csv": "CCDB_Export_1_December_2011_through_April_2018.csv",
+  "sample_size": 990,
+  "split_counts": {
+    "training": 693,
+    "validation": 144,
+    "test": 153
+  },
+  "class_counts": [
+    {
+      "product": "Checking or savings account",
+      "issue": "Deposits and withdrawals",
+      "count": 110
+    },
+    {
+      "product": "Checking or savings account",
+      "issue": "Managing an account",
+      "count": 110
+    },
+    {
+      "product": "Checking or savings account",
+      "issue": "Problems caused by my funds being low",
+      "count": 110
+    },
+    {
+      "product": "Credit card",
+      "issue": "Billing disputes",
+      "count": 110
+    },
+    {
+      "product": "Credit card",
+      "issue": "Fees or interest",
+      "count": 110
+    },
+    {
+      "product": "Credit card",
+      "issue": "Other",
+      "count": 110
+    },
+    {
+      "product": "Credit reporting",
+      "issue": "Improper use of your report",
+      "count": 110
+    },
+    {
+      "product": "Credit reporting",
+      "issue": "Incorrect information on your report",
+      "count": 110
+    },
+    {
+      "product": "Credit reporting",
+      "issue": "Problem with a credit reporting company's investigation into an existing problem",
+      "count": 110
+    }
+  ],
+  "seed": 42,
+  "deduplication": "Whitespace-normalized case-insensitive exact narrative hashes before split; near duplicates not detected",
+  "sampling": "Up to 110 randomly selected rows per product/issue class; top three issues per product after filtering",
+  "limitations": "Historical non-representative demonstration sample; no contemporary or deployment performance claim. Random stratified split; no temporal generalization claim.",
+  "trained_slm": false,
+  "product_aliases": {
+    "Credit reporting": "Credit reporting",
+    "Credit reporting, credit repair services, or other personal consumer reports": "Credit reporting",
+    "Credit reporting or other personal consumer reports": "Credit reporting",
+    "Credit card": "Credit card",
+    "Credit card or prepaid card": "Credit card",
+    "Bank account or service": "Checking or savings account",
+    "Checking or savings account": "Checking or savings account"
+  },
+  "issue_aliases": {
+    "Incorrect information on credit report": "Incorrect information on your report",
+    "Problem with credit reporting company's investigation": "Problem with a credit reporting company's investigation into an existing problem",
+    "Problem with a company's investigation into an existing problem": "Problem with a credit reporting company's investigation into an existing problem",
+    "Problem with a purchase shown on your statement": "Billing disputes",
+    "Account opening, closing, or management": "Managing an account"
+  }
+}
