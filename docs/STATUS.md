@@ -1,13 +1,14 @@
 # ComplaintIQ implementation status
 
-Updated October 2, 2026. This document separates verified implementation from work still pending.
+Updated October 3, 2026. This document separates verified implementation from work still pending.
 
 ## Completed and measured
 
 - Local Python complaint workflow: input validation, product/issue classification, LIME product explanation, rule-based priority and department routing, suggested next action, extractive preview, and SQLite complaint history.
 - Custom React/TypeScript frontend and FastAPI: operations overview, complaint analysis, searchable/filterable cases, accessible case detail drawer, CSV batch processing/export, and model evidence. The original Streamlit interface remains available as a legacy view.
-- Verified production frontend build, strict TypeScript, eight frontend tests, and 55 Python tests. Python coverage across the application and scripts is 85%; Ruff and mypy pass. Browser verification covers saved analysis, queue search, drawer keyboard close, evidence, batch upload, and responsive layouts.
+- Verified production frontend build, strict TypeScript, eight frontend tests, and 64 Python tests. Python coverage across the application and scripts is 86%; Ruff and mypy pass. Browser verification covers saved analysis, queue search, drawer keyboard close, evidence, batch upload, and responsive layouts.
 - Real public CFPB historical narratives: 990 unique normalized texts across three product families and nine product/issue classes. Training/validation/test counts are 693/144/153.
+- Separately prepared larger SLM dataset: 9,000 training, 900 validation and 900 test examples across the same nine categories, preserving all original split assignments. JSONL chat examples, CSV audit records and a provenance manifest are in `data/finetuning/`. Exact input/ID cross-split overlaps are zero; conservative approximate near-duplicate filtering is documented in `docs/FINETUNING_DATASET.md`. Training has not started.
 - Evaluation artifact identifies the exact training CSV hash (`tfidf-logreg-c304614d53`) and 153 held-out records. Product accuracy **88.24%**, product macro-F1 **89.70%**, issue accuracy **55.56%**, issue macro-F1 **54.57%**, joint product/issue accuracy **55.56%**. Five of 153 records received a review/abstention label; zero inference errors were recorded.
 - Actual Q4_K_M Qwen2.5-1.5B-Instruct and Qwen3.5-0.8B checkpoints completed paired 27-complaint local validation runs on the 8 GB M1 alongside the running baseline app, without observed out-of-memory failures. Verified pair-schema joint accuracies were **48.15%** and **22.22%**, respectively; median inference times were **944 ms** and **646 ms**. Qwen2.5-1.5B is selected as the later fine-tuning candidate. The same-sample baseline scored **55.56%** joint accuracy. Full protocol, raw runs and memory limitations are in `docs/LOCAL_MODEL_COMPARISON.md`.
 - Optional supplied local GGUF integration is implemented in the Python service. The new application API currently remains baseline-only; the benchmark server is separate. Runtime verification is limited to the measured short-context, one-request-at-a-time workload.

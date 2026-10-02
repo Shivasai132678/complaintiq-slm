@@ -1,0 +1,299 @@
+{
+  "source": "Official CFPB historical published narrative archive, December 2011\u2013April 2018",
+  "source_url": "https://files.consumerfinance.gov/f/documents/CCDB_Export_1_December_2011_through_April_2018.zip",
+  "retrieved_date": "2026-10-03",
+  "prepared_at": "2026-10-02T20:08:28.489907+00:00",
+  "archive_sha256": "9d4fabeb5db925ce4303e81ab448f44531303a995aec1a935abc09156f2fc533",
+  "archive_csv": "CCDB_Export_1_December_2011_through_April_2018.csv",
+  "source_rows_scanned": 1031863,
+  "taxonomy": {
+    "Checking or savings account": [
+      "Deposits and withdrawals",
+      "Managing an account",
+      "Problems caused by my funds being low"
+    ],
+    "Credit card": [
+      "Billing disputes",
+      "Fees or interest",
+      "Other"
+    ],
+    "Credit reporting": [
+      "Improper use of your report",
+      "Incorrect information on your report",
+      "Problem with a credit reporting company's investigation into an existing problem"
+    ]
+  },
+  "taxonomy_policy": "Fixed original nine pairs; never reselect top issues",
+  "product_aliases": {
+    "Credit reporting": "Credit reporting",
+    "Credit reporting, credit repair services, or other personal consumer reports": "Credit reporting",
+    "Credit reporting or other personal consumer reports": "Credit reporting",
+    "Credit card": "Credit card",
+    "Credit card or prepaid card": "Credit card",
+    "Bank account or service": "Checking or savings account",
+    "Checking or savings account": "Checking or savings account"
+  },
+  "issue_aliases": {
+    "Incorrect information on credit report": "Incorrect information on your report",
+    "Problem with credit reporting company's investigation": "Problem with a credit reporting company's investigation into an existing problem",
+    "Problem with a company's investigation into an existing problem": "Problem with a credit reporting company's investigation into an existing problem",
+    "Problem with a purchase shown on your statement": "Billing disputes",
+    "Account opening, closing, or management": "Managing an account"
+  },
+  "seed": 42,
+  "sampling": "Scan complete source, reserve IDs/prefixes, globally exact-deduplicate eligible inputs, retain lowest seed42 input-hash priorities in bounded 2x-needed per-class pools, conservatively filter near duplicates, then shuffle class/split allocations with seed42. Labels in identical source inputs use first occurrence; not temporal splitting.",
+  "candidate_pool_limits": {
+    "Checking or savings account / Deposits and withdrawals": 2180,
+    "Checking or savings account / Managing an account": 2180,
+    "Checking or savings account / Problems caused by my funds being low": 2180,
+    "Credit card / Billing disputes": 2180,
+    "Credit card / Fees or interest": 2180,
+    "Credit card / Other": 2180,
+    "Credit reporting / Improper use of your report": 2180,
+    "Credit reporting / Incorrect information on your report": 2180,
+    "Credit reporting / Problem with a credit reporting company's investigation into an existing problem": 2180
+  },
+  "source_unique_counts": {
+    "Checking or savings account / Deposits and withdrawals": 3291,
+    "Checking or savings account / Managing an account": 9906,
+    "Checking or savings account / Problems caused by my funds being low": 1947,
+    "Credit card / Billing disputes": 5378,
+    "Credit card / Fees or interest": 1704,
+    "Credit card / Other": 1788,
+    "Credit reporting / Improper use of your report": 8779,
+    "Credit reporting / Incorrect information on your report": 40006,
+    "Credit reporting / Problem with a credit reporting company's investigation into an existing problem": 11524
+  },
+  "candidate_pool_counts": {
+    "Checking or savings account / Deposits and withdrawals": 2180,
+    "Checking or savings account / Managing an account": 2180,
+    "Checking or savings account / Problems caused by my funds being low": 1947,
+    "Credit card / Billing disputes": 2180,
+    "Credit card / Fees or interest": 1704,
+    "Credit card / Other": 1788,
+    "Credit reporting / Improper use of your report": 2180,
+    "Credit reporting / Incorrect information on your report": 2180,
+    "Credit reporting / Problem with a credit reporting company's investigation into an existing problem": 2180
+  },
+  "per_class_targets": {
+    "training": 1000,
+    "validation": 100,
+    "test": 100
+  },
+  "split_counts": {
+    "training": 9000,
+    "validation": 900,
+    "test": 900
+  },
+  "class_counts": {
+    "training": [
+      {
+        "product": "Checking or savings account",
+        "issue": "Deposits and withdrawals",
+        "count": 1000
+      },
+      {
+        "product": "Checking or savings account",
+        "issue": "Managing an account",
+        "count": 1000
+      },
+      {
+        "product": "Checking or savings account",
+        "issue": "Problems caused by my funds being low",
+        "count": 1000
+      },
+      {
+        "product": "Credit card",
+        "issue": "Billing disputes",
+        "count": 1000
+      },
+      {
+        "product": "Credit card",
+        "issue": "Fees or interest",
+        "count": 1000
+      },
+      {
+        "product": "Credit card",
+        "issue": "Other",
+        "count": 1000
+      },
+      {
+        "product": "Credit reporting",
+        "issue": "Improper use of your report",
+        "count": 1000
+      },
+      {
+        "product": "Credit reporting",
+        "issue": "Incorrect information on your report",
+        "count": 1000
+      },
+      {
+        "product": "Credit reporting",
+        "issue": "Problem with a credit reporting company's investigation into an existing problem",
+        "count": 1000
+      }
+    ],
+    "validation": [
+      {
+        "product": "Checking or savings account",
+        "issue": "Deposits and withdrawals",
+        "count": 100
+      },
+      {
+        "product": "Checking or savings account",
+        "issue": "Managing an account",
+        "count": 100
+      },
+      {
+        "product": "Checking or savings account",
+        "issue": "Problems caused by my funds being low",
+        "count": 100
+      },
+      {
+        "product": "Credit card",
+        "issue": "Billing disputes",
+        "count": 100
+      },
+      {
+        "product": "Credit card",
+        "issue": "Fees or interest",
+        "count": 100
+      },
+      {
+        "product": "Credit card",
+        "issue": "Other",
+        "count": 100
+      },
+      {
+        "product": "Credit reporting",
+        "issue": "Improper use of your report",
+        "count": 100
+      },
+      {
+        "product": "Credit reporting",
+        "issue": "Incorrect information on your report",
+        "count": 100
+      },
+      {
+        "product": "Credit reporting",
+        "issue": "Problem with a credit reporting company's investigation into an existing problem",
+        "count": 100
+      }
+    ],
+    "test": [
+      {
+        "product": "Checking or savings account",
+        "issue": "Deposits and withdrawals",
+        "count": 100
+      },
+      {
+        "product": "Checking or savings account",
+        "issue": "Managing an account",
+        "count": 100
+      },
+      {
+        "product": "Checking or savings account",
+        "issue": "Problems caused by my funds being low",
+        "count": 100
+      },
+      {
+        "product": "Credit card",
+        "issue": "Billing disputes",
+        "count": 100
+      },
+      {
+        "product": "Credit card",
+        "issue": "Fees or interest",
+        "count": 100
+      },
+      {
+        "product": "Credit card",
+        "issue": "Other",
+        "count": 100
+      },
+      {
+        "product": "Credit reporting",
+        "issue": "Improper use of your report",
+        "count": 100
+      },
+      {
+        "product": "Credit reporting",
+        "issue": "Incorrect information on your report",
+        "count": 100
+      },
+      {
+        "product": "Credit reporting",
+        "issue": "Problem with a credit reporting company's investigation into an existing problem",
+        "count": 100
+      }
+    ]
+  },
+  "original_preserved_counts": {
+    "training": 693,
+    "validation": 144,
+    "test": 153
+  },
+  "original_file_sha256": {
+    "training": "c304614d5317b3fe8fd73b757ea405e67e436ecfc1850b9328c1b89299442df1",
+    "validation": "e8f06f64f3efc8cb51b002a29692e7539815a9b80e03ef7796f47dedf4df474f",
+    "test": "70d2b4439e2141c0e38d425cfa8107b74aaf7ad10c06654a8540626991220075"
+  },
+  "input_policy": "text preserves full normalized source narrative and original text; input_text is whitespace-normalized first2000 characters; JSONL uses input_text and benchmark messages_for prompt",
+  "input_character_limit": 2000,
+  "input_hash_policy": "SHA256 of case-folded normalized input_text",
+  "truncated_counts": {
+    "training": 1250,
+    "validation": 141,
+    "test": 138
+  },
+  "filters": {
+    "unsupported_pair": 706304,
+    "missing_id_or_short_text": 232728,
+    "new_input_duplicate": 7476,
+    "reserved_id": 990,
+    "reserved_input_duplicate": 42,
+    "near_duplicate_input": 65
+  },
+  "preserved_original_near_duplicate_pairs": [
+    {
+      "complaint_id": "2652048",
+      "near_original_id": "2648528",
+      "split": "training",
+      "near_original_split": "training"
+    }
+  ],
+  "preserved_original_cross_split_near_matches": 0,
+  "selected_date_ranges": {
+    "training": {
+      "minimum": "2015-03-19",
+      "maximum": "2018-04-30"
+    },
+    "validation": {
+      "minimum": "2015-03-19",
+      "maximum": "2018-04-30"
+    },
+    "test": {
+      "minimum": "2015-03-19",
+      "maximum": "2018-04-30"
+    }
+  },
+  "token_budget_verified": false,
+  "token_budget_note": "Character clipping is not a token guarantee; selected model tokenizer must verify complete messages fit training context before GPU training.",
+  "near_duplicate_policy": "Conservative bounded lexical shingle candidate matching; see scripts/near_duplicates.py. Reject new near-duplicates against all reserved and accepted input prefixes; original allocations remain unchanged.",
+  "overlap_checks": {
+    "cross_split_ids": 0,
+    "cross_split_input_hashes": 0,
+    "original_holdout_ids_in_training": 0,
+    "original_holdout_prefixes_in_training": 0
+  },
+  "trained_slm": false,
+  "limitations": "Historical balanced training sample. Prefix truncation can omit evidence; conservative approximate near-duplicate blocking may miss paraphrases/templates. Existing original near-duplicate pairs are retained and disclosed to preserve prior splits. More rows do not guarantee fine-tuned accuracy.",
+  "output_sha256": {
+    "validation.csv": "939f14c5351c6604e2dcb119d4d4ebe8c9296b8e8d970c8a7312b4dda48aac1d",
+    "training.csv": "f97baf35176f1ace1bb3a0f22613fb24e9183214400da72b3fa1a908331c1df0",
+    "test.jsonl": "33078c4b56caa37cb1028d269fe5ba38ee3c89c95dc5a024266626b5b0e531c3",
+    "test.csv": "5f7fc5f72dbdd85e49f9042ad413aed65c910e91e61489fdd6344a64aa18b71b",
+    "training.jsonl": "6c3f2492f4592be5eb388a2d56c20a2685380391ce012ca5e5ad55ffab08435c",
+    "validation.jsonl": "6506b12319c913694635874536a30faf96e95cada5f7b387bc7006e56fae4df6"
+  }
+}

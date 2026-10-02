@@ -60,6 +60,8 @@ npm run build
 
 `requirements-lock.txt` records the complete verified local dependency environment. GPU training dependencies are separate from this small local environment.
 
+The larger, separately prepared SLM dataset lives in `data/finetuning/`. See [docs/FINETUNING_DATASET.md](docs/FINETUNING_DATASET.md) for provenance, split protection and Unsloth upload instructions. The original baseline data remains unchanged.
+
 ## Attribution and scope
 
 Adapted from the MIT-licensed [complaint-routing-intelligence](https://github.com/MohammedHssan11/complaint-routing-intelligence) project. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). Upstream pickle files and claimed benchmark figures are not used. Our own source data, tests, evaluations, and changes are documented here.
