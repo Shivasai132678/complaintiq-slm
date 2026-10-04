@@ -29,4 +29,4 @@ SOFTWARE.
 
 ```
 
-CFPB data provenance is recorded in data/manifest.json. Model weights are obtained separately and retain their licenses; Qwen3-4B-Instruct-2507 is Apache-2.0. No weights are bundled.
+CFPB data provenance is recorded in data/manifest.json. Model weights are obtained separately and retain their licenses; the fine-tuned model is derived from Qwen2.5-1.5B-Instruct (Apache-2.0). No weights are bundled.

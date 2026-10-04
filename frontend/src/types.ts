@@ -1,3 +1,10 @@
+export interface Health {
+  backend: "baseline" | "slm";
+  model_version: string;
+  slm_status: string;
+  training_status: string;
+  training_size?: number;
+}
 export interface Complaint {
   id: string;
   text: string;
@@ -16,6 +23,9 @@ export interface Complaint {
   created_at: string;
   explanation: { token: string; weight: number }[];
   explanation_method?: string;
+  input_truncated?: boolean;
+  input_chars_used?: number;
+  cached?: boolean;
 }
 export interface Analytics {
   total: number;

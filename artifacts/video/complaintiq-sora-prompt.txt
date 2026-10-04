@@ -1,0 +1,12 @@
+Use case: product motion design video for a company assignment presentation.
+Primary request: A polished ComplaintIQ product animation showing a financial complaint becoming a classified case in the local intelligence workspace.
+Scene/background: Clean ivory canvas with a deep forest-green application sidebar and mint accents, inspired by the ComplaintIQ interface.
+Subject: Crisp interface cards, a complaint document, two classification chips, and a saved case panel.
+Action: A complaint card smoothly transforms into an organized case record.
+Camera: Locked frontal view, flat interface composition with subtle depth.
+Style/format: Refined software product motion design; restrained transitions, precise typography, generous spacing, smooth easing.
+Color palette: Forest green, ivory, mint, muted sage.
+Timing/beats: 0–3 seconds: ComplaintIQ wordmark and complaint card enter. 3–7 seconds: the card resolves into Product and Issue chips beside a small Local SLM badge. 7–10 seconds: a separate Workflow policies panel appears with Priority and Routing labels; the case enters the queue. 10–12 seconds: settle on the ComplaintIQ wordmark and a clean workspace composition.
+Text (verbatim): "ComplaintIQ", "Local SLM", "Product", "Issue", "Workflow policies", "Priority", "Routing".
+Constraints: Product and issue are model predictions; priority and routing are separate configured policies. Use only the short supplied text. No invented accuracy claims or metrics. No real people, faces, third-party logos or copyrighted characters.
+Avoid: Flickering text, distorted lettering, jitter, crowded dashboards, excessive particles, rapid camera motion.

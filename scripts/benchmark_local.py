@@ -248,6 +248,7 @@ def benchmark(
     limit: int | None = None,
     monitor: bool = True,
     constrain_labels: bool = False,
+    fine_tuned: bool = False,
 ) -> dict[str, Any]:
     from complaintiq.models import validate_prediction
 
@@ -265,6 +266,7 @@ def benchmark(
                 limit=limit,
                 monitor=monitor,
                 constrain_labels=constrain_labels,
+                fine_tuned=fine_tuned,
             )
     response_format: dict[str, Any] = (
         schema_format(pair_schema(taxonomy), "complaint_labels")
@@ -277,7 +279,7 @@ def benchmark(
     report: dict[str, Any] = {
         "model": model_id,
         "backend": "slm",
-        "fine_tuned": False,
+        "fine_tuned": fine_tuned,
         "constrain_labels": constrain_labels,
         "schema_enforcement": "verified_fixed_literal_probe"
         if constrain_labels
@@ -419,6 +421,7 @@ if __name__ == "__main__":
     parser.add_argument("--model-id", required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--server-pid", type=int)
+    parser.add_argument("--fine-tuned", action="store_true", help="Identify a supplied fine-tuned export")
     parser.add_argument(
         "--constrain-labels",
         action="store_true",
@@ -430,4 +433,5 @@ if __name__ == "__main__":
         args.output,
         server_pid=args.server_pid,
         constrain_labels=args.constrain_labels,
+        fine_tuned=args.fine_tuned,
     )

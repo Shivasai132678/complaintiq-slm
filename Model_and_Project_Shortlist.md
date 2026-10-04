@@ -1,5 +1,7 @@
 # ComplaintIQ: model and reusable project shortlist
 
+> **Historical planning note (September 30, 2026).** Qwen3-4B was the first benchmark candidate. Local measurement on the 8 GB M1 later selected **Qwen2.5-1.5B-Instruct**, which is the fine-tuned model in use; see `docs/LOCAL_MODEL_COMPARISON.md` and `docs/FINETUNED_MODEL.md`.
+
 Research date: September 30, 2026. Model cards, repository READMEs, license files, and selected source files were inspected. No candidate application was installed or run; performance and setup claims below remain unverified locally.
 
 ## Recommended decision

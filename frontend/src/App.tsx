@@ -1,927 +1,373 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import type { ChangeEvent, FormEvent } from "react";
+import { useEffect, useRef, useState } from "react";
+import type { FormEvent, ReactNode } from "react";
 import {
   Activity,
   ArrowDownToLine,
+  ArrowLeft,
   ArrowRight,
-  ArrowUpRight,
-  BarChart3,
-  CheckCircle2,
+  Check,
+  ChevronLeft,
   ChevronRight,
   ClipboardList,
+  Database,
   FileUp,
-  Layers3,
   LayoutDashboard,
-  Menu,
+  LoaderCircle,
+  MessageSquare,
   Plus,
-  RefreshCw,
   Search,
   ShieldCheck,
   Sparkles,
   X,
 } from "lucide-react";
 import Papa from "papaparse";
-import { api } from "./api";
-import type { Analytics, BatchResult, Complaint, Evaluation } from "./types";
-import { Bars, CaseTable, Drawer, Empty, Priority, Result } from "./components";
-type View =
-  "Overview" | "Analyze" | "Cases" | "Batch upload" | "Model evidence";
-const NAV = [
-  { name: "Overview" as View, icon: LayoutDashboard },
-  { name: "Analyze" as View, icon: Sparkles },
-  { name: "Cases" as View, icon: ClipboardList },
-  { name: "Batch upload" as View, icon: FileUp },
-  { name: "Model evidence" as View, icon: BarChart3 },
-];
-const emptyAnalytics: Analytics = {
-  total: 0,
-  by_product: {},
-  by_priority: {},
-  by_department: {},
-  by_backend: {},
-  needs_review: 0,
-  average_latency_ms: 0,
-};
-const examples = [
-  {
-    label: "Credit report dispute",
-    text: "My credit report contains a credit card account that is not mine. I disputed the incorrect information twice, but the credit reporting company has not corrected my report.",
-  },
-  {
-    label: "Unexpected bank fee",
-    text: "My bank charged an overdraft fee on my checking account even though I had enough money. Customer service promised to reverse the fee, but it remains on my statement.",
-  },
-  {
-    label: "Unauthorized card charge",
-    text: "I found an unauthorized charge on my credit card statement. I reported the transaction immediately but the card company refused to investigate the disputed amount.",
-  },
-];
-function download(filename: string, content: string, type = "text/csv") {
-  const url = URL.createObjectURL(new Blob([content], { type }));
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = filename;
-  link.click();
-  URL.revokeObjectURL(url);
+import { ApiError, pilot } from "./pilot-api";
+import type {
+  Case,
+  Config,
+  Event,
+  Job,
+  Overview,
+  Page,
+  System,
+} from "./pilot-api";
+import type { Evaluation, Health } from "./types";
+
+const date = (s: string) =>
+  new Date(s).toLocaleString(undefined, {
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+const errorText = (e: unknown) =>
+  e instanceof Error ? e.message : "Something went wrong. Please retry.";
+function useRoute() {
+  const [url, set] = useState(location.pathname + location.search);
+  useEffect(() => {
+    const f = () => set(location.pathname + location.search);
+    addEventListener("popstate", f);
+    return () => removeEventListener("popstate", f);
+  }, []);
+  return [
+    url,
+    (path: string) => {
+      history.pushState({}, "", path);
+      set(path);
+      window.scrollTo(0, 0);
+    },
+  ] as const;
 }
-function exportCases(items: Complaint[]) {
-  download(
-    "complaintiq-cases.csv",
-    Papa.unparse(
-      items.map((item) => ({
-        id: item.id,
-        text: item.text,
-        product: item.product,
-        issue: item.issue,
-        priority: item.priority,
-        department: item.department,
-        status: item.status,
-        created_at: item.created_at,
-      })),
-      { escapeFormulae: true },
-    ),
+type Go = (path: string) => void;
+function Link({
+  to,
+  go,
+  children,
+  className = "",
+}: {
+  to: string;
+  go: Go;
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <a
+      href={to}
+      className={className}
+      onClick={(e) => {
+        if (!e.metaKey && !e.ctrlKey && !e.shiftKey) {
+          e.preventDefault();
+          go(to);
+        }
+      }}
+    >
+      {children}
+    </a>
   );
 }
-function message(error: unknown) {
-  return error instanceof Error
-    ? error.message
-    : "Something went wrong. Please try again.";
+function Badge({
+  children,
+  tone = "",
+}: {
+  children: ReactNode;
+  tone?: string;
+}) {
+  return <span className={"badge " + tone}>{children}</span>;
 }
-export default function App() {
-  const [view, setView] = useState<View>("Overview");
-  const [items, setItems] = useState<Complaint[]>([]);
-  const [analytics, setAnalytics] = useState<Analytics>(emptyAnalytics);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [selected, setSelected] = useState<Complaint | null>(null);
-  const [sidebar, setSidebar] = useState(false);
-  const refreshSequence = useRef(0);
-  const closeDrawer = useCallback(() => setSelected(null), []);
-  const refresh = useCallback(async () => {
-    const sequence = ++refreshSequence.current;
-    setLoading(true);
-    setError("");
-    try {
-      const [cases, summary] = await Promise.all([
-        api.complaints(),
-        api.analytics(),
-      ]);
-      if (sequence !== refreshSequence.current) return;
-      setItems(cases.items);
-      setAnalytics(summary);
-    } catch (e) {
-      if (sequence === refreshSequence.current) setError(message(e));
-    } finally {
-      if (sequence === refreshSequence.current) setLoading(false);
-    }
-  }, []);
-  useEffect(() => {
-    void refresh();
-  }, [refresh]);
-  function navigate(next: View) {
-    setView(next);
-    setSidebar(false);
-    setSelected(null);
-  }
+function ErrorBox({ text }: { text: string }) {
+  return text ? (
+    <div className="error" role="alert">
+      {text}
+    </div>
+  ) : null;
+}
+function Empty({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <div className="workspace">
-      <aside className={`sidebar ${sidebar ? "open" : ""}`}>
-        <a
-          className="brand"
-          href="#"
-          onClick={(event) => {
-            event.preventDefault();
-            navigate("Overview");
-          }}
-        >
-          <span className="brand-icon">
-            CQ
-            <span />
+    <div className="empty">
+      <ClipboardList size={30} />
+      <h3>{title}</h3>
+      <p>{children}</p>
+    </div>
+  );
+}
+function Heading({
+  eyebrow,
+  title,
+  description,
+  children,
+}: {
+  eyebrow: string;
+  title: string;
+  description: string;
+  children?: ReactNode;
+}) {
+  return (
+    <header className="page-heading">
+      <div>
+        <div className="eyebrow">{eyebrow}</div>
+        <h1>{title}</h1>
+        <p>{description}</p>
+      </div>
+      {children}
+    </header>
+  );
+}
+function Panel({
+  title,
+  subtitle,
+  children,
+  action,
+  className = "",
+}: {
+  title: string;
+  subtitle?: string;
+  children: ReactNode;
+  action?: ReactNode;
+  className?: string;
+}) {
+  return (
+    <section className={"panel " + className}>
+      <header className="panel-header">
+        <div>
+          <h2>{title}</h2>
+          {subtitle && <p>{subtitle}</p>}
+        </div>
+        {action}
+      </header>
+      {children}
+    </section>
+  );
+}
+function Loading() {
+  return (
+    <div className="loading" role="status">
+      <LoaderCircle className="spin" size={20} /> Loading workspace…
+    </div>
+  );
+}
+function EventList({ items, go }: { items: Event[]; go?: Go }) {
+  return items.length ? (
+    <ol className="timeline">
+      {items.map((e) => (
+        <li key={e.seq}>
+          <span className="timeline-dot" />
+          <div>
+            <div className="event-heading">
+              <strong>
+                {e.kind === "review"
+                  ? "Classification reviewed"
+                  : e.kind === "note"
+                    ? "Note added"
+                    : `${e.detail.from} → ${e.detail.to}`}
+              </strong>
+              <time>{date(e.at)}</time>
+            </div>
+            {go && (
+              <Link to={"/cases/" + e.case_id} go={go} className="case-link">
+                {e.case_id}
+              </Link>
+            )}
+            {e.detail.changes &&
+              Object.entries(e.detail.changes).map(([k, v]) => (
+                <p key={k}>
+                  <b>{k}:</b> {v.from} → {v.to}
+                </p>
+              ))}
+            {(e.detail.note || e.detail.reason) && (
+              <p className="preserve">{e.detail.note || e.detail.reason}</p>
+            )}
+            <small>{e.actor}</small>
+          </div>
+        </li>
+      ))}
+    </ol>
+  ) : (
+    <div className="quiet-empty">
+      No review activity yet. Original predictions are preserved.
+    </div>
+  );
+}
+
+export default function App() {
+  const [url, go] = useRoute();
+  const path = url.split("?")[0];
+  const [health, setHealth] = useState<Health | null>(null),
+    [checked, setChecked] = useState(false),
+    [config, setConfig] = useState<Config | null>(null),
+    [error, setError] = useState("");
+  useEffect(() => {
+    let active = true;
+    pilot
+      .config()
+      .then((c) => {
+        if (active) setConfig(c);
+      })
+      .catch((e) => {
+        if (active) setError(errorText(e));
+      });
+    const check = async () => {
+      try {
+        const h = await pilot.health();
+        if (active) setHealth(h);
+      } catch {
+        if (active) setHealth(null);
+      } finally {
+        if (active) setChecked(true);
+      }
+    };
+    void check();
+    const t = setInterval(check, 30000);
+    return () => {
+      active = false;
+      clearInterval(t);
+    };
+  }, []);
+  const nav = [
+    ["/overview", "Overview", LayoutDashboard],
+    ["/cases", "Cases", ClipboardList],
+    ["/analyze", "Analyze", Sparkles],
+    ["/imports", "Imports", FileUp],
+    ["/system", "Model & System", Activity],
+  ] as const;
+  const activeLabel = nav.find(([p]) => path.startsWith(p))?.[1] ?? "Cases";
+  return (
+    <div className="pilot">
+      <aside className="sidebar">
+        <Link to="/overview" go={go} className="brand">
+          <span className="brand-mark">
+            cq<span>•</span>
           </span>
           <span>
-            ComplaintIQ<small>OPERATIONS WORKSPACE</small>
+            ComplaintIQ<small>LOCAL OPERATIONS</small>
           </span>
-        </a>
-        <button
-          className="mobile-close icon-button"
-          aria-label="Close navigation"
-          onClick={() => setSidebar(false)}
-        >
-          <X size={20} />
-        </button>
+        </Link>
         <div className="nav-label">WORKSPACE</div>
         <nav aria-label="Main navigation">
-          {NAV.map(({ name, icon: Icon }) => (
-            <button
-              key={name}
-              className={view === name ? "active" : ""}
-              onClick={() => navigate(name)}
-              aria-current={view === name ? "page" : undefined}
+          {nav.map(([p, label, Icon]) => (
+            <Link
+              key={p}
+              to={p}
+              go={go}
+              className={
+                "nav-link " +
+                ((path === "/" && p === "/cases") || path.startsWith(p)
+                  ? "active"
+                  : "")
+              }
             >
               <Icon size={19} />
-              <span>{name}</span>
-              {name === "Cases" ? <small>{analytics.total}</small> : null}
-              {view === name ? (
-                <ChevronRight size={15} className="nav-chevron" />
-              ) : null}
-            </button>
+              <span>{label}</span>
+              {((path === "/" && p === "/cases") || path.startsWith(p)) && (
+                <ChevronRight size={15} />
+              )}
+            </Link>
           ))}
         </nav>
         <div className="sidebar-bottom">
-          <div className="engine-card">
-            <span className="live-indicator" />
-            BASELINE ENGINE
+          <div className={"engine-card " + (!health ? "offline" : "")}>
+            <span className="engine-light" />
             <strong>
-              {loading
-                ? "Connecting to engine"
-                : error
-                  ? "Connection needs attention"
-                  : "Ready for analysis"}
+              {health
+                ? "Local engine ready"
+                : checked
+                  ? "Engine unavailable"
+                  : "Checking engine"}
             </strong>
-            <p>TF-IDF + Logistic Regression</p>
+            <p>
+              {health?.backend === "slm"
+                ? "Fine-tuned Qwen2.5 · 1.5B"
+                : health
+                  ? "Traditional ML baseline"
+                  : "Your saved cases remain available."}
+            </p>
+            <Link to="/system" go={go}>
+              View system status <ArrowRight size={13} />
+            </Link>
           </div>
-          <div className="sidebar-foot">
-            <span className="avatar">CQ</span>
+          <div className="operator">
+            <span>LO</span>
             <div>
-              Local workspace<small>Assignment demonstration</small>
+              Local operator<small>Single-device workspace</small>
             </div>
           </div>
         </div>
       </aside>
-      {sidebar ? (
-        <button
-          className="mobile-shade"
-          aria-label="Close navigation"
-          onClick={() => setSidebar(false)}
-        />
-      ) : null}
-      <div className="main">
-        <header className="topbar">
+      <div className="main-shell">
+        <div className="topbar">
+          <span>
+            Workspace <ChevronRight size={14} /> <strong>{activeLabel}</strong>
+          </span>
           <div>
-            <button
-              className="mobile-menu icon-button"
-              aria-label="Open navigation"
-              onClick={() => setSidebar(true)}
-            >
-              <Menu size={21} />
-            </button>
-            <span className="breadcrumb">
-              Workspace <ChevronRight size={13} /> <strong>{view}</strong>
-            </span>
+            <span className="local-dot" /> On this Mac{" "}
+            <span className="avatar">LO</span>
           </div>
-          <div className="topbar-right">
-            <span className="local-pill">
-              <span />
-              Local session
-            </span>
-            <span className="topbar-divider" />
-            <span className="avatar pale">CQ</span>
-          </div>
-        </header>
-        <main>
-          <div className="page-heading">
-            <div>
-              <div className="overline">FINANCIAL COMPLAINT INTELLIGENCE</div>
-              <h1>
-                {view === "Overview"
-                  ? "Operations overview"
-                  : view === "Analyze"
-                    ? "Every complaint. A clear next step."
-                    : view === "Cases"
-                      ? "Complaint queue"
-                      : view === "Batch upload"
-                        ? "Process complaints together"
-                        : "Evidence behind the engine"}
-              </h1>
-              <p>
-                {view === "Overview"
-                  ? "Understand the workload, review the signals, and keep complaints moving."
-                  : view === "Analyze"
-                    ? "Transform a narrative into a categorized, explainable case for review."
-                    : view === "Cases"
-                      ? "Search your saved cases and inspect the reasoning behind each decision."
-                      : view === "Batch upload"
-                        ? "Bring in a CSV, review the narratives, and analyze them in one workflow."
-                        : "Measured performance, transparent methods, and honest model readiness."}
-              </p>
-            </div>
-            <div className="heading-actions">
-              {view === "Overview" ? (
-                <>
-                  <button
-                    className="button ghost"
-                    aria-label="Refresh workspace"
-                    onClick={() => void refresh()}
-                    disabled={loading}
-                  >
-                    <RefreshCw size={16} className={loading ? "spin" : ""} />
-                  </button>
-                  <button
-                    className="button primary"
-                    onClick={() => navigate("Analyze")}
-                  >
-                    <Plus size={16} />
-                    New analysis
-                  </button>
-                </>
-              ) : view === "Cases" ? (
-                <button
-                  className="button secondary"
-                  onClick={() => exportCases(items)}
-                  disabled={!items.length}
-                >
-                  <ArrowDownToLine size={16} />
-                  Export loaded
-                </button>
-              ) : null}
-            </div>
-          </div>
-          {error ? (
-            <div className="alert" role="alert">
-              {error}
-              <button onClick={() => void refresh()}>Try again</button>
-            </div>
-          ) : null}
-          {loading && !items.length ? (
-            <div className="loading-panel">
-              <RefreshCw className="spin" size={24} />
-              <p>Loading your workspace…</p>
-            </div>
-          ) : null}
-          {view === "Overview" ? (
-            <Overview
-              analytics={analytics}
-              items={items}
-              inspect={setSelected}
-              navigate={navigate}
-            />
-          ) : view === "Analyze" ? (
-            <Analyze saved={() => void refresh()} />
-          ) : view === "Cases" ? (
-            <Cases items={items} inspect={setSelected} />
-          ) : view === "Batch upload" ? (
-            <Batch saved={() => void refresh()} />
+        </div>
+        <main key={path}>
+          <ErrorBox text={error} />
+          {path === "/overview" ? (
+            <OverviewPage go={go} />
+          ) : path === "/analyze" ? (
+            <Analyze go={go} health={health} />
+          ) : path === "/imports" ? (
+            <Imports go={go} query={url.split("?")[1] ?? ""} />
+          ) : path === "/system" ? (
+            <SystemPage health={health} />
+          ) : path.startsWith("/cases/") ? (
+            config ? (
+              <CaseDetail
+                id={decodeURIComponent(path.slice(7))}
+                config={config}
+                go={go}
+              />
+            ) : (
+              <Loading />
+            )
           ) : (
-            <Evidence />
+            <Cases go={go} query={url.split("?")[1] ?? ""} config={config} />
           )}
           <footer className="page-footer">
             <span>
-              <ShieldCheck size={14} /> Decision support · Human review remains
-              essential
+              <ShieldCheck size={14} /> Human review is part of every decision.
             </span>
-            <span>Public CFPB narratives · Baseline demonstration</span>
+            <span>Private workspace · Stored on this Mac</span>
           </footer>
         </main>
       </div>
-      {selected ? <Drawer item={selected} onClose={closeDrawer} /> : null}
     </div>
   );
 }
-function Overview({
-  analytics,
-  items,
-  inspect,
-  navigate,
-}: {
-  analytics: Analytics;
-  items: Complaint[];
-  inspect: (item: Complaint) => void;
-  navigate: (view: View) => void;
-}) {
-  const urgent =
-    (analytics.by_priority.High ?? 0) + (analytics.by_priority.Critical ?? 0);
-  return (
-    <>
-      <div className="kpi-grid">
-        <div className="kpi featured">
-          <span>
-            TOTAL COMPLAINTS
-            <Layers3 size={17} />
-          </span>
-          <strong>{analytics.total.toLocaleString()}</strong>
-          <small>Saved and analyzed cases</small>
-          <div className="kpi-decoration" />
-        </div>
-        <div className="kpi">
-          <span>
-            NEEDS REVIEW
-            <ClipboardList size={17} />
-          </span>
-          <strong>{analytics.needs_review}</strong>
-          <small>
-            <span className="small-dot orange" />
-            Flagged for human attention
-          </small>
-        </div>
-        <div className="kpi">
-          <span>
-            HIGH / CRITICAL
-            <ShieldCheck size={17} />
-          </span>
-          <strong>{urgent}</strong>
-          <small>Rule-based urgency signals</small>
-        </div>
-        <div className="kpi">
-          <span>
-            AVG. PROCESSING
-            <Activity size={17} />
-          </span>
-          <strong>
-            {(analytics.average_latency_ms / 1000).toFixed(2)}
-            <em>s</em>
-          </strong>
-          <small>Classification and explanation</small>
-        </div>
-      </div>
-      <div className="overview-charts">
-        <section className="panel">
-          <div className="panel-heading">
-            <div>
-              <h2>Complaints by product</h2>
-              <p>Where the workload is concentrated</p>
-            </div>
-            <span className="tag">
-              {Object.keys(analytics.by_product).length} products
-            </span>
-          </div>
-          <Bars data={analytics.by_product} />
-        </section>
-        <section className="panel">
-          <div className="panel-heading">
-            <div>
-              <h2>Priority breakdown</h2>
-              <p>Rules that guide the review queue</p>
-            </div>
-            <ShieldCheck size={19} className="muted" />
-          </div>
-          <div className="priority-list">
-            {["Critical", "High", "Medium", "Low"].map((priority) => (
-              <div key={priority}>
-                <Priority value={priority} />
-                <div className="priority-track">
-                  <span
-                    style={{
-                      width: `${analytics.total ? ((analytics.by_priority[priority] ?? 0) / analytics.total) * 100 : 0}%`,
-                    }}
-                  />
-                </div>
-                <strong>{analytics.by_priority[priority] ?? 0}</strong>
-              </div>
-            ))}
-          </div>
-          <div className="panel-note">
-            Priority reflects configured phrase rules, not a regulatory
-            assessment.
-          </div>
-        </section>
-      </div>
-      <section className="panel activity-panel">
-        <div className="panel-heading">
-          <div>
-            <h2>Recent cases</h2>
-            <p>The latest complaints in your workspace</p>
-          </div>
-          <button className="text-button" onClick={() => navigate("Cases")}>
-            View all cases
-            <ArrowUpRight size={16} />
-          </button>
-        </div>
-        {items.length ? (
-          <CaseTable items={items.slice(0, 5)} onInspect={inspect} />
-        ) : (
-          <Empty
-            title="Your queue starts here"
-            description="Analyze your first complaint to build a live view of operations."
-          />
-        )}
-      </section>
-      <div className="overview-bottom">
-        <div>
-          <CheckCircle2 size={20} />
-          <span>
-            <strong>A transparent workflow</strong>
-            <small>
-              Real predictions. Saved records. Inspectable explanations.
-            </small>
-          </span>
-        </div>
-        <button
-          className="text-button"
-          onClick={() => navigate("Model evidence")}
-        >
-          Explore model evidence
-          <ArrowRight size={16} />
-        </button>
-      </div>
-    </>
-  );
-}
-function Analyze({ saved }: { saved: () => void }) {
-  const [text, setText] = useState("");
-  const [busy, setBusy] = useState(false);
-  const [result, setResult] = useState<Complaint | null>(null);
-  const inFlight = useRef(false);
-  const [error, setError] = useState("");
-  async function submit(event: FormEvent) {
-    event.preventDefault();
-    if (inFlight.current) return;
-    if (!text.trim()) {
-      setError("Enter a complaint narrative before analyzing.");
-      return;
-    }
-    inFlight.current = true;
-    setBusy(true);
-    setError("");
-    try {
-      setResult(await api.analyze(text));
-      saved();
-    } catch (e) {
-      setError(message(e));
-    } finally {
-      inFlight.current = false;
-      setBusy(false);
-    }
-  }
-  return (
-    <div className="analyze-layout">
-      <section className="panel compose">
-        <div className="panel-heading">
-          <div>
-            <h2>Complaint narrative</h2>
-            <p>Start with the customer's own words</p>
-          </div>
-          <span className="tag">
-            <span className="small-dot" />
-            Baseline
-          </span>
-        </div>
-        <form onSubmit={(event) => void submit(event)}>
-          <label className="sr-only" htmlFor="narrative">
-            Complaint narrative
-          </label>
-          <textarea
-            id="narrative"
-            value={text}
-            onChange={(event) => setText(event.target.value)}
-            maxLength={6000}
-            placeholder="Describe what happened, which financial product was involved, and what remains unresolved…"
-          />
-          <div className="input-meta">
-            <span>Plain text · up to 6,000 characters</span>
-            <span>{text.length.toLocaleString()} / 6,000</span>
-          </div>
-          {error ? (
-            <div className="alert" role="alert">
-              {error}
-            </div>
-          ) : null}
-          <button
-            className="button primary full"
-            disabled={busy || !text.trim()}
-          >
-            {busy ? (
-              <RefreshCw size={17} className="spin" />
-            ) : (
-              <Sparkles size={17} />
-            )}{" "}
-            {busy ? "Analyzing and saving…" : "Analyze complaint"}
-            {busy ? null : <ArrowRight size={17} />}
-          </button>
-        </form>
-        <div className="sample-inputs">
-          <span className="overline">OR TRY AN EXAMPLE</span>
-          {examples.map((example) => (
-            <button
-              key={example.label}
-              onClick={() => setText(example.text)}
-              disabled={busy}
-            >
-              {example.label}
-              <ArrowUpRight size={14} />
-            </button>
-          ))}
-        </div>
-        <div className="privacy-note">
-          <ShieldCheck size={17} />
-          <p>
-            Analysis and history stay in your local workspace. Avoid entering
-            sensitive personal details.
-          </p>
-        </div>
-      </section>
-      <section
-        className={`panel analysis-result ${result ? "has-result" : ""}`}
-      >
-        {result ? (
-          <Result item={result} />
-        ) : (
-          <div className="result-placeholder">
-            <div className="placeholder-orbit">
-              <Sparkles size={29} />
-            </div>
-            <span className="overline">FROM NARRATIVE TO NEXT ACTION</span>
-            <h2>Clarity starts with a complaint.</h2>
-            <p>
-              Your analysis will appear here with a product, issue, priority,
-              and suggested route.
-            </p>
-            <div className="workflow-steps">
-              <span>
-                01 <strong>Classify</strong>
-              </span>
-              <ChevronRight size={13} />
-              <span>
-                02 <strong>Prioritize</strong>
-              </span>
-              <ChevronRight size={13} />
-              <span>
-                03 <strong>Route</strong>
-              </span>
-            </div>
-            <small>
-              Priority is rule based. Summaries are extractive previews.
-            </small>
-          </div>
-        )}
-      </section>
-    </div>
-  );
-}
-function Cases({
-  items,
-  inspect,
-}: {
-  items: Complaint[];
-  inspect: (item: Complaint) => void;
-}) {
-  const [query, setQuery] = useState("");
-  const [priority, setPriority] = useState("All priorities");
-  const [product, setProduct] = useState("All products");
-  const filtered = useMemo(
-    () =>
-      items.filter(
-        (item) =>
-          (priority === "All priorities" || item.priority === priority) &&
-          (product === "All products" || item.product === product) &&
-          [item.id, item.text, item.product, item.issue, item.department]
-            .join(" ")
-            .toLowerCase()
-            .includes(query.toLowerCase()),
-      ),
-    [items, query, priority, product],
-  );
-  return (
-    <section className="panel cases-panel">
-      <div className="filter-bar">
-        <div className="search-input">
-          <Search size={17} />
-          <input
-            aria-label="Search complaints"
-            placeholder="Search case ID, narrative, or issue…"
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-          />
-        </div>
-        <select
-          aria-label="Filter by priority"
-          value={priority}
-          onChange={(event) => setPriority(event.target.value)}
-        >
-          {["All priorities", "Critical", "High", "Medium", "Low"].map(
-            (value) => (
-              <option key={value}>{value}</option>
-            ),
-          )}
-        </select>
-        <select
-          aria-label="Filter by product"
-          value={product}
-          onChange={(event) => setProduct(event.target.value)}
-        >
-          {["All products", ...new Set(items.map((item) => item.product))].map(
-            (value) => (
-              <option key={value}>{value}</option>
-            ),
-          )}
-        </select>
-      </div>
-      <div className="table-summary">
-        <span>
-          <strong>{filtered.length}</strong> cases{" "}
-          {filtered.length !== items.length
-            ? `of ${items.length}`
-            : "in the queue"}
-        </span>
-        <button
-          className="text-button"
-          onClick={() => exportCases(filtered)}
-          disabled={!filtered.length}
-        >
-          <ArrowDownToLine size={14} />
-          Export view
-        </button>
-      </div>
-      {filtered.length ? (
-        <CaseTable items={filtered} onInspect={inspect} />
-      ) : (
-        <Empty
-          title={items.length ? "No matching cases" : "No cases yet"}
-          description={
-            items.length
-              ? "Try another search or clear the filters."
-              : "Run an analysis to add your first saved complaint."
-          }
-        />
-      )}
-      <div className="table-foot">
-        <span>All records saved locally</span>
-        <span>Click a case to inspect its complete analysis</span>
-      </div>
-    </section>
-  );
-}
-function Batch({ saved }: { saved: () => void }) {
-  const [texts, setTexts] = useState<string[]>([]);
-  const [filename, setFilename] = useState("");
-  const [error, setError] = useState("");
-  const [busy, setBusy] = useState(false);
-  const [result, setResult] = useState<BatchResult | null>(null);
-  const inFlight = useRef(false);
-  const uploadSequence = useRef(0);
-  function upload(event: ChangeEvent<HTMLInputElement>) {
-    const file = event.target.files?.[0];
-    if (!file) return;
-    const sequence = ++uploadSequence.current;
-    setError("");
-    setResult(null);
-    setTexts([]);
-    setFilename(file.name);
-    if (file.size > 2_000_000) {
-      setError("Choose a CSV smaller than 2 MB.");
-      return;
-    }
-    Papa.parse<Record<string, string>>(file, {
-      header: true,
-      delimiter: ",",
-      skipEmptyLines: true,
-      complete: (parsed) => {
-        if (sequence !== uploadSequence.current) return;
-        if (!parsed.meta.fields?.includes("text")) {
-          setError("The CSV needs a column named text.");
-          return;
-        }
-        if (parsed.errors.length) {
-          setError(
-            "The CSV could not be parsed. Check quoting and column structure.",
-          );
-          return;
-        }
-        const narratives = parsed.data.map((row) => row.text?.trim() ?? "");
-        if (!narratives.length) {
-          setError("The CSV contains no complaint rows.");
-          return;
-        }
-        if (narratives.length > 20) {
-          setError(
-            "Use a batch of up to 20 rows. Split larger files into smaller batches.",
-          );
-          return;
-        }
-        if (narratives.some((text) => !text || text.length > 6000)) {
-          setError(
-            "Every row must contain a non-empty text narrative of at most 6,000 characters.",
-          );
-          return;
-        }
-        setTexts(narratives);
-      },
-      error: (e) => {
-        if (sequence === uploadSequence.current) setError(e.message);
-      },
-    });
-  }
-  async function run() {
-    if (inFlight.current || result || !texts.length) return;
-    inFlight.current = true;
-    setBusy(true);
-    setError("");
-    try {
-      setResult(await api.batch(texts));
-      saved();
-    } catch (e) {
-      setError(message(e));
-    } finally {
-      inFlight.current = false;
-      setBusy(false);
-    }
-  }
-  return (
-    <div className="batch-layout">
-      <section className="panel batch-upload">
-        <div className="panel-heading">
-          <div>
-            <h2>Upload a complaint file</h2>
-            <p>One narrative per row, ready for analysis</p>
-          </div>
-          <FileUp size={20} className="muted" />
-        </div>
-        <label className="drop-zone">
-          <span className="upload-icon">
-            <FileUp size={26} />
-          </span>
-          <strong>{filename || "Choose your CSV file"}</strong>
-          <span>
-            {filename
-              ? "Select another file to replace it"
-              : "Click to browse a file from your computer"}
-          </span>
-          <small>CSV · 2 MB maximum · 20 rows per batch</small>
-          <input
-            type="file"
-            accept=".csv,text/csv"
-            aria-label="Upload complaint CSV"
-            onChange={upload}
-            disabled={busy}
-          />
-        </label>
-        {error ? (
-          <div className="alert" role="alert">
-            {error}
-          </div>
-        ) : null}
-        <div className="batch-spec">
-          <strong>A simple format</strong>
-          <p>
-            Include a column named <code>text</code>. Other columns are ignored.
-            Quoted commas and multiline narratives are supported.
-          </p>
-          <button
-            className="text-button"
-            onClick={() =>
-              download(
-                "complaintiq-template.csv",
-                Papa.unparse([{ text: examples[0].text }]),
-              )
-            }
-          >
-            <ArrowDownToLine size={14} />
-            Download CSV template
-          </button>
-        </div>
-        <button
-          className="button primary full"
-          disabled={!texts.length || busy || !!result}
-          onClick={() => void run()}
-        >
-          {busy ? (
-            <RefreshCw className="spin" size={17} />
-          ) : (
-            <Sparkles size={17} />
-          )}{" "}
-          {busy
-            ? "Processing complaints…"
-            : `Analyze ${texts.length || ""} complaints`}
-          <ArrowRight size={17} />
-        </button>
-      </section>
-      <section className="panel">
-        <div className="panel-heading">
-          <div>
-            <h2>{result ? "Batch results" : "Preview before processing"}</h2>
-            <p>
-              {result
-                ? `${result.saved} complaints saved to your queue`
-                : "Nothing is saved until you start analysis"}
-            </p>
-          </div>
-          {texts.length ? (
-            <span className="tag">{texts.length} rows</span>
-          ) : null}
-        </div>
-        {result ? (
-          <>
-            <div className="batch-results">
-              {result.items.map((item, index) => (
-                <div key={"id" in item ? item.id : index}>
-                  <span className="row-index">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-                  <div>
-                    {"error" in item ? (
-                      <>
-                        <strong>Could not process</strong>
-                        <p>{item.error}</p>
-                      </>
-                    ) : (
-                      <>
-                        <strong>{item.product}</strong>
-                        <p>{item.issue}</p>
-                      </>
-                    )}
-                  </div>
-                  {"priority" in item ? (
-                    <Priority value={item.priority} />
-                  ) : null}
-                </div>
-              ))}
-            </div>
-            <button
-              className="button secondary batch-export"
-              onClick={() =>
-                download(
-                  "complaintiq-batch.csv",
-                  Papa.unparse(
-                    result.items.map((item) => ({
-                      id: "id" in item ? item.id : "",
-                      text: item.text,
-                      product: "product" in item ? item.product : "",
-                      issue: "issue" in item ? item.issue : "",
-                      priority: "priority" in item ? item.priority : "",
-                      department: "department" in item ? item.department : "",
-                      error: "error" in item ? item.error : "",
-                    })),
-                    { escapeFormulae: true },
-                  ),
-                )
-              }
-            >
-              <ArrowDownToLine size={15} />
-              Export results
-            </button>
-          </>
-        ) : texts.length ? (
-          <div className="batch-preview">
-            {texts.map((text, index) => (
-              <div key={index}>
-                <span className="row-index">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <p>{text}</p>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <Empty
-            title="Your file preview will appear here"
-            description="Upload a CSV to validate its structure and inspect the narratives."
-          />
-        )}
-      </section>
-    </div>
-  );
-}
-function Evidence() {
-  const [report, setReport] = useState<Evaluation | null>(null);
-  const [error, setError] = useState("");
+function OverviewPage({ go }: { go: Go }) {
+  const [data, setData] = useState<Overview | null>(null),
+    [error, setError] = useState("");
   useEffect(() => {
     let active = true;
-    api
-      .evaluation()
-      .then((data) => {
-        if (active) setReport(data);
+    pilot
+      .overview()
+      .then((v) => {
+        if (active) setData(v);
       })
       .catch((e) => {
-        if (active) setError(message(e));
+        if (active) setError(errorText(e));
       });
     return () => {
       active = false;
@@ -929,186 +375,1545 @@ function Evidence() {
   }, []);
   return (
     <>
-      <div className="evidence-banner">
-        <div className="evidence-icon">
-          <BarChart3 size={25} />
-        </div>
-        <div>
-          <span className="overline">MEASURED, NOT ASSUMED</span>
-          <h2>A baseline you can inspect.</h2>
-          <p>
-            Held-out evaluation tells us what works today. SLM training and
-            comparison are deferred.
-          </p>
-        </div>
-        <span className="tag">Baseline evaluation</span>
-      </div>
-      {error ? (
-        <div className="alert" role="alert">
-          {error}
-        </div>
-      ) : null}
-      {report ? (
+      <Heading
+        eyebrow="YOUR OPERATIONS, IN FOCUS"
+        title="A clear view of what needs you."
+        description="Review the queue, follow the work, and close the loop."
+      >
+        <Link to="/analyze" go={go} className="button primary">
+          <Plus size={17} /> New analysis
+        </Link>
+      </Heading>
+      <ErrorBox text={error} />
+      {data ? (
         <>
-          <div className="kpi-grid evidence-kpis">
-            <div className="kpi">
-              <span>PRODUCT ACCURACY</span>
-              <strong>
-                {(report.product.accuracy * 100).toFixed(1)}
-                <em>%</em>
-              </strong>
-              <small>{report.test_size} held-out complaints</small>
+          <div className="metrics">
+            {[
+              [data.unreviewed, "Awaiting confirmation", "/cases?confirmed=0"],
+              [
+                data.by_status["In review"] ?? 0,
+                "In review",
+                "/cases?status=In+review",
+              ],
+              [
+                data.by_status.Resolved ?? 0,
+                "Resolved",
+                "/cases?status=Resolved",
+              ],
+              [
+                data.high_open,
+                "High-priority open",
+                "/cases?urgent=1&sort=priority",
+              ],
+            ].map(([n, label, to], i) => (
+              <Link
+                key={label}
+                to={String(to)}
+                go={go}
+                className={"metric " + (i === 0 ? "featured" : "")}
+              >
+                <div>
+                  {label}
+                  <ArrowUp />
+                </div>
+                <strong>{n}</strong>
+                <small>
+                  {i === 3
+                    ? "High / critical · excludes resolved"
+                    : i === 0
+                      ? "Open cases · not yet human-confirmed"
+                      : "Current saved cases"}
+                </small>
+              </Link>
+            ))}
+          </div>
+          <div className="overview-grid">
+            <Panel
+              title="Work moves forward here"
+              subtitle="Your current case lifecycle"
+              action={
+                <Link to="/cases" go={go} className="text-link">
+                  Open queue <ArrowRight size={15} />
+                </Link>
+              }
+            >
+              <div className="lifecycle">
+                {["Queued", "In review", "Resolved"].map((s, i) => (
+                  <Link
+                    to={"/cases?status=" + encodeURIComponent(s)}
+                    go={go}
+                    key={s}
+                  >
+                    <span className="step-number">0{i + 1}</span>
+                    <h3>{s}</h3>
+                    <strong>{data.by_status[s] ?? 0}</strong>
+                    <p>
+                      {
+                        [
+                          "Ready for a first look",
+                          "Being investigated",
+                          "Reviewed and closed",
+                        ][i]
+                      }
+                    </p>
+                  </Link>
+                ))}
+              </div>
+              <div className="panel-foot">
+                {data.total} cases in the workspace. Every prediction starts
+                unreviewed.
+              </div>
+            </Panel>
+            <Panel
+              title="Complaints by product"
+              subtitle="Current labels, including reviewer corrections"
+            >
+              <div className="bars">
+                {Object.entries(data.by_product).map(([k, v]) => (
+                  <Link
+                    to={"/cases?product=" + encodeURIComponent(k)}
+                    go={go}
+                    key={k}
+                  >
+                    <div>
+                      <span>{k}</span>
+                      <strong>{v}</strong>
+                    </div>
+                    <div className="bar-track">
+                      <i
+                        style={{
+                          width: `${data.total ? (v / data.total) * 100 : 0}%`,
+                        }}
+                      />
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </Panel>
+          </div>
+          <Panel
+            title="Recent activity"
+            subtitle="The decisions behind the case history"
+          >
+            <EventList items={data.activity} go={go} />
+          </Panel>
+        </>
+      ) : (
+        !error && <Loading />
+      )}
+    </>
+  );
+}
+function ArrowUp() {
+  return <ArrowRight size={16} className="arrow-up" />;
+}
+function Cases({
+  go,
+  query,
+  config,
+}: {
+  go: Go;
+  query: string;
+  config: Config | null;
+}) {
+  const params = new URLSearchParams(query);
+  const [data, setData] = useState<Page | null>(null),
+    [error, setError] = useState(""),
+    [busy, setBusy] = useState(true);
+  const [search, setSearch] = useState(params.get("q") ?? "");
+  useEffect(
+    () => setSearch(new URLSearchParams(query).get("q") ?? ""),
+    [query],
+  );
+  useEffect(() => {
+    let active = true;
+    setBusy(true);
+    setError("");
+    pilot
+      .cases(query)
+      .then((v) => {
+        if (active) setData(v);
+      })
+      .catch((e) => {
+        if (active) setError(errorText(e));
+      })
+      .finally(() => {
+        if (active) setBusy(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, [query]);
+  const change = (k: string, v: string) => {
+    const p = new URLSearchParams(query);
+    p.delete("page");
+    v ? p.set(k, v) : p.delete(k);
+    go("/cases?" + p);
+  };
+  return (
+    <>
+      <Heading
+        eyebrow="CASE WORKSPACE"
+        title="Every case. A clear next step."
+        description="Review model predictions, capture your decisions, and track cases through resolution."
+      >
+        <Link to="/analyze" go={go} className="button primary">
+          <Plus size={17} /> New case
+        </Link>
+      </Heading>
+      <section className="panel queue-panel">
+        <div className="queue-tabs">
+          {["All cases", "Queued", "In review", "Resolved"].map((s) => (
+            <button
+              key={s}
+              className={
+                (params.get("status") ?? "") === (s === "All cases" ? "" : s)
+                  ? "selected"
+                  : ""
+              }
+              onClick={() => change("status", s === "All cases" ? "" : s)}
+            >
+              {s}
+            </button>
+          ))}
+        </div>
+        <div className="filters">
+          <form
+            className="search"
+            onSubmit={(e) => {
+              e.preventDefault();
+              change("q", search);
+            }}
+          >
+            <Search size={17} />
+            <input
+              aria-label="Search cases"
+              placeholder="Search narrative or case ID"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+            <button aria-label="Apply search" type="submit">
+              <ArrowRight size={16} />
+            </button>
+          </form>
+          <select
+            aria-label="Product filter"
+            value={params.get("product") ?? ""}
+            onChange={(e) => change("product", e.target.value)}
+          >
+            <option value="">All products</option>
+            {[
+              ...Object.keys(config?.taxonomy ?? {}),
+              "Outside supported scope",
+              "Unknown",
+            ].map((v) => (
+              <option key={v}>{v}</option>
+            ))}
+          </select>
+          <select
+            aria-label="Priority filter"
+            value={params.get("priority") ?? ""}
+            onChange={(e) => change("priority", e.target.value)}
+          >
+            <option value="">All priorities</option>
+            {["Critical", "High", "Medium", "Low"].map((v) => (
+              <option key={v}>{v}</option>
+            ))}
+          </select>
+          <select
+            aria-label="Department filter"
+            value={params.get("department") ?? ""}
+            onChange={(e) => change("department", e.target.value)}
+          >
+            <option value="">All departments</option>
+            {config?.departments.map((v) => (
+              <option key={v}>{v}</option>
+            ))}
+          </select>
+        </div>
+        <div className="filter-secondary">
+          <label>
+            From{" "}
+            <input
+              type="date"
+              aria-label="From date"
+              value={params.get("start") ?? ""}
+              onChange={(e) => change("start", e.target.value)}
+            />
+          </label>
+          <label>
+            To{" "}
+            <input
+              type="date"
+              aria-label="To date"
+              value={params.get("end") ?? ""}
+              onChange={(e) => change("end", e.target.value)}
+            />
+          </label>
+          <select
+            aria-label="Review filter"
+            value={params.get("confirmed") ?? ""}
+            onChange={(e) => change("confirmed", e.target.value)}
+          >
+            <option value="">All review states</option>
+            <option value="0">Unreviewed</option>
+            <option value="1">Confirmed</option>
+          </select>
+          <select
+            aria-label="Sort cases"
+            value={params.get("sort") ?? "newest"}
+            onChange={(e) => change("sort", e.target.value)}
+          >
+            <option value="newest">Newest first</option>
+            <option value="oldest">Oldest first</option>
+            <option value="priority">Priority first</option>
+          </select>
+          {query && (
+            <Link to="/cases" go={go} className="text-link">
+              Clear filters
+            </Link>
+          )}
+          <a
+            className="text-link export-link"
+            href={"/api/cases/export?" + query}
+          >
+            <ArrowDownToLine size={15} /> Export filtered
+          </a>
+        </div>
+        <ErrorBox text={error} />
+        {busy ? (
+          <Loading />
+        ) : data?.items.length ? (
+          <>
+            <div className="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Case / narrative</th>
+                    <th>Classification</th>
+                    <th>Priority</th>
+                    <th>Review</th>
+                    <th>Status</th>
+                    <th>Received</th>
+                    <th>
+                      <span className="sr-only">Open case</span>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.items.map((c) => (
+                    <tr key={c.id}>
+                      <td>
+                        <Link
+                          to={"/cases/" + c.id}
+                          go={go}
+                          className="case-link"
+                        >
+                          {c.id}
+                        </Link>
+                        <p className="narrative-preview">{c.text}</p>
+                      </td>
+                      <td>
+                        <strong>{c.product}</strong>
+                        <small>{c.issue}</small>
+                      </td>
+                      <td>
+                        <Badge tone={c.priority.toLowerCase()}>
+                          {c.priority}
+                        </Badge>
+                      </td>
+                      <td>
+                        <Badge tone={c.confirmed ? "confirmed" : "neutral"}>
+                          {c.confirmed ? "Confirmed" : "Unreviewed"}
+                        </Badge>
+                      </td>
+                      <td>
+                        <span className="status-label">{c.status}</span>
+                      </td>
+                      <td className="date-cell">{date(c.created_at)}</td>
+                      <td>
+                        <Link
+                          to={"/cases/" + c.id}
+                          go={go}
+                          className="icon-button"
+                        >
+                          <span className="sr-only">Open {c.id}</span>
+                          <ArrowRight size={17} />
+                        </Link>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
-            <div className="kpi">
-              <span>PRODUCT MACRO F1</span>
-              <strong>{report.product.f1_macro.toFixed(3)}</strong>
-              <small>Equal weight across product classes</small>
+            <div className="pagination">
+              <span>
+                {data.total} matching cases · Page {data.page} of{" "}
+                {Math.max(1, Math.ceil(data.total / data.page_size))}
+              </span>
+              <div>
+                {[-1, 1].map((delta) => (
+                  <button
+                    key={delta}
+                    aria-label={delta < 0 ? "Previous page" : "Next page"}
+                    disabled={
+                      delta < 0
+                        ? data.page === 1
+                        : data.page * data.page_size >= data.total
+                    }
+                    onClick={() => {
+                      const p = new URLSearchParams(query);
+                      p.set("page", String(data.page + delta));
+                      go("/cases?" + p);
+                    }}
+                  >
+                    {delta < 0 ? (
+                      <ChevronLeft size={17} />
+                    ) : (
+                      <ChevronRight size={17} />
+                    )}
+                  </button>
+                ))}
+              </div>
             </div>
-            <div className="kpi">
-              <span>ISSUE MACRO F1</span>
-              <strong>{report.issue.f1_macro.toFixed(3)}</strong>
-              <small>Performance across issue classes</small>
+          </>
+        ) : (
+          <Empty title="No cases to show">
+            Try different filters or analyze your first complaint.
+          </Empty>
+        )}
+      </section>
+    </>
+  );
+}
+function CaseDetail({
+  id,
+  config,
+  go,
+}: {
+  id: string;
+  config: Config;
+  go: Go;
+}) {
+  const [item, setItem] = useState<Case | null>(null),
+    [error, setError] = useState("");
+  useEffect(() => {
+    let active = true;
+    pilot
+      .case(id)
+      .then((c) => {
+        if (active) setItem(c);
+      })
+      .catch((e) => {
+        if (active) setError(errorText(e));
+      });
+    return () => {
+      active = false;
+    };
+  }, [id]);
+  return (
+    <>
+      <Link to="/cases" go={go} className="back-link">
+        <ArrowLeft size={16} /> Back to cases
+      </Link>
+      <ErrorBox text={error} />
+      {item ? (
+        <>
+          <Heading
+            eyebrow={"CASE " + id}
+            title={item.product}
+            description={`Received ${date(item.created_at)} · ${item.confirmed ? "Human-confirmed" : "Awaiting human confirmation"}`}
+          >
+            <Badge tone={item.status === "Resolved" ? "confirmed" : "neutral"}>
+              {item.status}
+            </Badge>
+          </Heading>
+          <div className="case-layout">
+            <div>
+              <Panel
+                title="The customer's words"
+                subtitle="Original narrative · preserved as received"
+              >
+                <div className="narrative-full">{item.text}</div>
+                {item.original.input_truncated && (
+                  <div className="notice">
+                    The model used the first{" "}
+                    {item.original.input_chars_used?.toLocaleString()}{" "}
+                    normalized characters. Review the full narrative before
+                    confirming.
+                  </div>
+                )}
+                <div className="panel-foot">
+                  {item.text.length.toLocaleString()} characters ·{" "}
+                  {item.original.backend === "slm" ? "Local SLM" : "Baseline"} ·{" "}
+                  {(item.original.latency_ms / 1000).toFixed(2)}s{" "}
+                  {item.original.cached ? "(cached)" : ""}
+                </div>
+              </Panel>
+              <Panel
+                title="Original analysis"
+                subtitle="Immutable model prediction and policy assessment"
+              >
+                <div className="original-analysis">
+                  <div className="eyebrow">MODEL PREDICTION</div>
+                  <h3>{item.original.product}</h3>
+                  <p>{item.original.issue}</p>
+                  <code>{item.original.model_version}</code>
+                  <div className="divider" />
+                  <div className="eyebrow">WORKFLOW POLICY</div>
+                  <div className="inline">
+                    <Badge tone={item.original.priority.toLowerCase()}>
+                      {item.original.priority}
+                    </Badge>
+                    <span>{item.original.department}</span>
+                  </div>
+                  <p>{item.original.priority_reason}</p>
+                  <p>{item.original.action}</p>
+                  {!!item.review_flag && (
+                    <div className="notice">
+                      This case was originally flagged for human review.
+                    </div>
+                  )}
+                </div>
+              </Panel>
             </div>
-            <div className="kpi">
-              <span>JOINT ACCURACY</span>
-              <strong>
-                {(report.joint_accuracy * 100).toFixed(1)}
-                <em>%</em>
-              </strong>
-              <small>Product and issue both correct</small>
+            <div>
+              <ReviewForm item={item} config={config} saved={setItem} />
+              <Lifecycle item={item} saved={setItem} />
             </div>
           </div>
-          <div className="evidence-grid">
-            <section className="panel">
-              <div className="panel-heading">
-                <div>
-                  <h2>Product confusion matrix</h2>
-                  <p>Actual labels in rows · predictions in columns</p>
-                </div>
-              </div>
-              <div className="matrix-scroll">
-                <table className="matrix">
-                  <thead>
-                    <tr>
-                      <th>Actual / predicted</th>
-                      {report.product.labels.map((label) => (
-                        <th key={label}>{label}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {report.product.confusion_matrix.map((row, i) => (
-                      <tr key={i}>
-                        <th>{report.product.labels[i] ?? "Unknown"}</th>
-                        {row.map((count, j) => (
-                          <td key={j} className={i === j ? "diagonal" : ""}>
-                            {count}
-                          </td>
-                        ))}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              <div className="panel-note">
-                Results apply to this demonstration sample and label taxonomy.
-              </div>
-            </section>
-            <section className="panel model-readiness">
-              <div className="panel-heading">
-                <div>
-                  <h2>Model readiness</h2>
-                  <p>An honest view of what's running</p>
-                </div>
-              </div>
-              <div>
-                <CheckCircle2 size={20} />
-                <span>
-                  <strong>Traditional ML baseline</strong>
-                  <small>Trained and evaluated</small>
-                </span>
-                <span className="tag ready">Ready</span>
-              </div>
-              <div>
-                <Layers3 size={20} />
-                <span>
-                  <strong>Local instruction SLM</strong>
-                  <small>Model setup deferred</small>
-                </span>
-                <span className="tag">Pending</span>
-              </div>
-              <div>
-                <Sparkles size={20} />
-                <span>
-                  <strong>Fine-tuned SLM</strong>
-                  <small>Training and evaluation deferred</small>
-                </span>
-                <span className="tag">Pending</span>
-              </div>
-              <button
-                className="text-button"
-                onClick={() =>
-                  download(
-                    "evaluation.json",
-                    JSON.stringify(report, null, 2),
-                    "application/json",
-                  )
+          <div className="case-layout">
+            <Notes item={item} saved={setItem} />
+            <Panel
+              title="Case history"
+              subtitle="Append-only changes · original analysis remains intact"
+            >
+              <EventList items={item.events ?? []} />
+            </Panel>
+          </div>
+        </>
+      ) : (
+        !error && <Loading />
+      )}
+    </>
+  );
+}
+function ReviewForm({
+  item,
+  config,
+  saved,
+}: {
+  item: Case;
+  config: Config;
+  saved: (c: Case) => void;
+}) {
+  const initial = () => ({
+    product: item.product,
+    issue: item.issue,
+    priority: item.priority,
+    department: item.department,
+  });
+  const [form, setForm] = useState(initial),
+    [reason, setReason] = useState(""),
+    [error, setError] = useState(""),
+    [busy, setBusy] = useState(false),
+    [message, setMessage] = useState(""),
+    [conflict, setConflict] = useState(false);
+  useEffect(() => {
+    setForm(initial());
+    setReason("");
+  }, [item.id]);
+  const outside = form.product === config.outside;
+  const issues = outside
+    ? [config.outside]
+    : (config.taxonomy[form.product] ?? []);
+  const submit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (busy) return;
+    setBusy(true);
+    setError("");
+    setMessage("");
+    try {
+      const c = await pilot.review(item.id, {
+        ...form,
+        reason,
+        revision: item.revision,
+      });
+      saved(c);
+      setReason("");
+      setMessage("Review saved. Your decision is recorded.");
+      setConflict(false);
+    } catch (e) {
+      setError(errorText(e));
+      setConflict(e instanceof ApiError && e.status === 409);
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <Panel
+      title="Your review"
+      subtitle="Confirm the prediction or make a correction"
+      action={<ShieldCheck size={20} />}
+    >
+      <form className="form-pad" onSubmit={submit}>
+        <ErrorBox text={error} />
+        {message && (
+          <div className="success" role="status">
+            <Check size={16} />
+            {message}
+          </div>
+        )}
+        {conflict && (
+          <button
+            type="button"
+            className="button"
+            onClick={async () => {
+              try {
+                const c = await pilot.case(item.id);
+                saved(c);
+                setConflict(false);
+                setError(
+                  "Latest version loaded. Check your draft against the case history before saving.",
+                );
+              } catch (e) {
+                setError(errorText(e));
+              }
+            }}
+          >
+            Load latest version and keep draft
+          </button>
+        )}
+        <fieldset disabled={busy || item.status === "Resolved"}>
+          <label>
+            Financial product
+            <select
+              value={form.product}
+              onChange={(e) => {
+                const p = e.target.value;
+                setForm({
+                  ...form,
+                  product: p,
+                  issue:
+                    p === config.outside
+                      ? config.outside
+                      : (config.taxonomy[p]?.[0] ?? ""),
+                  department: config.routing[p] ?? "Manual Review Team",
+                });
+              }}
+            >
+              {!config.taxonomy[form.product] && !outside && (
+                <option value={form.product}>
+                  {form.product} — choose a review outcome
+                </option>
+              )}
+              {Object.keys(config.taxonomy).map((v) => (
+                <option key={v}>{v}</option>
+              ))}
+              <option>{config.outside}</option>
+            </select>
+          </label>
+          <label>
+            Complaint issue
+            <select
+              value={form.issue}
+              onChange={(e) => setForm({ ...form, issue: e.target.value })}
+            >
+              {!issues.includes(form.issue) && (
+                <option value={form.issue}>
+                  {form.issue} — select an issue
+                </option>
+              )}
+              {issues.map((v) => (
+                <option key={v}>{v}</option>
+              ))}
+            </select>
+          </label>
+          <div className="form-row">
+            <label>
+              Priority
+              <select
+                value={form.priority}
+                onChange={(e) => setForm({ ...form, priority: e.target.value })}
+              >
+                {["Low", "Medium", "High", "Critical"].map((v) => (
+                  <option key={v}>{v}</option>
+                ))}
+              </select>
+            </label>
+            <label>
+              Route to
+              <select
+                value={form.department}
+                onChange={(e) =>
+                  setForm({ ...form, department: e.target.value })
                 }
               >
-                <ArrowDownToLine size={15} />
-                Download evaluation report
-              </button>
-            </section>
+                {config.departments.map((v) => (
+                  <option key={v}>{v}</option>
+                ))}
+              </select>
+            </label>
           </div>
-          <section className="panel methodology">
-            <div className="panel-heading">
-              <div>
-                <h2>Designed to be explainable</h2>
-                <p>
-                  Clear boundaries between learned predictions and operational
-                  rules
-                </p>
-              </div>
+          <small className="field-help">
+            Changing the product suggests a department. Confirm the route before
+            saving.
+          </small>
+          <label>
+            Review reason
+            <textarea
+              rows={3}
+              maxLength={4000}
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+              placeholder="Required when changing the classification, priority, or department."
+            />
+          </label>
+          <button
+            className="button primary wide"
+            disabled={!issues.includes(form.issue)}
+          >
+            {busy ? (
+              <LoaderCircle size={16} className="spin" />
+            ) : (
+              <Check size={17} />
+            )}{" "}
+            Confirm & save review
+          </button>
+        </fieldset>
+        {item.status === "Resolved" && (
+          <p className="field-help">Reopen this case to change its review.</p>
+        )}
+      </form>
+    </Panel>
+  );
+}
+function Lifecycle({ item, saved }: { item: Case; saved: (c: Case) => void }) {
+  const [reason, setReason] = useState(""),
+    [error, setError] = useState(""),
+    [busy, setBusy] = useState(false);
+  const change = async (status: string) => {
+    if (busy) return;
+    setBusy(true);
+    setError("");
+    try {
+      saved(
+        await pilot.transition(item.id, {
+          revision: item.revision,
+          status,
+          reason,
+        }),
+      );
+      setReason("");
+    } catch (e) {
+      setError(errorText(e));
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <Panel
+      title="Move the case forward"
+      subtitle="A resolution always needs a confirmed review"
+    >
+      <div className="form-pad">
+        <ErrorBox text={error} />
+        <label>
+          {item.status === "Resolved"
+            ? "Reopening reason"
+            : "Resolution / status note"}
+          <textarea
+            rows={2}
+            maxLength={4000}
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
+            placeholder={
+              item.status === "Resolved"
+                ? "Why does this need another look?"
+                : "Record the outcome or the next step."
+            }
+          />
+        </label>
+        <div className="actions">
+          {item.status === "Resolved" ? (
+            <button
+              className="button"
+              disabled={busy || !reason.trim()}
+              onClick={() => change("In review")}
+            >
+              Reopen case
+            </button>
+          ) : (
+            <>
+              <button
+                className="button"
+                disabled={busy}
+                onClick={() =>
+                  change(item.status === "Queued" ? "In review" : "Queued")
+                }
+              >
+                {item.status === "Queued" ? "Start review" : "Return to queue"}
+              </button>
+              <button
+                className="button primary"
+                disabled={busy || !item.confirmed || !reason.trim()}
+                onClick={() => change("Resolved")}
+              >
+                <Check size={16} /> Resolve case
+              </button>
+            </>
+          )}
+        </div>
+        {!item.confirmed && (
+          <small className="field-help">
+            Confirm the classification before resolving.
+          </small>
+        )}
+      </div>
+    </Panel>
+  );
+}
+function Notes({ item, saved }: { item: Case; saved: (c: Case) => void }) {
+  const [note, setNote] = useState(""),
+    [error, setError] = useState(""),
+    [busy, setBusy] = useState(false);
+  return (
+    <Panel
+      title="Add context"
+      subtitle="Notes are preserved in the case history"
+    >
+      <form
+        className="form-pad"
+        onSubmit={async (e) => {
+          e.preventDefault();
+          if (busy) return;
+          setBusy(true);
+          setError("");
+          try {
+            saved(
+              await pilot.note(item.id, {
+                revision: item.revision,
+                reason: note,
+              }),
+            );
+            setNote("");
+          } catch (e) {
+            setError(errorText(e));
+          } finally {
+            setBusy(false);
+          }
+        }}
+      >
+        <ErrorBox text={error} />
+        <label>
+          Case note
+          <textarea
+            rows={4}
+            maxLength={4000}
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            placeholder="Add investigation details or a handover note."
+          />
+        </label>
+        <button className="button" disabled={busy || !note.trim()}>
+          <MessageSquare size={16} /> Add note
+        </button>
+      </form>
+    </Panel>
+  );
+}
+function Analyze({ go, health }: { go: Go; health: Health | null }) {
+  const [text, setText] = useState(""),
+    [error, setError] = useState(""),
+    [busy, setBusy] = useState(false);
+  const requestKey = useRef(crypto.randomUUID()),
+    pending = useRef(false);
+  return (
+    <>
+      <Heading
+        eyebrow="LOCAL INTELLIGENCE"
+        title="Start with the customer's story."
+        description="A model prediction is the first step. Your review makes it actionable."
+      />
+      <div className="analysis-layout">
+        <Panel title="New complaint" subtitle="Paste the original narrative">
+          <form
+            className="form-pad"
+            onSubmit={async (e) => {
+              e.preventDefault();
+              if (pending.current) return;
+              pending.current = true;
+              setBusy(true);
+              setError("");
+              try {
+                const j = await pilot.submit(
+                  [text],
+                  requestKey.current,
+                  "analysis",
+                );
+                go("/imports?job=" + j.id);
+              } catch (e) {
+                setError(errorText(e));
+              } finally {
+                pending.current = false;
+                setBusy(false);
+              }
+            }}
+          >
+            <ErrorBox text={error} />
+            <label>
+              Complaint narrative
+              <textarea
+                className="analysis-input"
+                maxLength={6000}
+                rows={12}
+                value={text}
+                onChange={(e) => {
+                  setText(e.target.value);
+                  requestKey.current = crypto.randomUUID();
+                }}
+                placeholder="For example: My credit card statement includes a duplicate charge. I disputed it, but the extra charge has not been reversed…"
+                disabled={busy}
+              />
+            </label>
+            <div className="input-meta">
+              <span>{text.length.toLocaleString()} / 6,000 characters</span>
+              <span>Model reads first 2,000 normalized characters</span>
             </div>
-            <div className="method-grid">
-              <div>
-                <span>01</span>
-                <h3>Classification</h3>
-                <p>
-                  TF-IDF and Logistic Regression predict product and issue from
-                  the narrative.
-                </p>
+            {!health && (
+              <div className="notice">
+                The engine is not confirmed ready. You can submit work; if
+                inference fails, retry it from Imports when the engine returns.
               </div>
-              <div>
-                <span>02</span>
-                <h3>Priority & routing</h3>
-                <p>
-                  Configured phrase rules set urgency. Category mappings suggest
-                  a team and action.
-                </p>
-              </div>
-              <div>
-                <span>03</span>
-                <h3>Explanation</h3>
-                <p>
-                  LIME attributes the product prediction. The complaint preview
-                  is extractive.
-                </p>
-              </div>
+            )}
+            <button className="button primary" disabled={busy || !text.trim()}>
+              {busy ? (
+                <LoaderCircle size={17} className="spin" />
+              ) : (
+                <Sparkles size={17} />
+              )}{" "}
+              Analyze complaint <ArrowRight size={17} />
+            </button>
+          </form>
+        </Panel>
+        <div>
+          <section className="explainer">
+            <div className="eyebrow">A CLEAR DIVISION OF WORK</div>
+            <h2>
+              Intelligence.
+              <br />
+              With accountability.
+            </h2>
+            <div>
+              <span>01</span>
+              <h3>Model classification</h3>
+              <p>
+                Product and issue, predicted by the configured local engine.
+              </p>
             </div>
-            <div className="panel-note">
-              {Array.isArray(report.limitations)
-                ? report.limitations.join(" ")
-                : report.limitations}
+            <div>
+              <span>02</span>
+              <h3>Workflow policies</h3>
+              <p>Priority and routing suggestions, with an explicit reason.</p>
+            </div>
+            <div>
+              <span>03</span>
+              <h3>Your decision</h3>
+              <p>
+                Confirm or correct the case. Every change stays in its history.
+              </p>
             </div>
           </section>
-        </>
-      ) : !error ? (
-        <div className="loading-panel">
-          <RefreshCw className="spin" size={22} />
-          Loading measured evidence…
+          <div className="privacy-note">
+            <ShieldCheck size={20} />
+            <p>
+              Inference and case storage stay on this Mac. No external AI
+              service receives the narrative.
+            </p>
+          </div>
         </div>
-      ) : null}
+      </div>
+    </>
+  );
+}
+function Imports({ go, query }: { go: Go; query: string }) {
+  const selected = new URLSearchParams(query).get("job");
+  const [jobs, setJobs] = useState<Job[]>([]),
+    [current, setCurrent] = useState<Job | null>(null),
+    [texts, setTexts] = useState<string[]>([]),
+    [name, setName] = useState(""),
+    [error, setError] = useState(""),
+    [busy, setBusy] = useState(false),
+    [loaded, setLoaded] = useState(false);
+  const key = useRef(crypto.randomUUID());
+  const pending = useRef(false);
+  const navigating = useRef(false);
+  useEffect(() => {
+    let active = true;
+    const load = async () => {
+      try {
+        const [v, j] = await Promise.all([
+          pilot.jobs(),
+          selected ? pilot.job(selected) : Promise.resolve(null),
+        ]);
+        if (active) {
+          setJobs(v.items);
+          setCurrent(j);
+          setLoaded(true);
+          if (
+            j?.source === "analysis" &&
+            j.status === "complete" &&
+            !navigating.current
+          ) {
+            navigating.current = true;
+            go("/cases/" + j.rows[0].case_id);
+          }
+        }
+      } catch (e) {
+        if (active) setError(errorText(e));
+      }
+    };
+    void load();
+    const t = setInterval(load, 1500);
+    return () => {
+      active = false;
+      clearInterval(t);
+    };
+  }, [selected]);
+  const upload = (file: File | undefined) => {
+    setError("");
+    setTexts([]);
+    if (!file) return;
+    setName(file.name);
+    key.current = crypto.randomUUID();
+    if (file.size > 2 * 1024 * 1024) {
+      setError("Choose a CSV no larger than 2 MB.");
+      return;
+    }
+    Papa.parse<{ text?: string }>(file, {
+      delimiter: ",",
+      header: true,
+      skipEmptyLines: "greedy",
+      complete: (r) => {
+        if (!r.meta.fields?.includes("text")) {
+          setError("The CSV needs a column named text.");
+          return;
+        }
+        const rows = r.data.map((v) => v.text?.trim() ?? "");
+        if (
+          r.errors.length ||
+          !rows.length ||
+          rows.length > 100 ||
+          rows.some((t) => !t || t.length > 6000)
+        ) {
+          setError(
+            "Use 1–100 valid rows with 1–6,000 characters in each text field. Check CSV quoting.",
+          );
+          return;
+        }
+        setTexts(rows);
+      },
+      error: () => setError("This CSV could not be read."),
+    });
+  };
+  const jobAction = async (action: string) => {
+    if (!current || busy) return;
+    setBusy(true);
+    try {
+      setCurrent(await pilot.control(current.id, action));
+      setError("");
+    } catch (e) {
+      setError(errorText(e));
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <>
+      <Heading
+        eyebrow="DURABLE PROCESSING"
+        title={
+          selected ? "Follow every row." : "Bring the whole queue together."
+        }
+        description="One local inference at a time. Progress is saved, even when you close this page."
+      />
+      {selected && (
+        <Link to="/imports" go={go} className="back-link">
+          <ArrowLeft size={16} /> All imports
+        </Link>
+      )}
+      <ErrorBox text={error} />
+      {selected ? (
+        current ? (
+          <Panel
+            title={current.id}
+            subtitle={`${current.total} complaints · ${date(current.created_at)}`}
+            action={
+              <Badge
+                tone={current.status === "complete" ? "confirmed" : "neutral"}
+              >
+                {current.status.replaceAll("_", " ")}
+              </Badge>
+            }
+          >
+            <div className="job-summary">
+              <strong>
+                {current.counts.complete} / {current.total} saved
+              </strong>
+              <span>
+                {current.counts.failed} failed · {current.counts.pending}{" "}
+                pending · {current.counts.cancelled} cancelled
+              </span>
+              <progress
+                max={current.total}
+                value={
+                  current.counts.complete +
+                  current.counts.failed +
+                  current.counts.cancelled
+                }
+              />
+              <div className="actions">
+                {["queued", "running"].includes(current.status) && (
+                  <button
+                    className="button"
+                    disabled={busy}
+                    onClick={() => jobAction("cancel")}
+                  >
+                    <X size={16} /> Cancel pending
+                  </button>
+                )}
+                {current.counts.failed > 0 && (
+                  <button
+                    className="button primary"
+                    disabled={busy}
+                    onClick={() => jobAction("retry")}
+                  >
+                    Retry failed rows
+                  </button>
+                )}
+              </div>
+              <small>
+                Cancellation allows an active row to finish. Retries keep
+                successful cases intact.
+              </small>
+            </div>
+            <div className="job-rows">
+              {current.rows.map((r) => (
+                <div key={r.position}>
+                  <span className="step-number">
+                    {String(r.position + 1).padStart(2, "0")}
+                  </span>
+                  <div>
+                    <p>{r.text}</p>
+                    {r.error && <small className="error-text">{r.error}</small>}
+                    {r.state === "complete" && (
+                      <Link
+                        to={"/cases/" + r.case_id}
+                        go={go}
+                        className="case-link"
+                      >
+                        Open {r.case_id} <ArrowRight size={13} />
+                      </Link>
+                    )}
+                  </div>
+                  <Badge
+                    tone={
+                      r.state === "complete"
+                        ? "confirmed"
+                        : r.state === "failed"
+                          ? "high"
+                          : "neutral"
+                    }
+                  >
+                    {r.state}
+                  </Badge>
+                </div>
+              ))}
+            </div>
+          </Panel>
+        ) : (
+          <Loading />
+        )
+      ) : (
+        <>
+          <div className="imports-layout">
+            <Panel
+              title="Import a CSV"
+              subtitle="Up to 100 complaints · 2 MB maximum"
+            >
+              <div className="form-pad">
+                <label className="upload">
+                  <FileUp size={30} />
+                  <strong>{name || "Choose your complaint file"}</strong>
+                  <span>Include a column named text</span>
+                  <input
+                    aria-label="Upload complaint CSV"
+                    type="file"
+                    accept=".csv,text/csv"
+                    disabled={busy}
+                    onChange={(e) => upload(e.target.files?.[0])}
+                  />
+                </label>
+                <p className="field-help">
+                  Quoted commas and multiline narratives are supported. Each
+                  complaint can contain up to 6,000 characters; the model reads
+                  the first 2,000 normalized characters.
+                </p>
+                <button
+                  className="button primary wide"
+                  disabled={busy || !texts.length}
+                  onClick={async () => {
+                    if (pending.current) return;
+                    pending.current = true;
+                    setBusy(true);
+                    setError("");
+                    try {
+                      const j = await pilot.submit(
+                        texts,
+                        key.current,
+                        "import",
+                      );
+                      go("/imports?job=" + j.id);
+                      setTexts([]);
+                    } catch (e) {
+                      setError(errorText(e));
+                    } finally {
+                      pending.current = false;
+                      setBusy(false);
+                    }
+                  }}
+                >
+                  {busy ? (
+                    <LoaderCircle className="spin" size={17} />
+                  ) : (
+                    <Sparkles size={17} />
+                  )}{" "}
+                  Process {texts.length || ""} complaints
+                </button>
+              </div>
+            </Panel>
+            <Panel
+              title="Preview before processing"
+              subtitle="Nothing is submitted until you start"
+            >
+              {texts.length ? (
+                <div className="preview-list">
+                  {texts.map((t, i) => (
+                    <div key={i}>
+                      <span>{String(i + 1).padStart(2, "0")}</span>
+                      <p>{t}</p>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <Empty title="Your preview will appear here">
+                  Choose a CSV to validate its structure and inspect the
+                  narratives.
+                </Empty>
+              )}
+            </Panel>
+          </div>
+          <Panel
+            title="Processing history"
+            subtitle="Resume, inspect, or retry work from here"
+          >
+            {!loaded ? (
+              <Loading />
+            ) : jobs.length ? (
+              <div className="import-history">
+                {jobs.map((j) => (
+                  <Link key={j.id} to={"/imports?job=" + j.id} go={go}>
+                    <FileUp size={18} />
+                    <div>
+                      <strong>{j.id}</strong>
+                      <small>
+                        {date(j.created_at)} ·{" "}
+                        {j.source === "analysis"
+                          ? "Single analysis"
+                          : "CSV import"}{" "}
+                        · {j.counts.complete}/{j.total} saved
+                      </small>
+                    </div>
+                    <Badge
+                      tone={j.status === "complete" ? "confirmed" : "neutral"}
+                    >
+                      {j.status.replaceAll("_", " ")}
+                    </Badge>
+                    <ArrowRight size={16} />
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              <Empty title="No processing jobs yet">
+                New analyses and imports will appear here.
+              </Empty>
+            )}
+          </Panel>
+        </>
+      )}
+    </>
+  );
+}
+function SystemPage({ health }: { health: Health | null }) {
+  const [system, setSystem] = useState<System | null>(null),
+    [report, setReport] = useState<Evaluation | null>(null),
+    [error, setError] = useState(""),
+    [notice, setNotice] = useState(""),
+    [busy, setBusy] = useState(false),
+    [evalError, setEvalError] = useState("");
+  useEffect(() => {
+    let active = true;
+    const load = () =>
+      pilot
+        .system()
+        .then((s) => {
+          if (active) setSystem(s);
+        })
+        .catch((e) => {
+          if (active) setError(errorText(e));
+        });
+    void load();
+    pilot
+      .evaluation()
+      .then((v) => {
+        if (active) setReport(v);
+      })
+      .catch((e) => {
+        if (active) setEvalError(errorText(e));
+      });
+    const t = setInterval(load, 10000);
+    return () => {
+      active = false;
+      clearInterval(t);
+    };
+  }, []);
+  return (
+    <>
+      <Heading
+        eyebrow="MODEL & SYSTEM"
+        title="Know exactly what's running."
+        description="The model, the evidence, and the tools to keep this workspace recoverable."
+      />
+      <ErrorBox text={error} />
+      {notice && (
+        <div className="success" role="status">
+          <Check size={16} />
+          {notice}
+        </div>
+      )}
+      <div className="system-grid">
+        <Panel
+          title="Active classification engine"
+          subtitle="Availability is checked every 30 seconds"
+          action={
+            <Badge tone={health ? "confirmed" : "high"}>
+              {health ? "Connected" : "Unavailable"}
+            </Badge>
+          }
+        >
+          <div className="model-hero">
+            <span className="model-symbol">
+              <Sparkles size={28} />
+            </span>
+            <div>
+              <div className="eyebrow">
+                {health?.backend === "slm"
+                  ? "FINE-TUNED LOCAL SLM"
+                  : health
+                    ? "TRADITIONAL ML BASELINE"
+                    : "MODEL CONNECTION"}
+              </div>
+              <h2>
+                {health?.backend === "slm"
+                  ? "Qwen2.5 · 1.5B"
+                  : health
+                    ? "TF-IDF classifier"
+                    : "Waiting for the local engine"}
+              </h2>
+              <p>Product and issue classification · Human review required</p>
+            </div>
+          </div>
+          <dl className="facts">
+            <div>
+              <dt>Loaded model</dt>
+              <dd>
+                <code>{health?.model_version ?? "Not confirmed"}</code>
+              </dd>
+            </div>
+            <div>
+              <dt>Training examples</dt>
+              <dd>{health?.training_size?.toLocaleString() ?? "—"}</dd>
+            </div>
+            <div>
+              <dt>Execution</dt>
+              <dd>Local process on this Mac</dd>
+            </div>
+            <div>
+              <dt>Input policy</dt>
+              <dd>First 2,000 normalized characters</dd>
+            </div>
+          </dl>
+          <div className="panel-foot">
+            Priority and routing use explicit policies. Original predictions
+            remain attached to each case.
+          </div>
+        </Panel>
+        <Panel
+          title="Workspace health"
+          subtitle="Storage and processing are independent of model availability"
+        >
+          <div className="system-stats">
+            <div>
+              <Database size={18} />
+              <span>Local database</span>
+              <strong>
+                {system
+                  ? (system.database_bytes / 1024 / 1024).toFixed(2) + " MB"
+                  : "…"}
+              </strong>
+            </div>
+            <div>
+              <LoaderCircle size={18} />
+              <span>Pending / running</span>
+              <strong>
+                {system
+                  ? `${system.pending_rows} / ${system.running_rows}`
+                  : "…"}
+              </strong>
+            </div>
+            <div>
+              <Activity size={18} />
+              <span>Failed rows</span>
+              <strong>{system?.failed_rows ?? "…"}</strong>
+            </div>
+            <div>
+              <ShieldCheck size={18} />
+              <span>Storage schema</span>
+              <strong>v{system?.schema_version ?? "…"}</strong>
+            </div>
+          </div>
+          <div className="panel-foot">
+            Local operator · localhost only. Saved cases remain readable when
+            the model is offline.
+          </div>
+        </Panel>
+      </div>
+      <Panel
+        title="Measured model performance"
+        subtitle="Held-out evaluation, separate from live case statistics"
+        action={
+          <a
+            className="text-link"
+            href="/api/evaluation"
+            download="evaluation.json"
+          >
+            <ArrowDownToLine size={15} /> Evaluation JSON
+          </a>
+        }
+      >
+        {report ? (
+          <>
+            <div className="evidence-metrics">
+              <div>
+                <span>Product accuracy</span>
+                <strong>
+                  {(report.product.accuracy * 100).toFixed(1)}
+                  <small>%</small>
+                </strong>
+              </div>
+              <div>
+                <span>Joint accuracy</span>
+                <strong>
+                  {(report.joint_accuracy * 100).toFixed(1)}
+                  <small>%</small>
+                </strong>
+              </div>
+              <div>
+                <span>Issue macro F1</span>
+                <strong>{report.issue.f1_macro.toFixed(3)}</strong>
+              </div>
+              <div>
+                <span>Held-out complaints</span>
+                <strong>{report.test_size}</strong>
+              </div>
+            </div>
+            <div className="panel-foot">
+              <strong>Evaluation model: {report.model}</strong>
+              <p>
+                {Array.isArray(report.limitations)
+                  ? report.limitations.join(" ")
+                  : report.limitations}
+              </p>
+            </div>
+          </>
+        ) : (
+          <div className="form-pad">
+            <ErrorBox text={evalError} />
+            {!evalError && <Loading />}
+          </div>
+        )}
+      </Panel>
+      <div className="system-grid">
+        <Panel
+          title="Backups & recovery"
+          subtitle="Automatic daily startup backups · latest seven retained"
+        >
+          <div className="form-pad">
+            <button
+              className="button primary"
+              disabled={busy}
+              onClick={async () => {
+                setBusy(true);
+                setError("");
+                try {
+                  const b = await pilot.backup();
+                  setNotice("Backup created: " + b.name);
+                  setSystem(await pilot.system());
+                } catch (e) {
+                  setError(errorText(e));
+                } finally {
+                  setBusy(false);
+                }
+              }}
+            >
+              <Database size={16} />{" "}
+              {busy ? "Creating backup…" : "Create backup now"}
+            </button>
+            <p className="field-help">
+              Backups contain complaint narratives. Keep this Mac and its
+              backups under your control. Restore with the documented
+              maintenance command while the app is stopped.
+            </p>
+            <div className="backup-list">
+              {system?.backups.slice(0, 5).map((b) => (
+                <div key={b.name}>
+                  <code>{b.name}</code>
+                  <small>{(b.bytes / 1024).toFixed(0)} KB</small>
+                </div>
+              ))}
+            </div>
+          </div>
+        </Panel>
+        <Panel
+          title="Reviewed data, ready for improvement"
+          subtitle="Turn explicit human decisions into an auditable dataset"
+        >
+          <div className="form-pad">
+            <p>
+              Export only confirmed product and issue labels. Cases marked
+              outside supported scope are excluded. Original model predictions
+              remain preserved in the workspace.
+            </p>
+            <a href="/api/cases/export?kind=reviewed" className="button">
+              <ArrowDownToLine size={16} /> Export reviewed labels
+            </a>
+            <div className="notice">
+              Exporting does not retrain the model. Keep future evaluation data
+              separate from training data.
+            </div>
+          </div>
+        </Panel>
+      </div>
     </>
   );
 }

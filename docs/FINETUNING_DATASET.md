@@ -28,7 +28,7 @@ The model sees the first 2,000 characters of each normalized narrative, matching
 
 The dataset teaches product and issue classification. It contains no trained severity, routing, resolution or summary targets, and no curated out-of-domain examples; those features need separate rules or data.
 
-The older notebook and training script still target Qwen3-4B and a different input length. They must be adapted to Qwen2.5 and this dataset before execution.
+`notebooks/train_qwen25_colab.ipynb` and `scripts/train_qlora.py` train Qwen2.5-1.5B-Instruct directly from `training.jsonl`; this is the workflow used for the delivered model.
 
 ## Verification and reproduction
 

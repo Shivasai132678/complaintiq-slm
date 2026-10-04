@@ -2,7 +2,7 @@
 
 Measured October 2, 2026 on the user's **MacBook Air M1 with 8 GB unified memory**, while the ComplaintIQ application remained running at `127.0.0.1:8501` using its baseline backend.
 
-**Qwen2.5-1.5B-Instruct is the selected candidate for later fine-tuning.** It classified this small validation sample more accurately than Qwen3.5-0.8B and followed the requested output structure more often without a label grammar. Neither model beat the trained baseline on joint classification. No fine-tuning has been performed, and the new application API still uses the baseline.
+**Qwen2.5-1.5B-Instruct is the selected candidate for later fine-tuning.** It classified this small validation sample more accurately than Qwen3.5-0.8B and followed the requested output structure more often without a label grammar. Neither model beat the trained baseline on joint classification. At the time of this comparison no fine-tuning had been performed (see the update at the end).
 
 ## Measured results
 
@@ -52,7 +52,7 @@ Retain Qwen2.5-1.5B as the next training candidate: on this run it traded about 
 
 The Qwen2.5 weights are retained locally. The task-created Qwen3.5 download and its local download metadata were removed, freeing about 533 MB; its benchmark evidence remains available. Both benchmark model servers were stopped after testing.
 
-The baseline remains the current application backend because it performs better on this task today. Later work must adapt and run the training workflow for the selected model, validate the exported checkpoint, evaluate the final chosen configuration once on the untouched test split, and connect the verified SLM to the application. Improved post-training accuracy is not guaranteed. The existing Qwen3-4B training assets remain prepared and unexecuted; they are not evidence that the selected 1.5B model has been trained.
+The baseline remains the current application backend because it performs better on this task today. Later work must adapt and run the training workflow for the selected model, validate the exported checkpoint, evaluate the final chosen configuration once on the untouched test split, and connect the verified SLM to the application. Improved post-training accuracy is not guaranteed. **Update (October 4):** this comparison predates fine-tuning. Qwen2.5-1.5B was subsequently fine-tuned and is now the application backend; see `docs/FINETUNED_MODEL.md`.
 
 ## Evidence files
 

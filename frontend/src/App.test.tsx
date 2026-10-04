@@ -7,11 +7,12 @@ import {
   waitFor,
   within,
 } from "@testing-library/react";
-import App from "./App";
+import App from "./LegacyApp";
 import { api } from "./api";
 import type { Complaint, Analytics } from "./types";
 vi.mock("./api", () => ({
   api: {
+    health: vi.fn(),
     complaints: vi.fn(),
     analytics: vi.fn(),
     analyze: vi.fn(),
@@ -46,6 +47,12 @@ const analytics: Analytics = {
   average_latency_ms: 200,
 };
 beforeEach(() => {
+  vi.mocked(api.health).mockResolvedValue({
+    backend: "baseline",
+    model_version: "baseline-test",
+    training_status: "deferred",
+    slm_status: "not_configured",
+  });
   vi.mocked(api.complaints).mockResolvedValue({ items: [complaint] });
   vi.mocked(api.analytics).mockResolvedValue(analytics);
   vi.mocked(api.analyze).mockResolvedValue(complaint);
@@ -56,6 +63,76 @@ afterEach(() => {
   vi.resetAllMocks();
 });
 describe("complaint operations workflow", () => {
+  it("shows the fine-tuned model and separates its predictions from workflow policies", async () => {
+    vi.mocked(api.health).mockResolvedValue({
+      backend: "slm",
+      model_version: "Qwen2.5-1.5B-Instruct.Q4_K_M.gguf",
+      training_status: "trained_exported",
+      slm_status: "ready",
+      training_size: 9000,
+    });
+    vi.mocked(api.analyze).mockResolvedValue({
+      ...complaint,
+      backend: "slm",
+      model_version: "Qwen2.5-1.5B-Instruct.Q4_K_M.gguf",
+      input_truncated: true,
+      input_chars_used: 2000,
+    });
+    render(<App />);
+    await screen.findByText("CQ-TEST");
+    fireEvent.click(screen.getByRole("button", { name: "Analyze" }));
+    expect(screen.getByText("Fine-tuned Qwen2.5")).toBeInTheDocument();
+    fireEvent.change(screen.getByLabelText("Complaint narrative"), {
+      target: { value: "A bank fee complaint" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Analyze complaint" }));
+    await screen.findByText("PRODUCT & ISSUE · MODEL PREDICTION");
+    expect(screen.getByText("WORKFLOW ASSESSMENT")).toBeInTheDocument();
+    expect(screen.getByText("POLICY CHECK")).toBeInTheDocument();
+    expect(
+      screen.getByText(/Classification used the first 2,000 characters/),
+    ).toBeInTheDocument();
+    expect(screen.queryByText("RULE BASED")).not.toBeInTheDocument();
+  });
+  it("shows one active model on the evidence page", async () => {
+    vi.mocked(api.health).mockResolvedValue({
+      backend: "slm",
+      model_version: "Qwen2.5-1.5B-Instruct.Q4_K_M.gguf",
+      training_status: "trained_exported",
+      slm_status: "ready",
+      training_size: 9000,
+    });
+    const scores = {
+      accuracy: 0.88,
+      precision_macro: 0.88,
+      recall_macro: 0.88,
+      f1_macro: 0.88,
+      labels: ["Credit card"],
+      confusion_matrix: [[1]],
+    };
+    vi.mocked(api.evaluation).mockResolvedValue({
+      model: "Qwen2.5-1.5B-Instruct.Q4_K_M.gguf",
+      backend: "slm",
+      status: "measured",
+      test_size: 153,
+      product: scores,
+      issue: scores,
+      joint_accuracy: 0.54,
+      latency_ms_mean: 950,
+      review_rate: 0,
+      limitations: "Historical sample",
+    });
+    render(<App />);
+    await screen.findByText("CQ-TEST");
+    fireEvent.click(screen.getByRole("button", { name: "Model evidence" }));
+    await screen.findByText("Active classification model");
+    expect(screen.getByText("Qwen2.5-1.5B-Instruct")).toBeInTheDocument();
+    expect(screen.getByText("In use")).toBeInTheDocument();
+    expect(screen.queryByText("Local instruction SLM")).not.toBeInTheDocument();
+    expect(
+      screen.queryByText("Traditional ML baseline"),
+    ).not.toBeInTheDocument();
+  });
   it("shows actual saved case data and only analyzes when explicitly submitted", async () => {
     render(<App />);
     await screen.findByText("CQ-TEST");
@@ -83,6 +160,25 @@ describe("complaint operations workflow", () => {
     expect(await screen.findByRole("alert")).toHaveTextContent(
       "Model unavailable",
     );
+    expect(screen.queryByText("Saved to queue")).not.toBeInTheDocument();
+  });
+  it("clears the previous prediction when a new analysis fails", async () => {
+    render(<App />);
+    await screen.findByText("CQ-TEST");
+    fireEvent.click(screen.getByRole("button", { name: "Analyze" }));
+    fireEvent.change(screen.getByLabelText("Complaint narrative"), {
+      target: { value: "First complaint" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Analyze complaint" }));
+    await screen.findByText("Saved to queue");
+    vi.mocked(api.analyze).mockRejectedValueOnce(
+      new Error("Model unavailable"),
+    );
+    fireEvent.change(screen.getByLabelText("Complaint narrative"), {
+      target: { value: "New complaint" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Analyze complaint" }));
+    await screen.findByText("Model unavailable");
     expect(screen.queryByText("Saved to queue")).not.toBeInTheDocument();
   });
   it("filters saved cases and opens an inspectable accessible drawer", async () => {

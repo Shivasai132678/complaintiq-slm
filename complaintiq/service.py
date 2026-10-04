@@ -11,6 +11,7 @@ from typing import Any
 from uuid import uuid4
 
 from complaintiq.models import DEFAULT_TRAINING, BaselineClassifier, LocalSLMClassifier
+from complaintiq.server_model import ServerSLMClassifier
 from complaintiq.storage import ComplaintStore
 from complaintiq.triage import routing, triage
 
@@ -29,22 +30,27 @@ class ComplaintService:
         model_path: str | None = None,
         training_path: Path | str = DEFAULT_TRAINING,
         slm_lime: bool = False,
+        server_url: str | None = None,
     ) -> None:
         if backend not in {"baseline", "slm"}:
             raise ValueError("Supported backend values are baseline and slm.")
         if backend == "slm" and not model_path:
             raise ValueError("Select a local GGUF model path to enable SLM inference.")
         self.baseline = BaselineClassifier(training_path)
-        self.model = (
-            self.baseline
-            if backend == "baseline"
-            else LocalSLMClassifier(str(model_path), self.baseline.taxonomy)
-        )
+        self.model: BaselineClassifier | LocalSLMClassifier
+        if backend == "baseline":
+            self.model = self.baseline
+        elif server_url:
+            self.model = ServerSLMClassifier(str(model_path), self.baseline.taxonomy, server_url)
+        else:
+            self.model = LocalSLMClassifier(str(model_path), self.baseline.taxonomy)
         self.backend = backend
         self.slm_lime = slm_lime
         self.store = ComplaintStore(db_path)
 
-    def analyze(self, text: str) -> dict[str, Any]:
+    def analyze(
+        self, text: str, *, persist: bool = True, record_id: str | None = None
+    ) -> dict[str, Any]:
         """Reject invalid input before inference or storage, then return a record."""
         if not isinstance(text, str) or not text.strip():
             raise ValueError("Enter a non-empty complaint.")
@@ -70,7 +76,7 @@ class ComplaintService:
                 method = f"LIME unavailable ({type(exc).__name__}); prediction preserved"
         priority = triage(text)
         record: dict[str, Any] = {
-            "id": "CQ-" + uuid4().hex[:10].upper(),
+            "id": record_id or "CQ-" + uuid4().hex[:10].upper(),
             "text": text,
             **prediction,
             **priority,
@@ -87,7 +93,8 @@ class ComplaintService:
             "explanation": explanation,
             "explanation_method": method,
         }
-        self.store.save(record)
+        if persist:
+            self.store.save(record)
         return record
 
     @staticmethod

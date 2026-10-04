@@ -128,14 +128,39 @@ export function Result({ item }: { item: Complaint }) {
   return (
     <div className="result-body">
       <div className="result-top">
-        <span className="overline">ANALYSIS COMPLETE</span>
+        <span className="overline">PRODUCT & ISSUE · MODEL PREDICTION</span>
         <span className="status-dot">Saved to queue</span>
+      </div>
+      <div className="prediction-source">
+        <span className="tag ready">
+          {item.backend === "slm" ? "Fine-tuned SLM" : "Baseline classifier"}
+        </span>
+        <span>
+          {item.backend === "slm"
+            ? "Qwen2.5-1.5B · runs locally"
+            : "TF-IDF + Logistic Regression"}
+        </span>
       </div>
       <div className="result-title">
         <h2>{item.product}</h2>
-        <Priority value={item.priority} />
       </div>
       <p className="result-issue">{item.issue}</p>
+      {item.input_truncated ? (
+        <p className="excerpt-notice">
+          Classification used the first{" "}
+          {item.input_chars_used?.toLocaleString() ?? "2,000"} characters. The
+          full narrative is saved with this case.
+        </p>
+      ) : null}
+      <div className="workflow-divider">
+        <div className="workflow-heading">
+          <span className="overline">WORKFLOW ASSESSMENT</span>
+          <Priority value={item.priority} />
+        </div>
+        <p>
+          Priority and routing follow configured policies after classification.
+        </p>
+      </div>
       <div className="detail-grid">
         <div>
           <span>ROUTED TO</span>
@@ -148,17 +173,19 @@ export function Result({ item }: { item: Complaint }) {
       </div>
       <section className="result-section">
         <h4>
-          Priority reasoning <span>RULE BASED</span>
+          Priority assessment <span>POLICY CHECK</span>
         </h4>
         <p>{item.priority_reason}</p>
       </section>
       <section className="result-section next-step">
-        <h4>Suggested next step</h4>
+        <h4>
+          Suggested next step <span>ROUTING POLICY</span>
+        </h4>
         <p>{item.action}</p>
       </section>
       <section className="result-section">
         <h4>
-          Complaint preview <span>EXTRACTIVE</span>
+          Complaint preview <span>NARRATIVE EXCERPT</span>
         </h4>
         <p>{item.summary}</p>
       </section>
@@ -191,7 +218,11 @@ export function Result({ item }: { item: Complaint }) {
         <span>
           <Clock3 size={13} />
           {(item.latency_ms / 1000).toFixed(2)}s ·{" "}
-          {item.backend === "baseline" ? "Baseline model" : "Local SLM"}
+          {item.cached
+            ? "Cached result"
+            : item.backend === "baseline"
+              ? "Baseline classifier"
+              : "Local SLM inference"}
         </span>
         <button className="text-button" onClick={() => void copy()}>
           {copied ? <Check size={14} /> : <Copy size={14} />}{" "}

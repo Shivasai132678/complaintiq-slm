@@ -1,44 +1,34 @@
-# Company demo walkthrough
+# Company walkthrough: ComplaintIQ local pilot
 
-## Current scope
-
-The application and data workflow are complete for the baseline demo. Training and model setup are deliberately deferred at the user's request. Say "SLM-ready complaint intelligence prototype" until a real SLM checkpoint is configured and tested.
+Start `sh run_pilot.sh` and open http://127.0.0.1:8501. Model & System should show the fine-tuned local engine connected. Keep the launcher terminal open.
 
 ## Five-minute presentation
 
-1. **Problem (30 seconds):** Financial complaints arrive as unstructured narratives. ComplaintIQ turns them into a reviewable product, issue, priority, and suggested department.
-2. **Live analysis (60 seconds):** Open Analyze, choose Unauthorized card charge under Try an example, then select Analyze complaint. Explain which fields come from classification and which come from explicit rules. The extractive preview preserves the original words.
-3. **Explainability (30 seconds):** Inspect What influenced the classification in the result panel. LIME token weights explain the baseline's product prediction; they are not confidence percentages.
-4. **Queue (45 seconds):** Open Cases, search for the submitted complaint, filter priority, inspect its saved result, and show CSV export.
-5. **Analytics (45 seconds):** Open Overview. The seeded public complaints and newly submitted case appear in actual saved prediction counts. Explain product, priority, and routing distributions.
-6. **Evidence (45 seconds):** Open Model evidence. Show genuine held-out baseline metrics and the confusion matrix. Issue classification is harder than product classification; do not hide errors or claim SLM improvement before measuring it.
-7. **Next step (30 seconds):** The separate cloud notebook prepares QLoRA training. Later, export the checkpoint, verify local inference, connect it to the API, and compare it with this baseline on the same held-out complaints.
+1. **The problem — 30 seconds.** “A complaint classification is only the beginning. An operator needs to review it, route it, track what changed, and close the case.”
+2. **Analyze — 45 seconds.** Submit the illustrative input below. Show the persistent processing state and open the saved case. Explain the 2,000-character model processing limit and the unreviewed state.
+3. **Review — 90 seconds.** Compare the original model classification and policy priority with reviewer decisions. Correct or confirm the labels, select a department, enter a reason for changes and save. Add a note. Resolve with a resolution note, then reopen with a reason to show the activity history. Original predictions remain unchanged.
+4. **Operations — 45 seconds.** Open Cases, search/filter the queue and export the filtered results. Show Overview's current lifecycle counts. These are workspace statistics, not accuracy measurements.
+5. **Reliability — 30 seconds.** Show Imports, a completed batch and row-level results. Explain serial processing, refresh/restart recovery, failed-row retry and duplicate-submission protection. Create a database backup in Model & System.
+6. **Evidence and limits — 60 seconds.** Show the measured 153-case evaluation: 88.89% product accuracy and 54.25% joint accuracy. Explain why human review is essential, that priority/routing use rules, and that supported scope is three product families and nine product/issue pairs. Export reviewed labels; exporting never starts retraining.
 
-## Suggested live input
+## Suggested input
 
 ```text
-I found an unauthorized charge on my credit card statement. I notified the card company immediately, but they refused to investigate and charged interest on the disputed amount.
+My credit card statement includes a duplicate merchant charge. I disputed the transaction and the bank has not reversed the extra payment.
 ```
 
-Example inputs are authored illustrations, not model outputs. The app analyzes them on submission. The bundled dataset is real, historical CFPB public data, sampled for this assignment.
+This is an authored demonstration input, not a promised prediction. For a batch, use a CSV with a `text` header, up to 100 non-empty narratives and 2 MB total. Each narrative may contain at most 6,000 characters.
 
-## Optional batch demo
+## What makes this useful
 
-Upload `data/demo_upload.csv` under Batch upload. The app requires a `text` column, caps processing at 20 rows, saves valid complaints, and identifies row-level errors. Download the processed CSV.
+The value is a repeatable local review workflow: consistent labels, persistent cases, operator corrections, routing, history and recovery. It is more convenient for repeated complaint operations than manually copying prompts and responses between a general chat tool and a spreadsheet. All inference and case processing run on this Mac after setup.
 
-## Presentation checklist
+Describe it as a polished single-operator pilot. Do not claim that it outperforms general-purpose models, is compliant with financial regulations, or is ready for unattended decisions. The baseline joint accuracy was 55.56%; the current fine-tuned model does not establish an overall test-accuracy improvement.
 
-- Start `sh run_demo.sh` and open the local page before presenting.
-- The new API uses Baseline until a trained model is verified and integrated.
-- Confirm Model evidence displays the committed evaluation report.
-- Rehearse the input and queue search; use an unfamiliar input as an additional demonstration.
-- Keep the upstream attribution in the README and explain your integration work if asked.
-- No internet connection is needed for the installed baseline demo.
+## Supporting material
 
-## Five-slide outline
+- `docs/LOCAL_PILOT.md`: startup, interfaces, processing and restore commands.
+- `docs/PILOT_VERIFICATION.md`: verification evidence and limits.
+- `docs/FINETUNED_MODEL.md`: model provenance and measured evaluation.
 
-1. **ComplaintIQ:** problem, user, and triage workflow.
-2. **Architecture:** React/TypeScript → FastAPI → complaint service → baseline → SQLite; optional local SLM runtime prepared for later integration.
-3. **Data:** official archived CFPB narratives; 990 selected records, three products, nine issues; disjoint splits and documented limitations.
-4. **Evidence:** measured baseline results, confusion matrix, explanations, and known failure cases.
-5. **Demo and next step:** live queue/dashboard; deferred cloud fine-tuning and model comparison.
+Future work can improve issue classification, evaluate the remaining 747 reserved test cases, and expand supported product coverage under a separate evaluation protocol. No additional training is part of this delivery.

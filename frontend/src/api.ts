@@ -1,4 +1,10 @@
-import type { Analytics, BatchResult, Complaint, Evaluation } from "./types";
+import type {
+  Analytics,
+  BatchResult,
+  Complaint,
+  Evaluation,
+  Health,
+} from "./types";
 async function request<T>(path: string, body?: object): Promise<T> {
   const response = await fetch(
     `/api/${path}`,
@@ -34,11 +40,10 @@ async function request<T>(path: string, body?: object): Promise<T> {
   return response.json() as Promise<T>;
 }
 export const api = {
+  health: () => request<Health>("health"),
   complaints: () => request<{ items: Complaint[] }>("complaints"),
   analytics: () => request<Analytics>("analytics"),
   evaluation: () => request<Evaluation>("evaluation"),
-  analyze: (text: string) =>
-    request<Complaint>("complaints", { text, backend: "baseline" }),
-  batch: (texts: string[]) =>
-    request<BatchResult>("batch", { texts, backend: "baseline" }),
+  analyze: (text: string) => request<Complaint>("complaints", { text }),
+  batch: (texts: string[]) => request<BatchResult>("batch", { texts }),
 };

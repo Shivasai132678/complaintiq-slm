@@ -102,7 +102,7 @@ def test_errors_do_not_expose_local_paths(
 
 
 def test_router_errors_follow_consistent_contract(client: TestClient) -> None:
-    response = client.post("/api/health")
+    response = client.post("/api/health", json={})
     assert response.status_code == 405
     assert "GET" in response.headers["allow"]
     assert "error" in response.json()

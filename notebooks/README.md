@@ -1,16 +1,15 @@
-# Training later on a free GPU
+# Fine-tuning workflow
 
-**October 2 model selection:** local comparison selected Qwen2.5-1.5B-Instruct for fine-tuning. The existing notebook/script still target the previous Qwen3-4B model and must be adapted before execution. Do not run the older target unchanged. See `docs/LOCAL_MODEL_COMPARISON.md` for measured results.
+**Status (October 4, 2026): complete.** Qwen2.5-1.5B-Instruct was fine-tuned with Unsloth QLoRA on a free Colab GPU using `data/finetuning/training.jsonl` (9,000 real CFPB complaints, nine product/issue pairs). The run was exported from checkpoint-563 as `Qwen2.5-1.5B-Instruct.Q4_K_M.gguf` (SHA-256 `5f4e887a…cabd39`) and runs locally on the M1 through llama.cpp Metal. Measured results are in [`docs/FINETUNED_MODEL.md`](../docs/FINETUNED_MODEL.md).
 
-`train_qwen3_colab.ipynb` is a prepared, unexecuted training notebook. The working assignment application uses the measured classical baseline until you explicitly configure a local GGUF. No SLM has been fine-tuned or evaluated in this repository yet.
+`train_qwen25_colab.ipynb` and `scripts/train_qlora.py` reproduce that workflow: same base model, same JSONL training file and chat template, 4-bit QLoRA (LoRA r=16 on all attention/MLP projections), smoke test first, then a resumable one-epoch run and Q4_K_M GGUF export.
 
-1. Open the notebook in Google Colab or Kaggle and select a free GPU runtime. Free GPU access is availability/quota dependent; do not enable paid billing.
-2. Upload/extract the project, install the notebook dependencies, set `PROJECT` to the extracted path, and mount Drive on Colab for persistent output.
-3. Run the two-step smoke test first. Then train 120 optimizer steps in a separate `full` output directory. Resume only a matching run; save/download outputs before ending a session.
-4. Compare original and fine-tuned generation on the same untouched `data/test.csv`. Save `slm_evaluation.json`; actual metrics must be measured, never copied from expected results.
-5. Export Q4_K_M GGUF on the cloud machine and download it. No large model download or training is necessary on the M1 Mac during app development. Follow root README to enable local inference later.
+1. Open the notebook in Colab or Kaggle with a free GPU runtime. Do not enable paid billing.
+2. Upload/extract the project, set `PROJECT`, and mount Drive on Colab for persistent checkpoints.
+3. Run the two-step smoke test, then the full run with `--export-gguf`.
+4. Download the GGUF, place it in `models/`, start `sh run_model.sh`, and evaluate with `.venv/bin/python -m scripts.evaluate_server` (add `--test-file data/finetuning/test.csv` for all 900 reserved cases).
 
-This notebook adapts APIs from [Unsloth's official Qwen3 4B Instruct notebook](https://colab.research.google.com/github/unslothai/notebooks/blob/main/nb/Qwen3_(4B)-Instruct.ipynb). Runtime compatibility and GPU memory are not yet verified. If Unsloth installation changes, use its official install cells. Checkpoint folders, adapter, tokenizer, taxonomy, environment versions, run status, and held-out evaluation should be retained together.
+Never train on `validation.jsonl` or `test.jsonl`. Weights, adapters and checkpoints are excluded from Git.
 
 ## Real dataset
 
@@ -26,6 +25,6 @@ python scripts/evaluate.py
 
 The archive is approximately 128 MB; extraction streams its CSV without unpacking it to disk. Only the small sampled CSV files are committed. Exact normalized narrative duplicates are removed before splitting. Near duplicates and recurring complaint templates are not detected, so leakage remains a limitation. This is a historical, balanced demonstration sample, not a contemporary representative benchmark. Priority/actions have no trained reference labels and remain documented rules.
 
-Baseline evaluation stores accuracy, macro precision, recall, F1, per-class support and confusion matrices in `artifacts/evaluation.json`. Macro metrics use ground-truth labels; abstentions count as missed predictions, with their rate and confusion-matrix column reported separately. The SLM comparison is pending.
+Baseline evaluation stores accuracy, macro precision, recall, F1, per-class support and confusion matrices in `artifacts/evaluation.json`. Macro metrics use ground-truth labels; abstentions count as missed predictions, with their rate and confusion-matrix column reported separately. The fine-tuned SLM evaluation is stored separately in `artifacts/finetuned_evaluation.json`.
 
 The prepared cloud training and comparison clip complaints to 4,000 characters. The application accepts up to 6,000 characters. Before comparing cloud results with application GGUF results, use matching input clipping and generation settings; the current baseline artifact uses the full held-out text.

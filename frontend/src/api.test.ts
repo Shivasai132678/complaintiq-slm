@@ -1,6 +1,6 @@
 import { expect, it, vi } from "vitest";
 import { api } from "./api";
-it("submits complaint only through explicit API call with baseline engine", async () => {
+it("submits complaint through the configured engine", async () => {
   const fetcher = vi
     .fn()
     .mockResolvedValue({ ok: true, json: async () => ({ id: "CQ-1" }) });
@@ -10,7 +10,7 @@ it("submits complaint only through explicit API call with baseline engine", asyn
     "/api/complaints",
     expect.objectContaining({
       method: "POST",
-      body: JSON.stringify({ text: "A disputed fee", backend: "baseline" }),
+      body: JSON.stringify({ text: "A disputed fee" }),
     }),
   );
 });
