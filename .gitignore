@@ -27,3 +27,6 @@ data/*.worker.lock
 
 # Agent working notes
 .agents/
+
+# Rendered videos (large binaries)
+artifacts/video/*.mp4
