@@ -883,7 +883,9 @@ function CaseDetail({
         setItem(c);
         if (fresh)
           toast(
-            `${c.id} created · classified in ${(c.original.latency_ms / 1000).toFixed(2)}s`,
+            c.original.scope_check?.in_scope === false
+              ? `${c.id} sent to review · outside supported scope`
+              : `${c.id} created · classified in ${(c.original.latency_ms / 1000).toFixed(2)}s`,
           );
       })
       .catch((e) => {
@@ -927,9 +929,9 @@ function CaseDetail({
                 )}
                 <div className="panel-foot">
                   {item.text.length.toLocaleString()} characters ·{" "}
-                  {item.original.backend === "slm" ? "Local SLM" : "Baseline"} ·{" "}
-                  {(item.original.latency_ms / 1000).toFixed(2)}s{" "}
-                  {item.original.cached ? "(cached)" : ""}
+                  {item.original.scope_check?.in_scope === false
+                    ? "Outside supported scope · not classified"
+                    : `${item.original.backend === "slm" ? "Local SLM" : "Baseline"} · ${(item.original.latency_ms / 1000).toFixed(2)}s ${item.original.cached ? "(cached)" : ""}`}
                 </div>
               </Panel>
               <Panel
@@ -938,10 +940,16 @@ function CaseDetail({
                 className="analysis-panel"
                 action={
                   fresh ? (
-                    <span className="fresh-badge">
-                      <Sparkles size={13} /> Just analyzed ·{" "}
-                      {(item.original.latency_ms / 1000).toFixed(2)}s
-                    </span>
+                    item.original.scope_check?.in_scope === false ? (
+                      <span className="fresh-badge review">
+                        <ShieldCheck size={13} /> Sent to review
+                      </span>
+                    ) : (
+                      <span className="fresh-badge">
+                        <Sparkles size={13} /> Just analyzed ·{" "}
+                        {(item.original.latency_ms / 1000).toFixed(2)}s
+                      </span>
+                    )
                   ) : undefined
                 }
               >
@@ -949,7 +957,11 @@ function CaseDetail({
                   <div className="eyebrow">MODEL PREDICTION</div>
                   <h3>{item.original.product}</h3>
                   <p>{item.original.issue}</p>
-                  <code>{item.original.model_version}</code>
+                  <code>
+                    {item.original.scope_check?.in_scope === false
+                      ? "Model not run · scope gate"
+                      : item.original.model_version}
+                  </code>
                   <div className="divider" />
                   <div className="eyebrow">WORKFLOW POLICY</div>
                   <div className="inline">

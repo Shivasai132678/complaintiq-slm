@@ -1869,3 +1869,8 @@ select {
 .scope-notice strong {
   color: #6b4e12;
 }
+.fresh-badge.review {
+  background: #f6efdc;
+  border-color: #ead9ae;
+  color: #6b4e12;
+}

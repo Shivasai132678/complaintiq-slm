@@ -19,3 +19,6 @@ for i,t in enumerate(lines):
     s,sr=k.create(t,voice=V,speed=1.03,lang="en-us")
     sf.write(f"v2_{i}.wav",s,sr); meta.append(round(len(s)/sr,2))
 print(meta, sum(meta))
+
+# Line added for the out-of-scope scene (saved as v3_x1.wav)
+EXTRA = "When a complaint is outside what the model knows, it doesn't guess. It goes straight to a person, with the reason shown."

@@ -2,7 +2,7 @@ import React from "react";
 import { AbsoluteFill, Audio, Easing, Img, interpolate, staticFile, useCurrentFrame } from "remotion";
 import { Background, BrandMark, C, Chip, Cursor, Eyebrow, FONT, Fonts, Scene, Window, Words, ip, shot, sp } from "./prims";
 
-export const TOTAL = 2400; // 80 s
+export const TOTAL = 2640; // 88 s
 /* ---------- S0 · prepared for Veltris ---------- */
 const S0: React.FC = () => {
   const f = useCurrentFrame();
@@ -305,6 +305,84 @@ const Toast: React.FC<{ text: string; at: number; y: number }> = ({ text, at, y 
   );
 };
 
+
+/* ---------- SX · knows its limits ---------- */
+const OOS = ["oospr_03", "oospr_04", "oosrv_00", "oosrv_02", "oosrv_04", "oosrv_07"];
+const SX: React.FC = () => {
+  const f = useCurrentFrame();
+  const W = 1140;
+  const k = W / 1600;
+  const enter = sp(f, 4, 20, 1, 90);
+  let src = f < 26 ? "oos_01_hover" : "oos_02_filled";
+  if (f >= 62) src = OOS[Math.min(OOS.length - 1, Math.floor((f - 62) / 6))];
+  if (f >= 98) src = "oos_case";
+  const c1 = ip(f, 14, 26);
+  const c2 = ip(f, 34, 56);
+  let cx = interpolate(c1, [0, 1], [700, 905]);
+  let cy = interpolate(c1, [0, 1], [500, 380]);
+  if (f >= 34) {
+    cx = interpolate(c2, [0, 1], [905, 392]);
+    cy = interpolate(c2, [0, 1], [380, 808]);
+  }
+  const press = f >= 24 && f < 34 ? ip(f, 24, 34) : f >= 58 ? ip(f, 58, 70, 0, 1, Easing.out(Easing.quad)) : 0;
+  const curO = ip(f, 10, 16) * (1 - ip(f, 64, 70));
+  const card = sp(f, 118, 16, 1, 100);
+  const ring = ip(f, 140, 156);
+  const S = 0.52;
+  return (
+    <AbsoluteFill>
+      <Background glow={[70, 60]} />
+      <div style={{ position: "absolute", left: 120, top: 250, width: 560 }}>
+        <Eyebrow text="03 — KNOWS ITS LIMITS" start={8} />
+        <Words text={"Off-topic?\nIt goes to a person."} start={12} size={64} style={{ marginTop: 24 }} highlight={["person"]} />
+        <div style={{ marginTop: 44, display: "flex", flexDirection: "column", gap: 14, alignItems: "flex-start" }}>
+          <Chip start={104} size={21} dot="#c79a2b">Model not run</Chip>
+          <Chip start={114} size={21} dot={C.lime}>Reason recorded on the case</Chip>
+          <Chip start={124} size={21} dot={C.leaf}>94% of unrelated test complaints caught</Chip>
+        </div>
+      </div>
+      <div style={{ position: "absolute", left: 700, top: 150, perspective: 2000 }}>
+        <div style={{ transform: `translateY(${(1 - enter) * 160}px) rotateX(${(1 - enter) * 12}deg)`, opacity: Math.min(1, enter * 1.6), transformOrigin: "50% 100%" }}>
+          <Window src={shot(src)} w={W} zoom={1 + 0.12 * ip(f, 98, 130)} focus={[800 - 120 * ip(f, 98, 130), 450 + 120 * ip(f, 98, 130)]}>
+            <div style={{ position: "absolute", left: cx * k, top: cy * k }}>
+              <Cursor x={0} y={0} press={press} opacity={curO} />
+            </div>
+          </Window>
+        </div>
+      </div>
+      {/* the original-analysis card lifts out of the page */}
+      <div
+        style={{
+          position: "absolute",
+          left: 1080,
+          top: 380,
+          width: 1270 * S,
+          height: 1026 * S,
+          opacity: Math.min(1, card * 1.5),
+          transform: `translateY(${(1 - card) * 120}px) scale(${0.92 + 0.08 * card}) rotate(${(1 - card) * 3}deg)`,
+          borderRadius: 18,
+          boxShadow: "0 60px 140px #1430274a, 0 0 0 1px #14302714",
+          background: "#fff",
+        }}
+      >
+        <Img src={shot("el_oos_analysis")} style={{ width: 1270 * S, height: 1026 * S, borderRadius: 18 }} />
+        <div
+          style={{
+            position: "absolute",
+            left: 44 * S,
+            top: 798 * S,
+            width: 1186 * S,
+            height: 150 * S,
+            borderRadius: 12,
+            border: "3px solid #c79a2b",
+            opacity: ring,
+            transform: `scale(${1.05 - 0.05 * ring})`,
+          }}
+        />
+      </div>
+    </AbsoluteFill>
+  );
+};
 /* ---------- S5 · human in the loop ---------- */
 const S5: React.FC = () => {
   const f = useCurrentFrame();
@@ -322,7 +400,7 @@ const S5: React.FC = () => {
     <AbsoluteFill>
       <Background glow={[50, 15]} />
       <div style={{ position: "absolute", left: 120, top: 70 }}>
-        <Eyebrow text="03 — HUMAN IN THE LOOP" start={8} />
+        <Eyebrow text="04 — HUMAN IN THE LOOP" start={8} />
         <Words text="People make the final call." start={12} size={64} style={{ marginTop: 22 }} highlight={["final", "call"]} />
       </div>
       {cards.map((c, i) => {
@@ -416,7 +494,7 @@ const S6: React.FC = () => {
     <AbsoluteFill>
       <Background glow={[30, 40]} />
       <div style={{ position: "absolute", left: 120, top: 150, width: 560 }}>
-        <Eyebrow text="04 — DURABLE BATCHES" start={8} />
+        <Eyebrow text="05 — DURABLE BATCHES" start={8} />
         <Words text={"Drop in a CSV.\nSaved row by row."} start={12} size={62} style={{ marginTop: 24 }} highlight={["row"]} />
       </div>
       {/* upload zone with a file dropping in */}
@@ -489,7 +567,7 @@ const S7: React.FC = () => {
     <AbsoluteFill>
       <Background glow={[50, 30]} />
       <div style={{ position: "absolute", left: 120, top: 70 }}>
-        <Eyebrow text="05 — OVERVIEW" start={8} />
+        <Eyebrow text="06 — OVERVIEW" start={8} />
         <Words text="See what needs you, at a glance." start={12} size={56} style={{ marginTop: 20 }} highlight={["glance"]} />
       </div>
       {/* laptop */}
@@ -747,7 +825,7 @@ const S8: React.FC = () => {
     <AbsoluteFill>
       <Background dark glow={[60, 20]} />
       <div style={{ position: "absolute", left: 130, top: 140 }}>
-        <Eyebrow text="06 — MEASURED, NOT PROMISED" start={2} dark />
+        <Eyebrow text="07 — MEASURED, NOT PROMISED" start={2} dark />
         <Words text="Evidence you can audit." start={6} size={72} color="#fff" style={{ marginTop: 26 }} highlight={["audit"]} hlColor={C.lime} />
       </div>
       <div style={{ position: "absolute", left: 130, right: 130, top: 470, display: "flex", gap: 0 }}>
@@ -789,7 +867,7 @@ const S8: React.FC = () => {
           opacity: ip(f, 120, 140),
         }}
       >
-        Reserved test set of 153 CFPB complaints · joint product + issue accuracy 54.2% · schema-validated output, invalid results go to review
+        Reserved test set of 153 CFPB complaints · joint product + issue accuracy 54.2% · scope gate sends 94% of unrelated test complaints to review
         <br />
         Priority and routing are explicit rules · summaries are extractive · issue labels are confirmed by people
       </div>
@@ -798,9 +876,9 @@ const S8: React.FC = () => {
 };
 
 
-const B = [0, 120, 378, 576, 966, 1164, 1470, 1692, 1860, 2190, 2400];
+const B = [0, 120, 378, 576, 966, 1164, 1404, 1710, 1932, 2100, 2430, 2640];
 const OV = 22;
-const seg = (i: number) => ({ from: B[i], dur: B[i + 1] - B[i] + (i < 9 ? OV : 0) });
+const seg = (i: number) => ({ from: B[i], dur: B[i + 1] - B[i] + (i < 10 ? OV : 0) });
 export const Reel: React.FC = () => (
   <AbsoluteFill style={{ background: C.ivory }}>
     <Fonts />
@@ -809,11 +887,12 @@ export const Reel: React.FC = () => (
     <Scene {...seg(2)} enter="circle"><S2 /></Scene>
     <Scene {...seg(3)} enter="up"><S3 /></Scene>
     <Scene {...seg(4)} enter="left"><S4 /></Scene>
-    <Scene {...seg(5)} enter="left"><S5 /></Scene>
-    <Scene {...seg(6)} enter="left"><S6 /></Scene>
-    <Scene {...seg(7)} enter="up"><S7 /></Scene>
-    <Scene {...seg(8)} enter="circle"><S8 /></Scene>
-    <Scene {...seg(9)} enter="fade"><S9 /></Scene>
+    <Scene {...seg(5)} enter="up"><SX /></Scene>
+    <Scene {...seg(6)} enter="left"><S5 /></Scene>
+    <Scene {...seg(7)} enter="left"><S6 /></Scene>
+    <Scene {...seg(8)} enter="up"><S7 /></Scene>
+    <Scene {...seg(9)} enter="circle"><S8 /></Scene>
+    <Scene {...seg(10)} enter="fade"><S9 /></Scene>
     <Audio src={staticFile("mix.wav")} />
   </AbsoluteFill>
 );
