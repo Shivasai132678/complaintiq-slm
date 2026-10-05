@@ -30,6 +30,9 @@ On issue classes that overlap in meaning: "Other" (credit card, 24% recall), "Pr
 **Why only 153 test cases?**
 These are the original reserved test cases, kept frozen from the first day. The expanded split has 900. Running all of them takes about 15 minutes: `.venv/bin/python -m scripts.evaluate_server --test-file data/finetuning/test.csv --output artifacts/finetuned_evaluation_900.json`.
 
+**What happens with a complaint that isn't about these products?**
+Be upfront here. The training data contained only in-scope complaints, so the fine-tuned model does not reliably return "Unknown". In a check on October 5, unrelated texts (a late food delivery, a noisy neighbour) were labelled as checking-account issues. That is why every case needs human confirmation, and why reviewers can mark a case "Outside supported scope". The fix is to add out-of-scope examples to the training data, or put a relevance check in front of the model.
+
 **Any data leakage?**
 No IDs or exact normalized inputs are shared across splits. An approximate near-duplicate filter removed 65 candidates. Paraphrase-level leakage can't be fully ruled out (see `docs/FINETUNING_DATASET.md`).
 

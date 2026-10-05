@@ -42,6 +42,60 @@ const date = (s: string) =>
   });
 const errorText = (e: unknown) =>
   e instanceof Error ? e.message : "Something went wrong. Please retry.";
+
+/* Lightweight toast notifications for completed actions. */
+type ToastItem = { id: number; text: string };
+let pushToast: (text: string) => void = () => {};
+const toast = (text: string) => pushToast(text);
+function Toaster() {
+  const [items, setItems] = useState<ToastItem[]>([]);
+  useEffect(() => {
+    let n = 0;
+    const timers: ReturnType<typeof setTimeout>[] = [];
+    pushToast = (text) => {
+      const id = ++n;
+      setItems((v) => [...v.slice(-2), { id, text }]);
+      timers.push(
+        setTimeout(() => setItems((v) => v.filter((x) => x.id !== id)), 3800),
+      );
+    };
+    return () => {
+      pushToast = () => {};
+      timers.forEach(clearTimeout);
+    };
+  }, []);
+  return (
+    <div className="toasts" aria-live="polite">
+      {items.map((t) => (
+        <div key={t.id} className="toast">
+          <span className="toast-icon">
+            <Check size={14} />
+          </span>
+          {t.text}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+const EXAMPLES = [
+  {
+    label: "Late fee",
+    text: "I was charged a $39 late fee on my credit card even though my payment posted two days before the due date. I called customer service twice and they still refuse to refund the fee.",
+  },
+  {
+    label: "Duplicate charge",
+    text: "My credit card statement shows the same $120 purchase twice. I disputed the duplicate charge three weeks ago and the bank still has not reversed it.",
+  },
+  {
+    label: "Credit report error",
+    text: "My credit report shows a collection account that I never opened. I disputed it with the credit bureau a month ago and the incorrect account is still on my report.",
+  },
+  {
+    label: "Deposit hold",
+    text: "I deposited a check into my checking account last week. The bank placed a hold and the money is still not available, even though the check has cleared.",
+  },
+];
 function useRoute() {
   const [url, set] = useState(location.pathname + location.search);
   useEffect(() => {
@@ -250,6 +304,12 @@ export default function App() {
     ["/system", "Model & System", Activity],
   ] as const;
   const activeLabel = nav.find(([p]) => path.startsWith(p))?.[1] ?? "Cases";
+  const pageTitle = path.startsWith("/cases/")
+    ? decodeURIComponent(path.slice(7))
+    : activeLabel;
+  useEffect(() => {
+    document.title = `${pageTitle} · ComplaintIQ`;
+  }, [pageTitle]);
   return (
     <div className="pilot">
       <aside className="sidebar">
@@ -304,6 +364,10 @@ export default function App() {
               View system status <ArrowRight size={13} />
             </Link>
           </div>
+          <div className="prepared-for">
+            <small>PREPARED FOR</small>
+            <img src="/veltris-logo-light.png" alt="Veltris" />
+          </div>
           <div className="operator">
             <span>LO</span>
             <div>
@@ -318,10 +382,16 @@ export default function App() {
             Workspace <ChevronRight size={14} /> <strong>{activeLabel}</strong>
           </span>
           <div>
+            <span className="client-mark">
+              <span>ComplaintIQ for</span>
+              <img src="/veltris-logo.png" alt="Veltris" />
+            </span>
+            <span className="topbar-divider" />
             <span className="local-dot" /> On this Mac{" "}
             <span className="avatar">LO</span>
           </div>
         </div>
+        <Toaster />
         <main key={path}>
           <ErrorBox text={error} />
           {path === "/overview" ? (
@@ -338,6 +408,7 @@ export default function App() {
                 id={decodeURIComponent(path.slice(7))}
                 config={config}
                 go={go}
+                fresh={new URLSearchParams(url.split("?")[1] ?? "").has("new")}
               />
             ) : (
               <Loading />
@@ -632,7 +703,7 @@ function Cases({
           </select>
         </div>
         <div className="filter-secondary">
-          <label>
+          <label className="date-field">
             From{" "}
             <input
               type="date"
@@ -641,7 +712,7 @@ function Cases({
               onChange={(e) => change("start", e.target.value)}
             />
           </label>
-          <label>
+          <label className="date-field">
             To{" "}
             <input
               type="date"
@@ -790,10 +861,12 @@ function CaseDetail({
   id,
   config,
   go,
+  fresh = false,
 }: {
   id: string;
   config: Config;
   go: Go;
+  fresh?: boolean;
 }) {
   const [item, setItem] = useState<Case | null>(null),
     [error, setError] = useState("");
@@ -802,7 +875,12 @@ function CaseDetail({
     pilot
       .case(id)
       .then((c) => {
-        if (active) setItem(c);
+        if (!active) return;
+        setItem(c);
+        if (fresh)
+          toast(
+            `${c.id} created · classified in ${(c.original.latency_ms / 1000).toFixed(2)}s`,
+          );
       })
       .catch((e) => {
         if (active) setError(errorText(e));
@@ -828,7 +906,7 @@ function CaseDetail({
               {item.status}
             </Badge>
           </Heading>
-          <div className="case-layout">
+          <div className={"case-layout" + (fresh ? " reveal" : "")}>
             <div>
               <Panel
                 title="The customer's words"
@@ -853,6 +931,15 @@ function CaseDetail({
               <Panel
                 title="Original analysis"
                 subtitle="Immutable model prediction and policy assessment"
+                className="analysis-panel"
+                action={
+                  fresh ? (
+                    <span className="fresh-badge">
+                      <Sparkles size={13} /> Just analyzed ·{" "}
+                      {(item.original.latency_ms / 1000).toFixed(2)}s
+                    </span>
+                  ) : undefined
+                }
               >
                 <div className="original-analysis">
                   <div className="eyebrow">MODEL PREDICTION</div>
@@ -942,6 +1029,11 @@ function ReviewForm({
       saved(c);
       setReason("");
       setMessage("Review saved. Your decision is recorded.");
+      toast(
+        c.product === item.product && c.issue === item.issue
+          ? "Classification confirmed"
+          : "Correction recorded in case history",
+      );
       setConflict(false);
     } catch (e) {
       setError(errorText(e));
@@ -1104,6 +1196,13 @@ function Lifecycle({ item, saved }: { item: Case; saved: (c: Case) => void }) {
           reason,
         }),
       );
+      toast(
+        status === "Resolved"
+          ? "Case resolved"
+          : item.status === "Resolved"
+            ? "Case reopened for review"
+            : `Moved to ${status.toLowerCase()}`,
+      );
       setReason("");
     } catch (e) {
       setError(errorText(e));
@@ -1196,6 +1295,7 @@ function Notes({ item, saved }: { item: Case; saved: (c: Case) => void }) {
                 reason: note,
               }),
             );
+            toast("Note added to case history");
             setNote("");
           } catch (e) {
             setError(errorText(e));
@@ -1261,6 +1361,29 @@ function Analyze({ go, health }: { go: Go; health: Health | null }) {
             }}
           >
             <ErrorBox text={error} />
+            <div
+              className="examples"
+              role="group"
+              aria-label="Example complaints"
+            >
+              <span>Try an example</span>
+              {EXAMPLES.map((x) => (
+                <button
+                  type="button"
+                  key={x.label}
+                  className={
+                    "example-chip" + (text === x.text ? " selected" : "")
+                  }
+                  disabled={busy}
+                  onClick={() => {
+                    setText(x.text);
+                    requestKey.current = crypto.randomUUID();
+                  }}
+                >
+                  {x.label}
+                </button>
+              ))}
+            </div>
             <label>
               Complaint narrative
               <textarea
@@ -1344,7 +1467,8 @@ function Imports({ go, query }: { go: Go; query: string }) {
     [name, setName] = useState(""),
     [error, setError] = useState(""),
     [busy, setBusy] = useState(false),
-    [loaded, setLoaded] = useState(false);
+    [loaded, setLoaded] = useState(false),
+    [dragging, setDragging] = useState(false);
   const key = useRef(crypto.randomUUID());
   const pending = useRef(false);
   const navigating = useRef(false);
@@ -1366,7 +1490,7 @@ function Imports({ go, query }: { go: Go; query: string }) {
             !navigating.current
           ) {
             navigating.current = true;
-            go("/cases/" + j.rows[0].case_id);
+            go("/cases/" + j.rows[0].case_id + "?new=1");
           }
         }
       } catch (e) {
@@ -1374,7 +1498,7 @@ function Imports({ go, query }: { go: Go; query: string }) {
       }
     };
     void load();
-    const t = setInterval(load, 1500);
+    const t = setInterval(load, selected ? 500 : 1500);
     return () => {
       active = false;
       clearInterval(t);
@@ -1430,13 +1554,21 @@ function Imports({ go, query }: { go: Go; query: string }) {
   };
   return (
     <>
-      <Heading
-        eyebrow="DURABLE PROCESSING"
-        title={
-          selected ? "Follow every row." : "Bring the whole queue together."
-        }
-        description="One local inference at a time. Progress is saved, even when you close this page."
-      />
+      {current?.source === "analysis" && selected ? (
+        <Heading
+          eyebrow="LOCAL INTELLIGENCE"
+          title="Reading the customer's story."
+          description="The model runs on this Mac. Your case opens as soon as it is saved."
+        />
+      ) : (
+        <Heading
+          eyebrow="DURABLE PROCESSING"
+          title={
+            selected ? "Follow every row." : "Bring the whole queue together."
+          }
+          description="One local inference at a time. Progress is saved, even when you close this page."
+        />
+      )}
       {selected && (
         <Link to="/imports" go={go} className="back-link">
           <ArrowLeft size={16} /> All imports
@@ -1444,7 +1576,11 @@ function Imports({ go, query }: { go: Go; query: string }) {
       )}
       <ErrorBox text={error} />
       {selected ? (
-        current ? (
+        current &&
+        current.source === "analysis" &&
+        ["queued", "running", "complete"].includes(current.status) ? (
+          <AnalysisProgress job={current} />
+        ) : current ? (
           <Panel
             title={current.id}
             subtitle={`${current.total} complaints · ${date(current.created_at)}`}
@@ -1542,18 +1678,67 @@ function Imports({ go, query }: { go: Go; query: string }) {
               subtitle="Up to 100 complaints · 2 MB maximum"
             >
               <div className="form-pad">
-                <label className="upload">
-                  <FileUp size={30} />
-                  <strong>{name || "Choose your complaint file"}</strong>
-                  <span>Include a column named text</span>
+                <label
+                  className={
+                    "upload" +
+                    (dragging ? " dragging" : "") +
+                    (texts.length ? " ready" : "")
+                  }
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    setDragging(true);
+                  }}
+                  onDragLeave={() => setDragging(false)}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    setDragging(false);
+                    if (!busy) upload(e.dataTransfer.files?.[0]);
+                  }}
+                >
+                  <span className="upload-icon">
+                    {texts.length ? <Check size={24} /> : <FileUp size={24} />}
+                  </span>
+                  <strong>
+                    {texts.length
+                      ? `${name} · ${texts.length} complaints ready`
+                      : name || "Drop your complaint CSV here"}
+                  </strong>
+                  <span>
+                    {texts.length
+                      ? "Review the preview, then start processing"
+                      : "or browse your files · include a column named text"}
+                  </span>
+                  <span className="button upload-button">Browse files</span>
                   <input
                     aria-label="Upload complaint CSV"
+                    className="visually-hidden"
                     type="file"
                     accept=".csv,text/csv"
                     disabled={busy}
                     onChange={(e) => upload(e.target.files?.[0])}
                   />
                 </label>
+                <button
+                  type="button"
+                  className="text-link sample-link"
+                  onClick={() => {
+                    const csv =
+                      "text\n" +
+                      EXAMPLES.map(
+                        (x) => `"${x.text.replaceAll('"', '""')}"`,
+                      ).join("\n") +
+                      "\n";
+                    const a = document.createElement("a");
+                    a.href = URL.createObjectURL(
+                      new Blob([csv], { type: "text/csv" }),
+                    );
+                    a.download = "complaintiq-sample.csv";
+                    a.click();
+                    URL.revokeObjectURL(a.href);
+                  }}
+                >
+                  <ArrowDownToLine size={14} /> Download a sample CSV
+                </button>
                 <p className="field-help">
                   Quoted commas and multiline narratives are supported. Each
                   complaint can contain up to 6,000 characters; the model reads
@@ -1652,6 +1837,68 @@ function Imports({ go, query }: { go: Go; query: string }) {
         </>
       )}
     </>
+  );
+}
+function AnalysisProgress({ job }: { job: Job }) {
+  const started = useRef(Date.now());
+  const [now, setNow] = useState(Date.now());
+  useEffect(() => {
+    const t = setInterval(() => setNow(Date.now()), 100);
+    return () => clearInterval(t);
+  }, []);
+  const stage =
+    job.status === "complete" ? 3 : job.status === "running" ? 1 : 0;
+  const steps = [
+    ["Saved to the local queue", "Durable before inference starts"],
+    [
+      "Classifying product & issue",
+      "Fine-tuned Qwen2.5 · first 2,000 characters",
+    ],
+    ["Applying workflow policy", "Priority, routing reason and next step"],
+    ["Opening your case", "Original prediction stored unchanged"],
+  ];
+  return (
+    <section className="panel analysis-progress" aria-live="polite">
+      <div className="progress-head">
+        <span className="progress-orb">
+          <Sparkles size={22} />
+        </span>
+        <div>
+          <h2>{stage === 3 ? "Case ready" : "Analyzing on this Mac"}</h2>
+          <p>
+            {job.id} · {((now - started.current) / 1000).toFixed(1)}s
+          </p>
+        </div>
+      </div>
+      <p className="progress-text">{job.rows[0]?.text}</p>
+      <ol className="progress-steps">
+        {steps.map(([title, detail], i) => {
+          const state =
+            i < stage || stage === 3
+              ? "done"
+              : i === stage || (stage === 1 && i === 2)
+                ? "active"
+                : "";
+          return (
+            <li key={title} className={state}>
+              <span className="step-icon">
+                {state === "done" ? (
+                  <Check size={14} />
+                ) : state === "active" ? (
+                  <LoaderCircle size={14} className="spin" />
+                ) : (
+                  String(i + 1)
+                )}
+              </span>
+              <div>
+                <strong>{title}</strong>
+                <small>{detail}</small>
+              </div>
+            </li>
+          );
+        })}
+      </ol>
+    </section>
   );
 }
 function SystemPage({ health }: { health: Health | null }) {
@@ -1868,6 +2115,7 @@ function SystemPage({ health }: { health: Health | null }) {
                 try {
                   const b = await pilot.backup();
                   setNotice("Backup created: " + b.name);
+                  toast("Backup created");
                   setSystem(await pilot.system());
                 } catch (e) {
                   setError(errorText(e));

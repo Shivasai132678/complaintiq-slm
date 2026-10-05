@@ -1453,3 +1453,416 @@ select {
   background-repeat: no-repeat;
   background-position: right 10px center;
 }
+
+/* ---------- Client branding ---------- */
+.prepared-for {
+  margin-top: 18px;
+  padding: 14px 13px 12px;
+  border-radius: 10px;
+  background: #ffffff08;
+  border: 1px solid #ffffff12;
+}
+.prepared-for small {
+  display: block;
+  font-size: 9px;
+  letter-spacing: 1.6px;
+  color: #90ab9c;
+  margin-bottom: 9px;
+}
+.prepared-for img {
+  display: block;
+  width: 100%;
+  max-width: 168px;
+  height: auto;
+}
+.client-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 11px;
+  color: var(--muted);
+}
+.client-mark img {
+  height: 22px;
+  width: auto;
+}
+.topbar-divider {
+  width: 1px;
+  height: 22px;
+  background: var(--line);
+  margin: 0 6px;
+}
+
+/* ---------- Toasts ---------- */
+.toasts {
+  position: fixed;
+  right: 28px;
+  bottom: 28px;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+}
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--deep);
+  color: #eef4ee;
+  font-size: 13px;
+  font-weight: 550;
+  padding: 13px 18px 13px 13px;
+  border-radius: 12px;
+  box-shadow:
+    0 18px 40px #14302733,
+    0 3px 10px #1430271f;
+  animation: toast-in 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.toast-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #b9e07f;
+  color: var(--deep);
+}
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---------- Analyze examples ---------- */
+.examples {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+.examples > span {
+  font-size: 11px;
+  color: var(--muted);
+  margin-right: 4px;
+}
+.example-chip {
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 550;
+  padding: 7px 13px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition:
+    background 0.18s,
+    border-color 0.18s,
+    transform 0.18s;
+}
+.example-chip:hover {
+  border-color: #9cc3ac;
+  background: #f4f9f2;
+  transform: translateY(-1px);
+}
+.example-chip.selected {
+  background: var(--deep);
+  border-color: var(--deep);
+  color: #fff;
+}
+
+/* ---------- Analysis progress ---------- */
+.analysis-progress {
+  max-width: 880px;
+  padding: 34px 38px 30px;
+  animation: enter 0.3s ease;
+}
+.progress-head {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.progress-head h2 {
+  margin: 0;
+  font-size: 22px;
+  letter-spacing: -0.5px;
+  color: var(--ink);
+}
+.progress-head p {
+  margin: 5px 0 0;
+  font-size: 12px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.progress-orb {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  background: linear-gradient(135deg, #22705a, #142e27);
+  box-shadow: 0 0 0 0 #22705a55;
+  animation: pulse 1.6s ease-out infinite;
+}
+@keyframes pulse {
+  to {
+    box-shadow: 0 0 0 16px #22705a00;
+  }
+}
+.progress-text {
+  position: relative;
+  margin: 26px 0 24px;
+  padding: 18px 20px;
+  border-radius: 12px;
+  background: #fafcf6;
+  border: 1px solid var(--line);
+  font-size: 14px;
+  line-height: 1.7;
+  color: #46594e;
+  overflow: hidden;
+}
+.progress-text::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    transparent 30%,
+    #22705a1c 50%,
+    transparent 70%
+  );
+  transform: translateX(-100%);
+  animation: scan 1.4s ease-in-out infinite;
+}
+@keyframes scan {
+  to {
+    transform: translateX(100%);
+  }
+}
+.progress-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+.progress-steps li {
+  display: flex;
+  gap: 11px;
+  align-items: flex-start;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: #fff;
+  opacity: 0.55;
+  transition:
+    opacity 0.3s,
+    border-color 0.3s,
+    background 0.3s;
+}
+.progress-steps li.active,
+.progress-steps li.done {
+  opacity: 1;
+}
+.progress-steps li.active {
+  border-color: #9cc3ac;
+  background: #f4f9f2;
+}
+.progress-steps strong {
+  display: block;
+  font-size: 12px;
+  color: var(--ink);
+}
+.progress-steps small {
+  display: block;
+  margin-top: 4px;
+  font-size: 10.5px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+.step-icon {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 650;
+  background: #edf0e9;
+  color: var(--muted);
+}
+.progress-steps li.active .step-icon {
+  background: var(--green);
+  color: #fff;
+}
+.progress-steps li.done .step-icon {
+  background: #b9e07f;
+  color: var(--deep);
+}
+
+/* ---------- New case reveal ---------- */
+.fresh-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 650;
+  color: var(--deep);
+  background: #e6f3d6;
+  border: 1px solid #c9e3ab;
+  padding: 6px 11px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.reveal .analysis-panel {
+  animation: reveal-glow 1.8s ease-out 0.25s both;
+}
+.reveal .original-analysis > * {
+  animation: rise 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.reveal .original-analysis > :nth-child(2) {
+  animation-delay: 0.12s;
+}
+.reveal .original-analysis > :nth-child(3) {
+  animation-delay: 0.2s;
+}
+.reveal .original-analysis > :nth-child(4) {
+  animation-delay: 0.28s;
+}
+.reveal .original-analysis > :nth-child(n + 5) {
+  animation-delay: 0.42s;
+}
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes reveal-glow {
+  0% {
+    box-shadow: 0 0 0 0 #22705a00;
+  }
+  25% {
+    box-shadow: 0 0 0 4px #22705a40;
+  }
+  100% {
+    box-shadow: 0 0 0 0 #22705a00;
+  }
+}
+
+/* ---------- Upload & dates ---------- */
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+.upload {
+  position: relative;
+  cursor: pointer;
+  padding: 34px 20px;
+  transition:
+    background 0.2s,
+    border-color 0.2s,
+    transform 0.2s;
+}
+.upload:hover,
+.upload.dragging {
+  background: #f1f7e9;
+  border-color: #7fa964;
+}
+.upload.dragging {
+  transform: scale(1.01);
+}
+.upload.ready {
+  border-style: solid;
+  border-color: #9cc3ac;
+  background: #f4f9f2;
+}
+.upload-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 15px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border: 1px solid var(--line);
+  color: var(--green);
+  box-shadow: 0 6px 16px #1c392410;
+}
+.upload.ready .upload-icon {
+  background: #b9e07f;
+  border-color: #b9e07f;
+  color: var(--deep);
+}
+.upload-button {
+  margin-top: 4px;
+  pointer-events: none;
+}
+.upload:focus-within {
+  outline: 2px solid var(--green);
+  outline-offset: 3px;
+}
+.sample-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.filter-secondary .date-field input {
+  max-width: 150px;
+  font-size: 12px;
+  min-height: 36px;
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: #fff;
+  color: var(--ink);
+  color-scheme: light;
+  accent-color: var(--green);
+  font-variant-numeric: tabular-nums;
+}
+.filter-secondary .date-field input:hover {
+  border-color: #b5cbb9;
+}
+.filter-secondary .date-field input::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0.6;
+  filter: invert(31%) sepia(35%) saturate(520%) hue-rotate(110deg);
+}
+.filter-secondary .date-field {
+  font-size: 12px;
+  font-weight: 550;
+}
+.filter-secondary select {
+  font-size: 12px;
+  min-height: 36px;
+  border-radius: 9px;
+  padding-left: 10px;
+}

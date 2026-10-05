@@ -267,3 +267,51 @@ it("accepts a valid single-column CSV and rejects a missing text header", async 
   );
   expect(pilot.submit).not.toHaveBeenCalled();
 });
+it("fills the narrative from an example complaint", async () => {
+  history.replaceState({}, "", "/analyze");
+  render(<App />);
+  fireEvent.click(screen.getByRole("button", { name: "Late fee" }));
+  expect(
+    (screen.getByLabelText("Complaint narrative") as HTMLTextAreaElement).value,
+  ).toMatch(/late fee/);
+  expect(
+    screen.getByRole("button", { name: "Analyze complaint" }),
+  ).toBeEnabled();
+});
+it("shows staged progress while a single analysis is running", async () => {
+  history.replaceState({}, "", "/imports?job=JOB-A");
+  vi.mocked(pilot.job).mockResolvedValue({
+    id: "JOB-A",
+    source: "analysis",
+    created_at: original.created_at,
+    status: "running",
+    total: 1,
+    counts: { complete: 0, failed: 0, pending: 0, running: 1, cancelled: 0 },
+    rows: [
+      {
+        position: 0,
+        text: "A late fee",
+        state: "running",
+        case_id: null,
+        error: null,
+      },
+    ],
+  } as unknown as Job);
+  render(<App />);
+  await screen.findByText("Analyzing on this Mac");
+  expect(screen.getByText("Classifying product & issue")).toBeInTheDocument();
+});
+it("confirms a saved review with a toast", async () => {
+  history.replaceState({}, "", "/cases/CQ-ONE");
+  vi.mocked(pilot.review).mockResolvedValue({
+    ...item,
+    confirmed: 1,
+    revision: 2,
+  });
+  render(<App />);
+  await screen.findByLabelText("Review reason");
+  fireEvent.click(
+    screen.getByRole("button", { name: "Confirm & save review" }),
+  );
+  await screen.findByText("Classification confirmed");
+});

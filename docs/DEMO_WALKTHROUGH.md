@@ -13,6 +13,9 @@ Start `sh run_pilot.sh` and open http://127.0.0.1:8501. Model & System should sh
 
 ## Suggested input
 
+The Analyze page has four one-click examples (Late fee, Duplicate charge, Credit report error, Deposit hold). Use one of them during the live demo so there is no typing. Avoid unrelated complaints: the model has no reliable out-of-scope label.
+
+
 ```text
 My credit card statement includes a duplicate merchant charge. I disputed the transaction and the bank has not reversed the extra payment.
 ```
