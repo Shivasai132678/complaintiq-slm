@@ -315,3 +315,29 @@ it("confirms a saved review with a toast", async () => {
   );
   await screen.findByText("Classification confirmed");
 });
+it("explains why an out-of-scope case was not classified", async () => {
+  history.replaceState({}, "", "/cases/CQ-ONE");
+  const outside = {
+    ...original,
+    product: "Unknown",
+    issue: "Needs review",
+    status: "Needs review",
+    scope_check: {
+      in_scope: false,
+      score: 0.1,
+      reason: "No card, credit-report or bank-account context found.",
+    },
+  };
+  vi.mocked(pilot.case).mockResolvedValue({
+    ...item,
+    product: "Unknown",
+    issue: "Needs review",
+    review_flag: 1,
+    original: outside,
+  });
+  render(<App />);
+  await screen.findByText("Outside the supported scope.");
+  expect(
+    screen.getByText(/No card, credit-report or bank-account context found/),
+  ).toBeInTheDocument();
+});

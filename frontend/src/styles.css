@@ -1866,3 +1866,6 @@ select {
   border-radius: 9px;
   padding-left: 10px;
 }
+.scope-notice strong {
+  color: #6b4e12;
+}

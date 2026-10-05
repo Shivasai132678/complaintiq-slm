@@ -26,6 +26,12 @@ export interface Complaint {
   input_truncated?: boolean;
   input_chars_used?: number;
   cached?: boolean;
+  scope_check?: {
+    in_scope: boolean;
+    score: number;
+    reason: string;
+    method?: string;
+  } | null;
 }
 export interface Analytics {
   total: number;

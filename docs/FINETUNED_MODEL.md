@@ -15,6 +15,20 @@ The user completed QLoRA training in Colab and downloaded the full-model Q4_K_M 
 
 Mean fine-tuned latency on the reserved test was 953 ms. All 153 predictions completed successfully. The small validation improvement did not translate into higher joint test accuracy. Results are historical, balanced, and limited to the fixed taxonomy. The 153 original test cases retain their test membership within the expanded 900-case split; the remaining 747 were not evaluated.
 
+## Out-of-scope complaints
+
+The training data contains only supported complaints, so the fine-tuned model always answers with one of the nine pairs, even for unrelated text. A scope gate (`complaintiq/scope.py`) now runs before the model. It requires card, credit-report or bank-account context and uses a TF-IDF logistic regression trained on the 9,000 supported complaints versus 1,200 public CFPB complaints about other products (`data/scope/other_products.csv`, tune split). Out-of-scope text becomes `Unknown / Needs review` with a stated reason; the model is not called.
+
+| Held-out measure | Result |
+|---|---:|
+| Unrelated authored complaints caught (54) | 94.4% |
+| Other CFPB product complaints caught (1,200) | 62.8% |
+| Mortgage / student loan / debt collection caught | 74.0% / 87.5% / 41.5% |
+| Supported complaints sent to review (900 test) | 2.4% |
+| 153-case test with gate (gated counted as errors) | 86.9% product · 53.6% joint |
+
+Reproduce with `.venv/bin/python -m scripts.evaluate_scope`. The unrelated set is a small authored challenge set, not real traffic. Retraining with out-of-scope examples remains the stronger long-term fix.
+
 ## Runtime and application
 
 Run these in separate terminals from the project directory:

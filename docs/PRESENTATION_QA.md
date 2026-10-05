@@ -31,7 +31,7 @@ On issue classes that overlap in meaning: "Other" (credit card, 24% recall), "Pr
 These are the original reserved test cases, kept frozen from the first day. The expanded split has 900. Running all of them takes about 15 minutes: `.venv/bin/python -m scripts.evaluate_server --test-file data/finetuning/test.csv --output artifacts/finetuned_evaluation_900.json`.
 
 **What happens with a complaint that isn't about these products?**
-Be upfront here. The training data contained only in-scope complaints, so the fine-tuned model does not reliably return "Unknown". In a check on October 5, unrelated texts (a late food delivery, a noisy neighbour) were labelled as checking-account issues. That is why every case needs human confirmation, and why reviewers can mark a case "Outside supported scope". The fix is to add out-of-scope examples to the training data, or put a relevance check in front of the model.
+The fine-tuned model never learned an "out of scope" answer, because its training data only had supported complaints. So a scope gate now runs before the model. It checks two things: whether the text mentions a card, a credit report or a bank account, and whether a small TF-IDF classifier (trained on our 9,000 complaints versus public CFPB complaints about mortgages, student loans, debt collection and other loans) thinks it belongs. Anything that fails goes to human review with the reason shown, and the model is not run. Measured on held-out data: 94% of unrelated complaints and 63% of other-product complaints are caught, while 2.4% of supported complaints are sent to review unnecessarily. Debt collection is the hardest case (42% caught), because those complaints talk about credit reports. The long-term fix is retraining with out-of-scope examples. Evidence: `artifacts/scope_evaluation.json`.
 
 **Any data leakage?**
 No IDs or exact normalized inputs are shared across splits. An approximate near-duplicate filter removed 65 candidates. Paraphrase-level leakage can't be fully ruled out (see `docs/FINETUNING_DATASET.md`).
@@ -60,4 +60,5 @@ It's a single-operator local pilot. Next steps for production: authentication, m
 | Validation joint accuracy, original → fine-tuned | 48% → 74% |
 | Latency | ~0.95 s mean, ~1.5 s p95 on M1 |
 | Model size | 1.5B params, ~986 MB Q4_K_M |
-| Tests | 72 Python + 19 frontend |
+| Out-of-scope caught | 94% unrelated · 63% other financial products |
+| Tests | 74 Python + 23 frontend |

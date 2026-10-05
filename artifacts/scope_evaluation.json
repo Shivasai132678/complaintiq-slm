@@ -1,0 +1,39 @@
+{
+  "method": "Scope gate: domain terms + TF-IDF logistic regression (supported vs other CFPB products)",
+  "threshold": 0.25,
+  "anchor_override": 0.9,
+  "evaluated_at": "2026-10-05T11:29:05.369597+00:00",
+  "supported_sent_to_review": {
+    "validation_900_used_for_threshold": 0.0267,
+    "test_900": 0.0244
+  },
+  "other_cfpb_products_caught": {
+    "all_test": 0.6275,
+    "test_size": 1200,
+    "by_family": {
+      "Consumer or vehicle loan": 0.575,
+      "Debt collection": 0.415,
+      "Money transfer or service": 0.5,
+      "Mortgage": 0.74,
+      "Payday or personal loan": 0.66,
+      "Student loan": 0.875
+    }
+  },
+  "unrelated_authored_caught": {
+    "test": 0.9444,
+    "tune": 0.9815,
+    "test_size": 54
+  },
+  "fine_tuned_153_with_gate": {
+    "sent_to_review": 4,
+    "product_accuracy": 0.8693,
+    "joint_accuracy": 0.5359,
+    "note": "Gated cases count as errors here; in the app they go to human review."
+  },
+  "limitations": [
+    "Unrelated examples are a small authored challenge set (108 texts), not a real traffic sample.",
+    "Other-product complaints come from the same 2011-2018 CFPB archive as the training data.",
+    "Debt collection complaints often discuss credit reports, so many still pass the gate.",
+    "Supported complaints that are sent to review are not lost; a reviewer classifies them."
+  ]
+}

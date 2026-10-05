@@ -37,7 +37,7 @@ This command uses held-out public records for demonstration, not for retraining.
 
 ## Model behavior
 
-- Product and issue: either the trained baseline or the selected local SLM.
+- Product and issue: either the trained baseline or the selected local SLM. A scope gate runs first and sends unrelated or other-product complaints to review without classifying them (see `artifacts/scope_evaluation.json`).
 - Priority and routing: configurable demonstration rules with matched reasons. These are not legal assessments or trained CFPB severity labels.
 - Suggested action: category-based templates for human review.
 - Summary: a clearly labeled extractive preview, not a generated resolution.

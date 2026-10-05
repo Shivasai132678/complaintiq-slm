@@ -29,6 +29,10 @@ The supplied checkpoint-563 Q4_K_M model is verified on the M1 and connected to 
 
 The evaluation is a preserved 153-case subset of the expanded 900-case test split. The remaining 747 cases have not been evaluated. Evidence: `artifacts/finetuned_validation_smoke.json`, `artifacts/finetuned_evaluation.json`, and `docs/FINETUNED_MODEL.md`.
 
+## Scope gate
+
+Unrelated and other-product complaints are routed to review before inference. Held-out results: 94.4% of unrelated and 62.8% of other-product complaints caught; 2.4% of supported complaints sent to review. Evidence: `artifacts/scope_evaluation.json`, `docs/FINETUNED_MODEL.md`.
+
 ## Remaining scope
 
 - Rehearse and record the company demo.

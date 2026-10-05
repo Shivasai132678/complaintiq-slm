@@ -13,7 +13,7 @@ Start `sh run_pilot.sh` and open http://127.0.0.1:8501. Model & System should sh
 
 ## Suggested input
 
-The Analyze page has four one-click examples (Late fee, Duplicate charge, Credit report error, Deposit hold). Use one of them during the live demo so there is no typing. Avoid unrelated complaints: the model has no reliable out-of-scope label.
+The Analyze page has one-click examples (Late fee, Duplicate charge, Credit report error, Deposit hold, Out of scope). Use one of them during the live demo so there is no typing. The "Out of scope" example shows the scope gate: the case goes straight to review with the reason, and the model is not run.
 
 
 ```text

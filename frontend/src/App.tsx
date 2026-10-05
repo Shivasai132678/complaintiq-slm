@@ -95,6 +95,10 @@ const EXAMPLES = [
     label: "Deposit hold",
     text: "I deposited a check into my checking account last week. The bank placed a hold and the money is still not available, even though the check has cleared.",
   },
+  {
+    label: "Out of scope",
+    text: "The restaurant delivered my order an hour late and the food was cold. Nobody answered when I called the store.",
+  },
 ];
 function useRoute() {
   const [url, set] = useState(location.pathname + location.search);
@@ -956,10 +960,19 @@ function CaseDetail({
                   </div>
                   <p>{item.original.priority_reason}</p>
                   <p>{item.original.action}</p>
-                  {!!item.review_flag && (
-                    <div className="notice">
-                      This case was originally flagged for human review.
+                  {item.original.scope_check?.in_scope === false ? (
+                    <div className="notice scope-notice">
+                      <strong>Outside the supported scope.</strong>{" "}
+                      {item.original.scope_check.reason} The model was not run.
+                      Choose a supported product, or mark the case Outside
+                      supported scope.
                     </div>
+                  ) : (
+                    !!item.review_flag && (
+                      <div className="notice">
+                        This case was originally flagged for human review.
+                      </div>
+                    )
                   )}
                 </div>
               </Panel>

@@ -229,7 +229,10 @@ def test_slm_service_has_no_silent_fallback(
     assert result["explanation"] == []
     assert "disabled" in result["explanation_method"]
     service.slm_lime = True
-    assert service.analyze("Please review a purchase")["explanation"][0]["token"] == "purchase"
+    assert (
+        service.analyze("Please review a purchase on my credit card")["explanation"][0]["token"]
+        == "purchase"
+    )
     assert len(service._summary("a" * 500)) == 320
 
     def fail(text):
@@ -237,7 +240,7 @@ def test_slm_service_has_no_silent_fallback(
 
     service.model.classify = fail
     with pytest.raises(ValueError, match="Invalid SLM"):
-        service.analyze("This must not silently fall back")
+        service.analyze("My credit card charge must not silently fall back")
     assert service.analytics()["total"] == 2
 
 
