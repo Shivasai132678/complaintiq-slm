@@ -30,3 +30,20 @@ data/*.worker.lock
 
 # Rendered videos (large binaries)
 artifacts/video/*.mp4
+
+# Windows training kit: large downloaded/generated payloads (code and docs stay tracked)
+data/cfpb_raw/
+pc_kit/model/
+pc_kit/wheels/
+pc_kit/installers/
+pc_kit/tools/llama-bin/
+pc_kit/data/*.csv
+pc_kit/reference_predictions/
+pc_kit/results/
+pc_kit/.venv/
+pc_kit/CHECKSUMS.sha256
+
+# Windows RUN_ALL logs
+logs/
+pc_kit/wheels_app/
+pc_kit/downloads/

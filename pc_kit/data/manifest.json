@@ -1,0 +1,177 @@
+{
+  "source": "Official CFPB Consumer Complaint Database export (complaints.csv.zip)",
+  "source_url": "https://files.consumerfinance.gov/ccdb/complaints.csv.zip",
+  "archived_copy": "https://huggingface.co/datasets/vivekkopthsd/cfpb-consumer-complaints/resolve/280afed1c919ffc14802e0771b895da323b86a48/complaints.csv.zip",
+  "source_note": "The live CFPB export no longer includes consumer narratives (checked 2026-10-08), so the official file as captured by the Internet Archive on 2026-08-15 is used.",
+  "archive_sha256": "d92239489715c816fa4fc77a27324878cfc88de5b417065ea185e80ac92a6658",
+  "prepared_at": "2026-10-08T11:22:15.686554+00:00",
+  "seed": 42,
+  "classes": [
+    "Checking or savings account / Deposits and withdrawals",
+    "Checking or savings account / Managing an account",
+    "Checking or savings account / Problems caused by my funds being low",
+    "Credit card / Billing disputes",
+    "Credit card / Fees or interest",
+    "Credit card / Other",
+    "Credit reporting / Improper use of your report",
+    "Credit reporting / Incorrect information on your report",
+    "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+    "Unknown / Needs review"
+  ],
+  "eligible_rows_scanned": 3510009,
+  "data_months": [
+    "2015-03",
+    "2026-07"
+  ],
+  "split_policy": "time-based: newest months = test, preceding months = validation, older = train",
+  "test_months": [
+    "2026-02",
+    "2026-03",
+    "2026-04",
+    "2026-05",
+    "2026-06",
+    "2026-07"
+  ],
+  "validation_months": [
+    "2025-12",
+    "2026-01"
+  ],
+  "train_months": [
+    "2015-03",
+    "2025-11"
+  ],
+  "per_class_targets": {
+    "train": 7000,
+    "validation": 200,
+    "test": 300
+  },
+  "split_counts": {
+    "test": 3000,
+    "validation": 1938,
+    "train": 70162,
+    "check": 1407
+  },
+  "class_counts": {
+    "test": {
+      "Checking or savings account / Deposits and withdrawals": 300,
+      "Checking or savings account / Managing an account": 300,
+      "Checking or savings account / Problems caused by my funds being low": 300,
+      "Credit card / Billing disputes": 300,
+      "Credit card / Fees or interest": 300,
+      "Credit card / Other": 300,
+      "Credit reporting / Improper use of your report": 300,
+      "Credit reporting / Incorrect information on your report": 300,
+      "Credit reporting / Problem with a credit reporting company's investigation into an existing problem": 300,
+      "Unknown / Needs review": 300
+    },
+    "validation": {
+      "Checking or savings account / Deposits and withdrawals": 200,
+      "Checking or savings account / Managing an account": 200,
+      "Checking or savings account / Problems caused by my funds being low": 200,
+      "Credit card / Billing disputes": 200,
+      "Credit card / Fees or interest": 200,
+      "Credit card / Other": 200,
+      "Credit reporting / Improper use of your report": 138,
+      "Credit reporting / Incorrect information on your report": 200,
+      "Credit reporting / Problem with a credit reporting company's investigation into an existing problem": 200,
+      "Unknown / Needs review": 200
+    },
+    "train": {
+      "Checking or savings account / Deposits and withdrawals": 7000,
+      "Checking or savings account / Managing an account": 7000,
+      "Checking or savings account / Problems caused by my funds being low": 7000,
+      "Credit card / Billing disputes": 7000,
+      "Credit card / Fees or interest": 7000,
+      "Credit card / Other": 7000,
+      "Credit reporting / Improper use of your report": 7000,
+      "Credit reporting / Incorrect information on your report": 7000,
+      "Credit reporting / Problem with a credit reporting company's investigation into an existing problem": 7000,
+      "Unknown / Needs review": 7162
+    },
+    "check": {
+      "Checking or savings account / Deposits and withdrawals": 17,
+      "Checking or savings account / Managing an account": 17,
+      "Checking or savings account / Problems caused by my funds being low": 17,
+      "Credit card / Billing disputes": 17,
+      "Credit card / Fees or interest": 17,
+      "Credit card / Other": 17,
+      "Credit reporting / Improper use of your report": 17,
+      "Credit reporting / Incorrect information on your report": 17,
+      "Credit reporting / Problem with a credit reporting company's investigation into an existing problem": 17,
+      "Unknown / Needs review": 1254
+    }
+  },
+  "out_of_scope_family_counts": {
+    "test": {
+      "debt_collection": 52,
+      "debt_or_credit_management": 8,
+      "money_transfer": 51,
+      "mortgage": 51,
+      "payday_or_personal_loan": 43,
+      "prepaid_card": 8,
+      "student_loan": 37,
+      "vehicle_or_consumer_loan": 50
+    },
+    "validation": {
+      "debt_collection": 35,
+      "debt_or_credit_management": 9,
+      "money_transfer": 35,
+      "mortgage": 34,
+      "payday_or_personal_loan": 18,
+      "prepaid_card": 17,
+      "student_loan": 18,
+      "vehicle_or_consumer_loan": 34
+    },
+    "train": {
+      "debt_collection": 1248,
+      "debt_or_credit_management": 86,
+      "money_transfer": 1248,
+      "mortgage": 1248,
+      "other_financial_service": 7,
+      "payday_or_personal_loan": 634,
+      "prepaid_card": 321,
+      "student_loan": 1122,
+      "unrelated_authored": 162,
+      "vehicle_or_consumer_loan": 1086
+    },
+    "check": {
+      "Consumer or vehicle loan": 200,
+      "Debt collection": 200,
+      "Money transfer or service": 200,
+      "Mortgage": 200,
+      "Payday or personal loan": 200,
+      "Student loan": 200,
+      "unrelated_authored": 54
+    }
+  },
+  "shortages": {
+    "validation: Credit reporting / Improper use of your report": {
+      "available": 138,
+      "target": 200
+    }
+  },
+  "filters": {
+    "test_exact_duplicate_input": 772,
+    "validation_near_duplicate_of_evaluation_row": 113,
+    "validation_exact_duplicate_input": 540,
+    "train_exact_duplicate_input": 15775,
+    "train_near_duplicate_of_evaluation_row": 3052,
+    "train_duplicate_or_reserved_id": 79
+  },
+  "authored_unrelated_training_rows": 162,
+  "check_set_sources": {
+    "scope_other_products_test": 1200,
+    "original_test_153": 153,
+    "scope_unrelated_authored_test": 54
+  },
+  "input_policy": "Whitespace-normalized first 2,000 characters (identical to the app). Token truncation to max length happens in the training script.",
+  "dedup_policy": "Exact (case-folded input hash) across all splits with priority test > validation > train; check-set IDs/inputs reserved; near-duplicates (shingle Jaccard >= 0.90) of check/test/validation rows removed from later splits.",
+  "label_mapping": "See src/ckit_common.py map_cfpb_label: old (2011-2017) and new (2017+) CFPB issue names mapped onto the nine app classes; supported products with other issues are excluded; other CFPB products form the out-of-scope class.",
+  "elapsed_seconds": 371,
+  "output_sha256": {
+    "train.csv": "b59500d244ed4ffb7a61ca04ab83871c1ef0b1eaa6fcb0e521d9647b88fa9da1",
+    "validation.csv": "3fa40bd0e37d505652a0e2fca45e046bdbaeef382bc7b3e2903314685ba52547",
+    "test.csv": "58138289c69b467dfad66b5c2ab8f545f4dcc53157de9c6535a5ae40bab33b6c",
+    "check.csv": "25d1242331faacf7f2d12f2ae03b81788b8b0a8f024a1be56ea84d0ecc653b77"
+  }
+}

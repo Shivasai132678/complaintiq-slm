@@ -2,12 +2,12 @@
 
 from __future__ import annotations
 
-import fcntl
 import logging
 import threading
 import time
 from typing import Callable, TextIO
 
+from complaintiq.locking import lock_exclusive, unlock
 from complaintiq.storage import ComplaintStore, now
 
 LOG = logging.getLogger(__name__)
@@ -25,9 +25,9 @@ class JobRunner:
         with self.guard:
             if self.thread and self.thread.is_alive():
                 return
-            handle = self.store.path.with_suffix(".worker.lock").open("a")
+            handle = self.store.path.with_suffix(".worker.lock").open("a+")
             try:
-                fcntl.flock(handle, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                lock_exclusive(handle)
             except BlockingIOError:
                 handle.close()
                 raise RuntimeError(
@@ -52,7 +52,7 @@ class JobRunner:
         if self.thread:
             self.thread.join(timeout=130)
         if self.lock_file and (not self.thread or not self.thread.is_alive()):
-            fcntl.flock(self.lock_file, fcntl.LOCK_UN)
+            unlock(self.lock_file)
             self.lock_file.close()
             self.lock_file = None
 

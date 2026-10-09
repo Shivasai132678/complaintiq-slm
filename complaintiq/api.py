@@ -197,7 +197,7 @@ def create_app(
         if service:
             return service.baseline.taxonomy
         result: dict[str, list[str]] = {}
-        with DEFAULT_TRAINING.open() as f:
+        with DEFAULT_TRAINING.open(encoding="utf-8", newline="") as f:
             for r in csv.DictReader(f):
                 if r["issue"] not in result.setdefault(r["product"], []):
                     result[r["product"]].append(r["issue"])
@@ -229,7 +229,7 @@ def create_app(
         data_dir = DEFAULT_TRAINING.parent / ("finetuning" if current.backend == "slm" else "")
         sizes = {}
         for name in ("training.csv", "validation.csv", "test.csv"):
-            with (data_dir / name).open() as f:
+            with (data_dir / name).open(encoding="utf-8", newline="") as f:
                 sizes[name] = sum(1 for _ in csv.DictReader(f))
         return {
             "status": "ok",
@@ -490,7 +490,7 @@ def create_app(
     @app.get("/api/evaluation")
     def measured_evaluation():
         try:
-            value = json.loads(evaluation.read_text())
+            value = json.loads(evaluation.read_text(encoding="utf-8"))
             if not isinstance(value, dict) or value.get("status") not in ("measured", "complete"):
                 raise ValueError()
             return value

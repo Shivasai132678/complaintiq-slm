@@ -1,0 +1,16 @@
+# Top-level packages for the Windows training PC (Python 3.11, CUDA 12.6 PyTorch).
+# Exact versions of every transitive dependency are in requirements-windows.lock.txt.
+torch==2.10.0+cu126
+bitsandbytes==0.50.2
+transformers==5.19.0
+peft==0.21.2
+accelerate==1.15.0
+safetensors==0.8.0
+tokenizers==0.23.2
+sentencepiece
+protobuf
+gguf==0.19.0
+psutil
+tqdm
+jupyterlab==4.6.4
+ipykernel

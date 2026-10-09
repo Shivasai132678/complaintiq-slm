@@ -40,13 +40,42 @@ def wait(url, child, seconds=90):
     raise RuntimeError("Service readiness timed out. See logs in data/logs.")
 
 
+NEW_MODEL = ROOT / "models/complaintiq-qwen3-4b-Q4_K_M.gguf"
+OLD_MODEL = ROOT / "models/Qwen2.5-1.5B-Instruct.Q4_K_M.gguf"
+
+
+def default_model() -> Path:
+    """COMPLAINTIQ_MODEL_PATH, else the fine-tuned Qwen3-4B GGUF if present, else Qwen2.5."""
+    configured = os.environ.get("COMPLAINTIQ_MODEL_PATH")
+    if configured:
+        return Path(configured).resolve()
+    return (NEW_MODEL if NEW_MODEL.is_file() else OLD_MODEL).resolve()
+
+
+def default_evaluation(model: Path) -> Path:
+    configured = os.environ.get("COMPLAINTIQ_EVALUATION_PATH")
+    if configured:
+        return Path(configured)
+    qwen3 = ROOT / "artifacts/qwen3_evaluation.json"
+    if model.name == NEW_MODEL.name and qwen3.is_file():
+        return qwen3
+    return ROOT / "artifacts/finetuned_evaluation.json"
+
+
+def find_llama_server() -> str:
+    """COMPLAINTIQ_LLAMA_SERVER, PATH, the Windows kit's CUDA build, then Homebrew."""
+    candidates = [
+        os.environ.get("COMPLAINTIQ_LLAMA_SERVER"),
+        shutil.which("llama-server"),
+        str(ROOT / "pc_kit/tools/llama-bin/llama-server.exe") if os.name == "nt" else None,
+        "/opt/homebrew/bin/llama-server",
+    ]
+    return next((c for c in candidates if c and Path(c).is_file()), "llama-server")
+
+
 def main():
-    model = Path(
-        os.environ.get(
-            "COMPLAINTIQ_MODEL_PATH", str(ROOT / "models/Qwen2.5-1.5B-Instruct.Q4_K_M.gguf")
-        )
-    ).resolve()
-    server = shutil.which("llama-server") or "/opt/homebrew/bin/llama-server"
+    model = default_model()
+    server = find_llama_server()
     if not model.is_file() or not Path(server).is_file():
         raise RuntimeError("Install llama.cpp and place the GGUF in models; see README.")
     if not (ROOT / "frontend/dist/index.html").is_file():
@@ -79,7 +108,7 @@ def main():
             get("http://127.0.0.1:8504/health")
             print("Reusing the matching local model server.", flush=True)
         else:
-            log = (folder / "model.log").open("a")
+            log = (folder / "model.log").open("a", encoding="utf-8")
             logs.append(log)
             child = subprocess.Popen(
                 [
@@ -125,9 +154,9 @@ def main():
                 "COMPLAINTIQ_BACKEND": "slm",
                 "COMPLAINTIQ_MODEL_PATH": str(model),
                 "COMPLAINTIQ_MODEL_URL": "http://127.0.0.1:8504",
-                "COMPLAINTIQ_EVALUATION_PATH": str(ROOT / "artifacts/finetuned_evaluation.json"),
+                "COMPLAINTIQ_EVALUATION_PATH": str(default_evaluation(model)),
             }
-            log = (folder / "app.log").open("a")
+            log = (folder / "app.log").open("a", encoding="utf-8")
             logs.append(log)
             child = subprocess.Popen(
                 [

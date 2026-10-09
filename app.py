@@ -267,7 +267,7 @@ def evidence_view() -> None:
         st.info("No evaluation report yet. Run the evaluation script to populate this view.")
     else:
         try:
-            payload = json.loads(report.read_text())
+            payload = json.loads(report.read_text(encoding="utf-8"))
             st.caption(
                 f"{payload.get('model', 'Model')} · {payload.get('backend', '—')} · {payload.get('test_size', '—')} held-out complaints"
             )
@@ -393,7 +393,7 @@ def batch_view(db_path: str, backend: str, model_path: str | None) -> None:
 def main() -> None:
     st.set_page_config(page_title="ComplaintIQ", page_icon="C", layout="wide")
     st.markdown(
-        f"<style>{(ROOT / 'assets' / 'style.css').read_text()}</style>", unsafe_allow_html=True
+        f"<style>{(ROOT / 'assets' / 'style.css').read_text(encoding='utf-8')}</style>", unsafe_allow_html=True
     )
     st.sidebar.title("ComplaintIQ")
     st.sidebar.caption("FINANCIAL COMPLAINT INTELLIGENCE")

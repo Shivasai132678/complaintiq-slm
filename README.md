@@ -10,6 +10,10 @@ The demo now runs the supplied **fine-tuned Qwen2.5-1.5B-Instruct Q4_K_M GGUF** 
 
 On 153 reserved test complaints, product accuracy is **88.89%**, joint product/issue accuracy **54.25%**, and mean inference latency **953 ms**. The baseline scored **88.24%** product and **55.56%** joint accuracy on the same split. Fine-tuning does not establish a joint-accuracy improvement here. See [docs/FINETUNED_MODEL.md](docs/FINETUNED_MODEL.md) for measured evidence and limitations.
 
+## Windows PC (training + app)
+
+To train the new Qwen3-4B model and run the whole app on a fresh Windows 11 PC with an NVIDIA GPU, copy the project with `sh pc_kit/mac_prep/make_pc_bundle.sh <destination>` and follow [pc_kit/README.md](pc_kit/README.md). Everything is installed offline: on the PC, double-click `RUN_ALL.bat` (setup, training, export, app, in order; `RESUME_ALL.bat` continues after an interruption).
+
 ## Run locally
 
 Use Python 3.12 and Node.js 22.12+ (verified with 22.22). This workspace already has `.venv` installed. The frontend's production build is served by the local Python API; a separate frontend server is not required for the demo.
