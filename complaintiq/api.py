@@ -35,6 +35,22 @@ ComplaintText = Annotated[
 Reason = Annotated[str, StringConstraints(strip_whitespace=True, max_length=4000)]
 
 
+@lru_cache(maxsize=16)
+def _csv_rows(path: str, modified: float) -> int:
+    """Row count of a CSV, cached until the file changes (health is polled)."""
+    with open(path, encoding="utf-8", newline="") as f:
+        return sum(1 for _ in csv.DictReader(f))
+
+
+def dataset_files(backend: str, model_version: str) -> list[Path]:
+    """Training, validation and test CSVs that the active model was trained and evaluated on."""
+    qwen3 = ROOT / "training" / "data"
+    if backend == "slm" and "qwen3" in model_version.lower() and (qwen3 / "train.csv").is_file():
+        return [qwen3 / n for n in ("train.csv", "validation.csv", "test.csv")]
+    folder = DEFAULT_TRAINING.parent / ("finetuning" if backend == "slm" else "")
+    return [folder / n for n in ("training.csv", "validation.csv", "test.csv")]
+
+
 class StrictInput(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -197,7 +213,7 @@ def create_app(
         if service:
             return service.baseline.taxonomy
         result: dict[str, list[str]] = {}
-        with DEFAULT_TRAINING.open() as f:
+        with DEFAULT_TRAINING.open(encoding="utf-8", newline="") as f:
             for r in csv.DictReader(f):
                 if r["issue"] not in result.setdefault(r["product"], []):
                     result[r["product"]].append(r["issue"])
@@ -226,20 +242,19 @@ def create_app(
             raise HTTPException(
                 503, "The classification engine is unavailable. Check the local model server."
             ) from None
-        data_dir = DEFAULT_TRAINING.parent / ("finetuning" if current.backend == "slm" else "")
-        sizes = {}
-        for name in ("training.csv", "validation.csv", "test.csv"):
-            with (data_dir / name).open() as f:
-                sizes[name] = sum(1 for _ in csv.DictReader(f))
+        train, validation, test = (
+            _csv_rows(str(p), p.stat().st_mtime)
+            for p in dataset_files(current.backend, current.model.model_version)
+        )
         return {
             "status": "ok",
             "backend": current.backend,
             "model_version": current.model.model_version,
             "training_status": "trained_exported" if current.backend == "slm" else "deferred",
             "slm_status": "ready" if current.backend == "slm" else "not_configured",
-            "dataset_size": sum(sizes.values()),
-            "training_size": sizes["training.csv"],
-            "test_size": sizes["test.csv"],
+            "dataset_size": train + validation + test,
+            "training_size": train,
+            "test_size": test,
             "products": sorted(taxonomy()),
             "taxonomy": taxonomy(),
         }
@@ -490,7 +505,7 @@ def create_app(
     @app.get("/api/evaluation")
     def measured_evaluation():
         try:
-            value = json.loads(evaluation.read_text())
+            value = json.loads(evaluation.read_text(encoding="utf-8"))
             if not isinstance(value, dict) or value.get("status") not in ("measured", "complete"):
                 raise ValueError()
             return value

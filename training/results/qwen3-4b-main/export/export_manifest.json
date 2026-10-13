@@ -1,0 +1,10 @@
+{
+  "gguf": "complaintiq-qwen3-4b-Q4_K_M.gguf",
+  "sha256": "9a810438c1acac3094aae0bf5c0f84a31a190c844020a501579b19f418172211",
+  "bytes": 2497278848,
+  "quantization": "Q4_K_M",
+  "base_model": "Qwen3-4B-Instruct-2507",
+  "adapter": "d:\\SLMProject\\pc_kit\\results\\qwen3-4b-main\\final_adapter",
+  "note": "Adapter trained against the 4-bit NF4 base and merged into the bf16 base before quantization.",
+  "elapsed_seconds": 70
+}

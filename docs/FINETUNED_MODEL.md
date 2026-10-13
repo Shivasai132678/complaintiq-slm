@@ -31,11 +31,10 @@ Reproduce with `.venv/bin/python -m scripts.evaluate_scope`. The unrelated set i
 
 ## Runtime and application
 
-Run these in separate terminals from the project directory:
+This Qwen2.5 model has since been replaced by the Qwen3-4B model in the README. To run it again, point the launcher at it:
 
 ```sh
-sh run_model.sh
-sh run_demo.sh
+COMPLAINTIQ_MODEL_PATH=models/Qwen2.5-1.5B-Instruct.Q4_K_M.gguf COMPLAINTIQ_EVALUATION_PATH=artifacts/finetuned_evaluation.json sh run_pilot.sh
 ```
 
 Open http://127.0.0.1:8501. The API reports the configured engine in `/api/health`, returns `backend: slm` and the GGUF filename with each new result, and stores cases in the existing local SQLite database. Older baseline cases retain their original backend labels. For an explicit baseline demonstration, stop the app and use `COMPLAINTIQ_BACKEND=baseline sh run_demo.sh`.

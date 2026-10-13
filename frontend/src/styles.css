@@ -1859,6 +1859,11 @@ select {
 .filter-secondary .date-field {
   font-size: 12px;
   font-weight: 550;
+  /* Inline filter, not a stacked form field: drop the global label/input spacing. */
+  margin: 0;
+}
+.filter-secondary .date-field input {
+  margin-top: 0;
 }
 .filter-secondary select {
   font-size: 12px;

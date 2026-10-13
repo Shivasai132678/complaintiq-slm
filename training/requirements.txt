@@ -1,0 +1,15 @@
+# Training / evaluation / export on a Linux or Windows machine with an NVIDIA GPU (CUDA 12.6).
+# pip install -r training/requirements.txt --extra-index-url https://download.pytorch.org/whl/cu126
+# These are the versions used for the published Qwen3-4B run (Python 3.11).
+torch==2.10.0+cu126
+bitsandbytes==0.50.2
+transformers==5.19.0
+peft==0.21.2
+accelerate==1.15.0
+safetensors==0.8.0
+tokenizers==0.23.2
+sentencepiece
+protobuf
+gguf==0.19.0
+psutil
+tqdm

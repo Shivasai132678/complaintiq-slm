@@ -33,15 +33,6 @@ export interface Complaint {
     method?: string;
   } | null;
 }
-export interface Analytics {
-  total: number;
-  by_product: Record<string, number>;
-  by_priority: Record<string, number>;
-  by_department: Record<string, number>;
-  by_backend: Record<string, number>;
-  needs_review: number;
-  average_latency_ms: number;
-}
 export interface Scores {
   accuracy: number;
   precision_macro: number;
@@ -61,8 +52,4 @@ export interface Evaluation {
   latency_ms_mean: number;
   review_rate: number;
   limitations: string | string[];
-}
-export interface BatchResult {
-  items: (Complaint | { text: string; error: string })[];
-  saved: number;
 }

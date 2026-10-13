@@ -1,0 +1,350 @@
+{
+  "mode": "train",
+  "model": "Qwen3-4B-Instruct-2507",
+  "quantization": "4-bit NF4 QLoRA (double quant, bf16 compute)",
+  "train_rows": 70162,
+  "steps_completed": 950,
+  "steps_planned": 950,
+  "steps_per_epoch": 4386,
+  "train_seconds": 7282.5,
+  "seconds_per_step": 7.666,
+  "train_loss": 0.0573,
+  "peak_vram_gb": 15.29,
+  "data_examples": 70162,
+  "data_truncated_complaints": 17877,
+  "data_mean_tokens": 369.2,
+  "data_p50_tokens": 363,
+  "data_max_tokens": 512,
+  "data_total_tokens": 25905060,
+  "final_evaluation": {
+    "test": {
+      "n": 3000,
+      "accuracy": 0.645,
+      "macro_precision": 0.6654,
+      "macro_recall": 0.645,
+      "macro_f1": 0.6495,
+      "weighted_f1": 0.6495,
+      "product_accuracy": 0.9027,
+      "in_scope_joint_accuracy": 0.6441,
+      "in_scope_n": 2700,
+      "out_of_scope": {
+        "precision": 0.8235,
+        "recall": 0.6533,
+        "f1": 0.7286,
+        "support": 300
+      },
+      "invalid_predictions": 0,
+      "per_class": {
+        "Checking or savings account / Deposits and withdrawals": {
+          "precision": 0.6284,
+          "recall": 0.62,
+          "f1": 0.6242,
+          "support": 300
+        },
+        "Checking or savings account / Managing an account": {
+          "precision": 0.4758,
+          "recall": 0.6567,
+          "f1": 0.5518,
+          "support": 300
+        },
+        "Checking or savings account / Problems caused by my funds being low": {
+          "precision": 0.8319,
+          "recall": 0.6433,
+          "f1": 0.7256,
+          "support": 300
+        },
+        "Credit card / Billing disputes": {
+          "precision": 0.7666,
+          "recall": 0.81,
+          "f1": 0.7877,
+          "support": 300
+        },
+        "Credit card / Fees or interest": {
+          "precision": 0.8784,
+          "recall": 0.8667,
+          "f1": 0.8725,
+          "support": 300
+        },
+        "Credit card / Other": {
+          "precision": 0.7678,
+          "recall": 0.6833,
+          "f1": 0.7231,
+          "support": 300
+        },
+        "Credit reporting / Improper use of your report": {
+          "precision": 0.5323,
+          "recall": 0.44,
+          "f1": 0.4818,
+          "support": 300
+        },
+        "Credit reporting / Incorrect information on your report": {
+          "precision": 0.4334,
+          "recall": 0.5967,
+          "f1": 0.5021,
+          "support": 300
+        },
+        "Credit reporting / Problem with a credit reporting company's investigation into an existing problem": {
+          "precision": 0.5161,
+          "recall": 0.48,
+          "f1": 0.4974,
+          "support": 300
+        },
+        "Unknown / Needs review": {
+          "precision": 0.8235,
+          "recall": 0.6533,
+          "f1": 0.7286,
+          "support": 300
+        }
+      },
+      "confusion": {
+        "Checking or savings account / Deposits and withdrawals": {
+          "Checking or savings account / Deposits and withdrawals": 186,
+          "Checking or savings account / Managing an account": 89,
+          "Checking or savings account / Problems caused by my funds being low": 7,
+          "Unknown / Needs review": 4,
+          "Credit card / Fees or interest": 2,
+          "Credit card / Billing disputes": 7,
+          "Credit card / Other": 3,
+          "Credit reporting / Incorrect information on your report": 1,
+          "Credit reporting / Problem with a credit reporting company's investigation into an existing problem": 1
+        },
+        "Checking or savings account / Managing an account": {
+          "Checking or savings account / Managing an account": 197,
+          "Checking or savings account / Deposits and withdrawals": 60,
+          "Checking or savings account / Problems caused by my funds being low": 21,
+          "Credit card / Billing disputes": 15,
+          "Unknown / Needs review": 4,
+          "Credit reporting / Incorrect information on your report": 1,
+          "Credit card / Fees or interest": 2
+        },
+        "Checking or savings account / Problems caused by my funds being low": {
+          "Checking or savings account / Managing an account": 53,
+          "Checking or savings account / Problems caused by my funds being low": 193,
+          "Checking or savings account / Deposits and withdrawals": 31,
+          "Credit reporting / Incorrect information on your report": 10,
+          "Credit card / Other": 4,
+          "Unknown / Needs review": 2,
+          "Credit card / Billing disputes": 2,
+          "Credit card / Fees or interest": 3,
+          "Credit reporting / Improper use of your report": 2
+        },
+        "Credit card / Billing disputes": {
+          "Credit card / Billing disputes": 243,
+          "Credit card / Other": 20,
+          "Checking or savings account / Managing an account": 18,
+          "Credit card / Fees or interest": 8,
+          "Unknown / Needs review": 8,
+          "Checking or savings account / Problems caused by my funds being low": 1,
+          "Credit reporting / Problem with a credit reporting company's investigation into an existing problem": 1,
+          "Checking or savings account / Deposits and withdrawals": 1
+        },
+        "Credit card / Fees or interest": {
+          "Credit card / Fees or interest": 260,
+          "Credit card / Other": 18,
+          "Unknown / Needs review": 4,
+          "Checking or savings account / Problems caused by my funds being low": 4,
+          "Credit card / Billing disputes": 8,
+          "Checking or savings account / Managing an account": 3,
+          "Credit reporting / Incorrect information on your report": 2,
+          "Checking or savings account / Deposits and withdrawals": 1
+        },
+        "Credit card / Other": {
+          "Checking or savings account / Managing an account": 25,
+          "Credit card / Other": 205,
+          "Checking or savings account / Problems caused by my funds being low": 3,
+          "Credit card / Billing disputes": 28,
+          "Credit card / Fees or interest": 20,
+          "Unknown / Needs review": 6,
+          "Credit reporting / Problem with a credit reporting company's investigation into an existing problem": 4,
+          "Credit reporting / Improper use of your report": 2,
+          "Checking or savings account / Deposits and withdrawals": 5,
+          "Credit reporting / Incorrect information on your report": 2
+        },
+        "Credit reporting / Improper use of your report": {
+          "Credit reporting / Improper use of your report": 132,
+          "Credit reporting / Problem with a credit reporting company's investigation into an existing problem": 69,
+          "Credit reporting / Incorrect information on your report": 95,
+          "Checking or savings account / Managing an account": 1,
+          "Unknown / Needs review": 2,
+          "Credit card / Other": 1
+        },
+        "Credit reporting / Incorrect information on your report": {
+          "Credit reporting / Incorrect information on your report": 179,
+          "Credit reporting / Improper use of your report": 49,
+          "Credit card / Other": 5,
+          "Credit reporting / Problem with a credit reporting company's investigation into an existing problem": 53,
+          "Credit card / Fees or interest": 1,
+          "Unknown / Needs review": 8,
+          "Checking or savings account / Managing an account": 2,
+          "Credit card / Billing disputes": 3
+        },
+        "Credit reporting / Problem with a credit reporting company's investigation into an existing problem": {
+          "Credit reporting / Incorrect information on your report": 94,
+          "Credit reporting / Problem with a credit reporting company's investigation into an existing problem": 144,
+          "Credit reporting / Improper use of your report": 50,
+          "Checking or savings account / Managing an account": 1,
+          "Credit card / Billing disputes": 1,
+          "Unknown / Needs review": 4,
+          "Credit card / Other": 6
+        },
+        "Unknown / Needs review": {
+          "Unknown / Needs review": 196,
+          "Credit reporting / Incorrect information on your report": 29,
+          "Checking or savings account / Deposits and withdrawals": 12,
+          "Credit reporting / Problem with a credit reporting company's investigation into an existing problem": 7,
+          "Credit card / Other": 5,
+          "Checking or savings account / Managing an account": 25,
+          "Credit reporting / Improper use of your report": 13,
+          "Checking or savings account / Problems caused by my funds being low": 3,
+          "Credit card / Billing disputes": 10
+        }
+      }
+    },
+    "check": {
+      "n": 1407,
+      "accuracy": 0.7448,
+      "macro_precision": 0.323,
+      "macro_recall": 0.6,
+      "macro_f1": 0.3943,
+      "weighted_f1": 0.8082,
+      "product_accuracy": 0.779,
+      "in_scope_joint_accuracy": 0.5817,
+      "in_scope_n": 153,
+      "out_of_scope": {
+        "precision": 0.9958,
+        "recall": 0.7648,
+        "f1": 0.8651,
+        "support": 1254
+      },
+      "invalid_predictions": 0,
+      "per_class": {
+        "Checking or savings account / Deposits and withdrawals": {
+          "precision": 0.1296,
+          "recall": 0.4118,
+          "f1": 0.1972,
+          "support": 17
+        },
+        "Checking or savings account / Managing an account": {
+          "precision": 0.0923,
+          "recall": 0.3529,
+          "f1": 0.1463,
+          "support": 17
+        },
+        "Checking or savings account / Problems caused by my funds being low": {
+          "precision": 0.4412,
+          "recall": 0.8824,
+          "f1": 0.5882,
+          "support": 17
+        },
+        "Credit card / Billing disputes": {
+          "precision": 0.2812,
+          "recall": 0.5294,
+          "f1": 0.3673,
+          "support": 17
+        },
+        "Credit card / Fees or interest": {
+          "precision": 0.3889,
+          "recall": 0.8235,
+          "f1": 0.5283,
+          "support": 17
+        },
+        "Credit card / Other": {
+          "precision": 0.2292,
+          "recall": 0.6471,
+          "f1": 0.3385,
+          "support": 17
+        },
+        "Credit reporting / Improper use of your report": {
+          "precision": 0.4516,
+          "recall": 0.8235,
+          "f1": 0.5833,
+          "support": 17
+        },
+        "Credit reporting / Incorrect information on your report": {
+          "precision": 0.0667,
+          "recall": 0.4118,
+          "f1": 0.1148,
+          "support": 17
+        },
+        "Credit reporting / Problem with a credit reporting company's investigation into an existing problem": {
+          "precision": 0.1538,
+          "recall": 0.3529,
+          "f1": 0.2143,
+          "support": 17
+        },
+        "Unknown / Needs review": {
+          "precision": 0.9958,
+          "recall": 0.7648,
+          "f1": 0.8651,
+          "support": 1254
+        }
+      },
+      "confusion": {
+        "Checking or savings account / Deposits and withdrawals": {
+          "Checking or savings account / Problems caused by my funds being low": 3,
+          "Checking or savings account / Managing an account": 7,
+          "Checking or savings account / Deposits and withdrawals": 7
+        },
+        "Checking or savings account / Managing an account": {
+          "Checking or savings account / Managing an account": 6,
+          "Checking or savings account / Deposits and withdrawals": 5,
+          "Checking or savings account / Problems caused by my funds being low": 4,
+          "Credit card / Fees or interest": 2
+        },
+        "Checking or savings account / Problems caused by my funds being low": {
+          "Checking or savings account / Problems caused by my funds being low": 15,
+          "Credit card / Other": 2
+        },
+        "Credit card / Billing disputes": {
+          "Credit card / Billing disputes": 9,
+          "Unknown / Needs review": 1,
+          "Credit reporting / Incorrect information on your report": 2,
+          "Credit card / Other": 2,
+          "Credit card / Fees or interest": 2,
+          "Checking or savings account / Managing an account": 1
+        },
+        "Credit card / Fees or interest": {
+          "Credit card / Fees or interest": 14,
+          "Checking or savings account / Managing an account": 1,
+          "Credit card / Other": 2
+        },
+        "Credit card / Other": {
+          "Credit card / Other": 11,
+          "Credit card / Billing disputes": 1,
+          "Credit card / Fees or interest": 2,
+          "Credit reporting / Incorrect information on your report": 2,
+          "Checking or savings account / Problems caused by my funds being low": 1
+        },
+        "Credit reporting / Improper use of your report": {
+          "Credit reporting / Improper use of your report": 14,
+          "Credit reporting / Incorrect information on your report": 2,
+          "Checking or savings account / Managing an account": 1
+        },
+        "Credit reporting / Incorrect information on your report": {
+          "Credit reporting / Incorrect information on your report": 7,
+          "Credit reporting / Problem with a credit reporting company's investigation into an existing problem": 6,
+          "Credit reporting / Improper use of your report": 2,
+          "Unknown / Needs review": 2
+        },
+        "Credit reporting / Problem with a credit reporting company's investigation into an existing problem": {
+          "Credit reporting / Improper use of your report": 3,
+          "Credit reporting / Incorrect information on your report": 7,
+          "Credit reporting / Problem with a credit reporting company's investigation into an existing problem": 6,
+          "Unknown / Needs review": 1
+        },
+        "Unknown / Needs review": {
+          "Unknown / Needs review": 959,
+          "Credit reporting / Incorrect information on your report": 85,
+          "Checking or savings account / Deposits and withdrawals": 42,
+          "Credit card / Fees or interest": 16,
+          "Checking or savings account / Managing an account": 49,
+          "Credit card / Billing disputes": 22,
+          "Checking or savings account / Problems caused by my funds being low": 11,
+          "Credit card / Other": 31,
+          "Credit reporting / Improper use of your report": 12,
+          "Credit reporting / Problem with a credit reporting company's investigation into an existing problem": 27
+        }
+      }
+    }
+  }
+}

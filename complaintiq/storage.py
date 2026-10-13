@@ -6,6 +6,7 @@ import builtins
 import hashlib
 import json
 import sqlite3
+from contextlib import closing
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -21,6 +22,19 @@ def now() -> str:
 
 class Conflict(ValueError):
     pass
+
+
+class _ClosingConnection(sqlite3.Connection):
+    """Commits or rolls back like sqlite3, then also closes at the end of a `with` block.
+
+    Connections are never left open, so database files can be safely replaced or removed.
+    """
+
+    def __exit__(self, *exc: Any) -> Any:
+        try:
+            return super().__exit__(*exc)
+        finally:
+            self.close()
 
 
 class ComplaintStore:
@@ -62,7 +76,7 @@ class ComplaintStore:
         self.backup("auto", daily=True)
 
     def _connect(self) -> sqlite3.Connection:
-        c = sqlite3.connect(str(self.path), timeout=15)
+        c = sqlite3.connect(str(self.path), timeout=15, factory=_ClosingConnection)
         c.row_factory = sqlite3.Row
         c.execute("PRAGMA foreign_keys=ON")
         return c
@@ -298,7 +312,9 @@ class ComplaintStore:
         if not dest.exists():
             temp = dest.with_suffix(".partial")
             try:
-                with self._connect() as source, sqlite3.connect(temp) as target:
+                # closing(): a sqlite3 context manager only commits; close the
+                # connections so the backup file is complete before it is renamed.
+                with closing(self._connect()) as source, closing(sqlite3.connect(temp)) as target:
                     source.backup(target)
                     if target.execute("PRAGMA integrity_check").fetchone()[0] != "ok":
                         raise ValueError("Backup validation failed.")

@@ -3,12 +3,13 @@
 from __future__ import annotations
 
 import argparse
-import fcntl
 import sqlite3
 import sys
+from contextlib import closing
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from complaintiq.locking import lock_exclusive  # noqa: E402
 from complaintiq.storage import ComplaintStore  # noqa: E402
 
 
@@ -17,9 +18,9 @@ def restore(source: Path, destination: Path) -> Path | None:
     if source == destination or not source.is_file():
         raise ValueError("Choose an existing backup different from the destination database.")
     destination.parent.mkdir(parents=True, exist_ok=True)
-    with destination.with_suffix(".worker.lock").open("a") as lock:
+    with destination.with_suffix(".worker.lock").open("a+") as lock:
         try:
-            fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            lock_exclusive(lock)
         except BlockingIOError:
             raise ValueError("Stop the application before restoring this database.") from None
         with sqlite3.connect(f"file:{source}?mode=ro", uri=True) as db:
@@ -36,7 +37,8 @@ def restore(source: Path, destination: Path) -> Path | None:
                     raise ValueError("Backup has invalid references.")
             temporary = destination.with_suffix(".restore-tmp")
             try:
-                with sqlite3.connect(temporary) as target:
+                # closing(): release the file before it is renamed into place.
+                with closing(sqlite3.connect(temporary)) as target:
                     db.backup(target)
                 before = (
                     ComplaintStore(str(destination)).backup("pre-restore")

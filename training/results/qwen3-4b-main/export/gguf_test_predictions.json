@@ -1,0 +1,2257 @@
+{
+  "model": "complaintiq-qwen3-4b-Q4_K_M.gguf",
+  "split": "test",
+  "decoding": "llama-server strict json_schema (app-identical)",
+  "latency_ms_mean": 198.5,
+  "metrics": {
+    "overall": {
+      "n": 300,
+      "accuracy": 0.5967,
+      "macro_precision": 0.6418,
+      "macro_recall": 0.607,
+      "macro_f1": 0.6105,
+      "weighted_f1": 0.6001,
+      "product_accuracy": 0.8967,
+      "in_scope_joint_accuracy": 0.6074,
+      "in_scope_n": 270,
+      "out_of_scope": {
+        "precision": 0.7895,
+        "recall": 0.5,
+        "f1": 0.6122,
+        "support": 30
+      },
+      "invalid_predictions": 0,
+      "per_class": {
+        "Checking or savings account / Deposits and withdrawals": {
+          "precision": 0.4615,
+          "recall": 0.6667,
+          "f1": 0.5455,
+          "support": 27
+        },
+        "Checking or savings account / Managing an account": {
+          "precision": 0.4815,
+          "recall": 0.4643,
+          "f1": 0.4727,
+          "support": 28
+        },
+        "Checking or savings account / Problems caused by my funds being low": {
+          "precision": 0.8667,
+          "recall": 0.52,
+          "f1": 0.65,
+          "support": 25
+        },
+        "Credit card / Billing disputes": {
+          "precision": 0.931,
+          "recall": 0.9,
+          "f1": 0.9153,
+          "support": 30
+        },
+        "Credit card / Fees or interest": {
+          "precision": 0.92,
+          "recall": 0.8519,
+          "f1": 0.8846,
+          "support": 27
+        },
+        "Credit card / Other": {
+          "precision": 0.6286,
+          "recall": 0.8148,
+          "f1": 0.7097,
+          "support": 27
+        },
+        "Credit reporting / Improper use of your report": {
+          "precision": 0.3529,
+          "recall": 0.5455,
+          "f1": 0.4286,
+          "support": 33
+        },
+        "Credit reporting / Incorrect information on your report": {
+          "precision": 0.4583,
+          "recall": 0.3438,
+          "f1": 0.3929,
+          "support": 32
+        },
+        "Credit reporting / Problem with a credit reporting company's investigation into an existing problem": {
+          "precision": 0.5278,
+          "recall": 0.4634,
+          "f1": 0.4935,
+          "support": 41
+        },
+        "Unknown / Needs review": {
+          "precision": 0.7895,
+          "recall": 0.5,
+          "f1": 0.6122,
+          "support": 30
+        }
+      },
+      "confusion": {
+        "Checking or savings account / Deposits and withdrawals": {
+          "Checking or savings account / Deposits and withdrawals": 18,
+          "Checking or savings account / Managing an account": 6,
+          "Checking or savings account / Problems caused by my funds being low": 1,
+          "Credit card / Other": 1,
+          "Unknown / Needs review": 1
+        },
+        "Checking or savings account / Managing an account": {
+          "Checking or savings account / Managing an account": 13,
+          "Checking or savings account / Deposits and withdrawals": 13,
+          "Credit card / Billing disputes": 1,
+          "Credit card / Other": 1
+        },
+        "Checking or savings account / Problems caused by my funds being low": {
+          "Checking or savings account / Managing an account": 5,
+          "Checking or savings account / Problems caused by my funds being low": 13,
+          "Checking or savings account / Deposits and withdrawals": 6,
+          "Credit reporting / Improper use of your report": 1
+        },
+        "Credit card / Billing disputes": {
+          "Credit card / Billing disputes": 27,
+          "Credit card / Other": 2,
+          "Checking or savings account / Managing an account": 1
+        },
+        "Credit card / Fees or interest": {
+          "Credit card / Fees or interest": 23,
+          "Credit card / Other": 3,
+          "Unknown / Needs review": 1
+        },
+        "Credit card / Other": {
+          "Credit card / Other": 22,
+          "Checking or savings account / Problems caused by my funds being low": 1,
+          "Credit card / Billing disputes": 1,
+          "Credit card / Fees or interest": 1,
+          "Credit reporting / Problem with a credit reporting company's investigation into an existing problem": 1,
+          "Credit reporting / Improper use of your report": 1
+        },
+        "Credit reporting / Improper use of your report": {
+          "Credit reporting / Improper use of your report": 18,
+          "Credit reporting / Problem with a credit reporting company's investigation into an existing problem": 10,
+          "Credit reporting / Incorrect information on your report": 3,
+          "Checking or savings account / Managing an account": 1,
+          "Unknown / Needs review": 1
+        },
+        "Credit reporting / Incorrect information on your report": {
+          "Credit reporting / Incorrect information on your report": 11,
+          "Credit reporting / Improper use of your report": 11,
+          "Credit card / Other": 3,
+          "Credit reporting / Problem with a credit reporting company's investigation into an existing problem": 6,
+          "Unknown / Needs review": 1
+        },
+        "Credit reporting / Problem with a credit reporting company's investigation into an existing problem": {
+          "Credit reporting / Incorrect information on your report": 8,
+          "Credit reporting / Problem with a credit reporting company's investigation into an existing problem": 19,
+          "Credit reporting / Improper use of your report": 14
+        },
+        "Unknown / Needs review": {
+          "Unknown / Needs review": 15,
+          "Credit reporting / Improper use of your report": 6,
+          "Checking or savings account / Deposits and withdrawals": 2,
+          "Credit reporting / Incorrect information on your report": 2,
+          "Credit card / Other": 3,
+          "Checking or savings account / Managing an account": 1,
+          "Credit card / Fees or interest": 1
+        }
+      }
+    }
+  },
+  "predictions": [
+    {
+      "complaint_id": "23138801",
+      "source": "cfpb",
+      "gold": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "predicted": "Credit reporting / Incorrect information on your report",
+      "latency_ms": 222.0
+    },
+    {
+      "complaint_id": "19954108",
+      "source": "cfpb",
+      "gold": "Credit card / Billing disputes",
+      "predicted": "Credit card / Billing disputes",
+      "latency_ms": 140.9
+    },
+    {
+      "complaint_id": "21498721",
+      "source": "cfpb",
+      "gold": "Unknown / Needs review",
+      "predicted": "Unknown / Needs review",
+      "latency_ms": 179.0
+    },
+    {
+      "complaint_id": "21862935",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Deposits and withdrawals",
+      "predicted": "Checking or savings account / Deposits and withdrawals",
+      "latency_ms": 239.6
+    },
+    {
+      "complaint_id": "19516563",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Managing an account",
+      "predicted": "Checking or savings account / Managing an account",
+      "latency_ms": 188.5
+    },
+    {
+      "complaint_id": "21171320",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Managing an account",
+      "predicted": "Checking or savings account / Deposits and withdrawals",
+      "latency_ms": 220.5
+    },
+    {
+      "complaint_id": "20025502",
+      "source": "cfpb",
+      "gold": "Credit card / Other",
+      "predicted": "Credit card / Other",
+      "latency_ms": 180.0
+    },
+    {
+      "complaint_id": "19205577",
+      "source": "cfpb",
+      "gold": "Credit card / Billing disputes",
+      "predicted": "Credit card / Billing disputes",
+      "latency_ms": 186.8
+    },
+    {
+      "complaint_id": "23058168",
+      "source": "cfpb",
+      "gold": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "predicted": "Credit reporting / Incorrect information on your report",
+      "latency_ms": 143.2
+    },
+    {
+      "complaint_id": "20170543",
+      "source": "cfpb",
+      "gold": "Credit reporting / Improper use of your report",
+      "predicted": "Credit reporting / Improper use of your report",
+      "latency_ms": 156.5
+    },
+    {
+      "complaint_id": "22743863",
+      "source": "cfpb",
+      "gold": "Credit card / Other",
+      "predicted": "Credit card / Other",
+      "latency_ms": 133.6
+    },
+    {
+      "complaint_id": "21285648",
+      "source": "cfpb",
+      "gold": "Credit reporting / Incorrect information on your report",
+      "predicted": "Credit reporting / Incorrect information on your report",
+      "latency_ms": 160.0
+    },
+    {
+      "complaint_id": "21414055",
+      "source": "cfpb",
+      "gold": "Unknown / Needs review",
+      "predicted": "Credit reporting / Improper use of your report",
+      "latency_ms": 174.4
+    },
+    {
+      "complaint_id": "22806039",
+      "source": "cfpb",
+      "gold": "Credit card / Billing disputes",
+      "predicted": "Credit card / Billing disputes",
+      "latency_ms": 158.5
+    },
+    {
+      "complaint_id": "21160393",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Deposits and withdrawals",
+      "predicted": "Checking or savings account / Managing an account",
+      "latency_ms": 206.8
+    },
+    {
+      "complaint_id": "19998258",
+      "source": "cfpb",
+      "gold": "Credit reporting / Improper use of your report",
+      "predicted": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "latency_ms": 241.2
+    },
+    {
+      "complaint_id": "22357975",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Managing an account",
+      "predicted": "Checking or savings account / Managing an account",
+      "latency_ms": 222.1
+    },
+    {
+      "complaint_id": "22433491",
+      "source": "cfpb",
+      "gold": "Credit reporting / Incorrect information on your report",
+      "predicted": "Credit reporting / Incorrect information on your report",
+      "latency_ms": 197.0
+    },
+    {
+      "complaint_id": "19360122",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Managing an account",
+      "predicted": "Checking or savings account / Managing an account",
+      "latency_ms": 179.4
+    },
+    {
+      "complaint_id": "20053577",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Deposits and withdrawals",
+      "predicted": "Checking or savings account / Deposits and withdrawals",
+      "latency_ms": 224.7
+    },
+    {
+      "complaint_id": "20156037",
+      "source": "cfpb",
+      "gold": "Credit card / Billing disputes",
+      "predicted": "Credit card / Billing disputes",
+      "latency_ms": 172.1
+    },
+    {
+      "complaint_id": "22581441",
+      "source": "cfpb",
+      "gold": "Credit reporting / Improper use of your report",
+      "predicted": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "latency_ms": 248.8
+    },
+    {
+      "complaint_id": "20153711",
+      "source": "cfpb",
+      "gold": "Credit reporting / Improper use of your report",
+      "predicted": "Credit reporting / Improper use of your report",
+      "latency_ms": 198.4
+    },
+    {
+      "complaint_id": "21503642",
+      "source": "cfpb",
+      "gold": "Credit reporting / Incorrect information on your report",
+      "predicted": "Credit reporting / Improper use of your report",
+      "latency_ms": 204.7
+    },
+    {
+      "complaint_id": "20094118",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Deposits and withdrawals",
+      "predicted": "Checking or savings account / Deposits and withdrawals",
+      "latency_ms": 209.0
+    },
+    {
+      "complaint_id": "22286696",
+      "source": "cfpb",
+      "gold": "Credit card / Fees or interest",
+      "predicted": "Credit card / Fees or interest",
+      "latency_ms": 212.9
+    },
+    {
+      "complaint_id": "20067073",
+      "source": "cfpb",
+      "gold": "Credit card / Fees or interest",
+      "predicted": "Credit card / Other",
+      "latency_ms": 186.4
+    },
+    {
+      "complaint_id": "19438786",
+      "source": "cfpb",
+      "gold": "Credit card / Other",
+      "predicted": "Credit card / Other",
+      "latency_ms": 171.1
+    },
+    {
+      "complaint_id": "22225231",
+      "source": "cfpb",
+      "gold": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "predicted": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "latency_ms": 278.3
+    },
+    {
+      "complaint_id": "20066089",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Problems caused by my funds being low",
+      "predicted": "Checking or savings account / Managing an account",
+      "latency_ms": 234.6
+    },
+    {
+      "complaint_id": "22074836",
+      "source": "cfpb",
+      "gold": "Credit card / Fees or interest",
+      "predicted": "Credit card / Fees or interest",
+      "latency_ms": 216.2
+    },
+    {
+      "complaint_id": "19342300",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Problems caused by my funds being low",
+      "predicted": "Checking or savings account / Problems caused by my funds being low",
+      "latency_ms": 217.6
+    },
+    {
+      "complaint_id": "22595825",
+      "source": "cfpb",
+      "gold": "Credit card / Billing disputes",
+      "predicted": "Credit card / Billing disputes",
+      "latency_ms": 178.5
+    },
+    {
+      "complaint_id": "19210374",
+      "source": "cfpb",
+      "gold": "Credit card / Fees or interest",
+      "predicted": "Credit card / Fees or interest",
+      "latency_ms": 191.1
+    },
+    {
+      "complaint_id": "20204420",
+      "source": "cfpb",
+      "gold": "Unknown / Needs review",
+      "predicted": "Unknown / Needs review",
+      "latency_ms": 185.0
+    },
+    {
+      "complaint_id": "21636972",
+      "source": "cfpb",
+      "gold": "Credit card / Other",
+      "predicted": "Credit card / Other",
+      "latency_ms": 199.6
+    },
+    {
+      "complaint_id": "22542744",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Problems caused by my funds being low",
+      "predicted": "Checking or savings account / Problems caused by my funds being low",
+      "latency_ms": 217.3
+    },
+    {
+      "complaint_id": "23088033",
+      "source": "cfpb",
+      "gold": "Credit card / Other",
+      "predicted": "Checking or savings account / Problems caused by my funds being low",
+      "latency_ms": 232.0
+    },
+    {
+      "complaint_id": "21908230",
+      "source": "cfpb",
+      "gold": "Credit reporting / Incorrect information on your report",
+      "predicted": "Credit reporting / Improper use of your report",
+      "latency_ms": 194.0
+    },
+    {
+      "complaint_id": "22857489",
+      "source": "cfpb",
+      "gold": "Credit card / Fees or interest",
+      "predicted": "Credit card / Fees or interest",
+      "latency_ms": 158.4
+    },
+    {
+      "complaint_id": "20375346",
+      "source": "cfpb",
+      "gold": "Credit card / Other",
+      "predicted": "Credit card / Other",
+      "latency_ms": 176.5
+    },
+    {
+      "complaint_id": "19459886",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Problems caused by my funds being low",
+      "predicted": "Checking or savings account / Deposits and withdrawals",
+      "latency_ms": 238.1
+    },
+    {
+      "complaint_id": "19680418",
+      "source": "cfpb",
+      "gold": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "predicted": "Credit reporting / Improper use of your report",
+      "latency_ms": 230.5
+    },
+    {
+      "complaint_id": "21259183",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Deposits and withdrawals",
+      "predicted": "Checking or savings account / Problems caused by my funds being low",
+      "latency_ms": 201.9
+    },
+    {
+      "complaint_id": "22630828",
+      "source": "cfpb",
+      "gold": "Credit card / Billing disputes",
+      "predicted": "Credit card / Billing disputes",
+      "latency_ms": 207.2
+    },
+    {
+      "complaint_id": "19182454",
+      "source": "cfpb",
+      "gold": "Credit reporting / Improper use of your report",
+      "predicted": "Credit reporting / Improper use of your report",
+      "latency_ms": 212.9
+    },
+    {
+      "complaint_id": "19219579",
+      "source": "cfpb",
+      "gold": "Credit reporting / Improper use of your report",
+      "predicted": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "latency_ms": 233.2
+    },
+    {
+      "complaint_id": "20144556",
+      "source": "cfpb",
+      "gold": "Unknown / Needs review",
+      "predicted": "Credit reporting / Improper use of your report",
+      "latency_ms": 170.4
+    },
+    {
+      "complaint_id": "20324725",
+      "source": "cfpb",
+      "gold": "Credit reporting / Improper use of your report",
+      "predicted": "Credit reporting / Improper use of your report",
+      "latency_ms": 194.7
+    },
+    {
+      "complaint_id": "23005008",
+      "source": "cfpb",
+      "gold": "Credit card / Billing disputes",
+      "predicted": "Credit card / Billing disputes",
+      "latency_ms": 197.9
+    },
+    {
+      "complaint_id": "21478535",
+      "source": "cfpb",
+      "gold": "Credit card / Billing disputes",
+      "predicted": "Credit card / Billing disputes",
+      "latency_ms": 221.1
+    },
+    {
+      "complaint_id": "22804290",
+      "source": "cfpb",
+      "gold": "Unknown / Needs review",
+      "predicted": "Unknown / Needs review",
+      "latency_ms": 160.2
+    },
+    {
+      "complaint_id": "19181135",
+      "source": "cfpb",
+      "gold": "Credit card / Other",
+      "predicted": "Credit card / Other",
+      "latency_ms": 148.8
+    },
+    {
+      "complaint_id": "23000269",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Managing an account",
+      "predicted": "Checking or savings account / Deposits and withdrawals",
+      "latency_ms": 210.7
+    },
+    {
+      "complaint_id": "20701950",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Deposits and withdrawals",
+      "predicted": "Checking or savings account / Deposits and withdrawals",
+      "latency_ms": 213.1
+    },
+    {
+      "complaint_id": "20793214",
+      "source": "cfpb",
+      "gold": "Unknown / Needs review",
+      "predicted": "Unknown / Needs review",
+      "latency_ms": 159.8
+    },
+    {
+      "complaint_id": "20382900",
+      "source": "cfpb",
+      "gold": "Credit card / Billing disputes",
+      "predicted": "Credit card / Billing disputes",
+      "latency_ms": 168.2
+    },
+    {
+      "complaint_id": "23669998",
+      "source": "cfpb",
+      "gold": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "predicted": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "latency_ms": 234.6
+    },
+    {
+      "complaint_id": "22308801",
+      "source": "cfpb",
+      "gold": "Credit card / Fees or interest",
+      "predicted": "Credit card / Fees or interest",
+      "latency_ms": 200.4
+    },
+    {
+      "complaint_id": "19418404",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Managing an account",
+      "predicted": "Checking or savings account / Managing an account",
+      "latency_ms": 190.5
+    },
+    {
+      "complaint_id": "20791095",
+      "source": "cfpb",
+      "gold": "Credit card / Other",
+      "predicted": "Credit card / Other",
+      "latency_ms": 162.6
+    },
+    {
+      "complaint_id": "20341373",
+      "source": "cfpb",
+      "gold": "Credit reporting / Incorrect information on your report",
+      "predicted": "Credit reporting / Incorrect information on your report",
+      "latency_ms": 211.6
+    },
+    {
+      "complaint_id": "22673837",
+      "source": "cfpb",
+      "gold": "Credit card / Other",
+      "predicted": "Credit card / Other",
+      "latency_ms": 180.0
+    },
+    {
+      "complaint_id": "20223124",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Problems caused by my funds being low",
+      "predicted": "Checking or savings account / Deposits and withdrawals",
+      "latency_ms": 213.0
+    },
+    {
+      "complaint_id": "22843433",
+      "source": "cfpb",
+      "gold": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "predicted": "Credit reporting / Improper use of your report",
+      "latency_ms": 180.4
+    },
+    {
+      "complaint_id": "20052793",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Managing an account",
+      "predicted": "Checking or savings account / Managing an account",
+      "latency_ms": 188.0
+    },
+    {
+      "complaint_id": "20581070",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Deposits and withdrawals",
+      "predicted": "Checking or savings account / Managing an account",
+      "latency_ms": 201.0
+    },
+    {
+      "complaint_id": "21404205",
+      "source": "cfpb",
+      "gold": "Credit card / Fees or interest",
+      "predicted": "Credit card / Fees or interest",
+      "latency_ms": 171.7
+    },
+    {
+      "complaint_id": "20300783",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Deposits and withdrawals",
+      "predicted": "Checking or savings account / Deposits and withdrawals",
+      "latency_ms": 187.9
+    },
+    {
+      "complaint_id": "22244108",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Problems caused by my funds being low",
+      "predicted": "Checking or savings account / Managing an account",
+      "latency_ms": 197.1
+    },
+    {
+      "complaint_id": "21554172",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Deposits and withdrawals",
+      "predicted": "Checking or savings account / Deposits and withdrawals",
+      "latency_ms": 204.7
+    },
+    {
+      "complaint_id": "19525894",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Problems caused by my funds being low",
+      "predicted": "Checking or savings account / Problems caused by my funds being low",
+      "latency_ms": 221.4
+    },
+    {
+      "complaint_id": "19546236",
+      "source": "cfpb",
+      "gold": "Credit reporting / Incorrect information on your report",
+      "predicted": "Credit reporting / Incorrect information on your report",
+      "latency_ms": 162.5
+    },
+    {
+      "complaint_id": "23221675",
+      "source": "cfpb",
+      "gold": "Credit reporting / Incorrect information on your report",
+      "predicted": "Credit reporting / Improper use of your report",
+      "latency_ms": 182.7
+    },
+    {
+      "complaint_id": "20884090",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Managing an account",
+      "predicted": "Checking or savings account / Deposits and withdrawals",
+      "latency_ms": 214.4
+    },
+    {
+      "complaint_id": "22972700",
+      "source": "cfpb",
+      "gold": "Credit card / Fees or interest",
+      "predicted": "Credit card / Fees or interest",
+      "latency_ms": 211.3
+    },
+    {
+      "complaint_id": "21132721",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Problems caused by my funds being low",
+      "predicted": "Checking or savings account / Deposits and withdrawals",
+      "latency_ms": 222.1
+    },
+    {
+      "complaint_id": "20223671",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Managing an account",
+      "predicted": "Checking or savings account / Deposits and withdrawals",
+      "latency_ms": 195.3
+    },
+    {
+      "complaint_id": "21633858",
+      "source": "cfpb",
+      "gold": "Credit card / Fees or interest",
+      "predicted": "Unknown / Needs review",
+      "latency_ms": 169.0
+    },
+    {
+      "complaint_id": "21647849",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Problems caused by my funds being low",
+      "predicted": "Checking or savings account / Problems caused by my funds being low",
+      "latency_ms": 236.1
+    },
+    {
+      "complaint_id": "19978846",
+      "source": "cfpb",
+      "gold": "Credit card / Other",
+      "predicted": "Credit card / Other",
+      "latency_ms": 194.4
+    },
+    {
+      "complaint_id": "21662140",
+      "source": "cfpb",
+      "gold": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "predicted": "Credit reporting / Incorrect information on your report",
+      "latency_ms": 182.7
+    },
+    {
+      "complaint_id": "22321216",
+      "source": "cfpb",
+      "gold": "Credit reporting / Improper use of your report",
+      "predicted": "Credit reporting / Improper use of your report",
+      "latency_ms": 165.6
+    },
+    {
+      "complaint_id": "22578834",
+      "source": "cfpb",
+      "gold": "Credit card / Other",
+      "predicted": "Credit card / Billing disputes",
+      "latency_ms": 208.4
+    },
+    {
+      "complaint_id": "21280469",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Managing an account",
+      "predicted": "Checking or savings account / Deposits and withdrawals",
+      "latency_ms": 205.3
+    },
+    {
+      "complaint_id": "21544059",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Problems caused by my funds being low",
+      "predicted": "Checking or savings account / Deposits and withdrawals",
+      "latency_ms": 162.1
+    },
+    {
+      "complaint_id": "22616229",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Deposits and withdrawals",
+      "predicted": "Checking or savings account / Deposits and withdrawals",
+      "latency_ms": 200.6
+    },
+    {
+      "complaint_id": "20778124",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Managing an account",
+      "predicted": "Checking or savings account / Managing an account",
+      "latency_ms": 205.1
+    },
+    {
+      "complaint_id": "21164806",
+      "source": "cfpb",
+      "gold": "Credit card / Fees or interest",
+      "predicted": "Credit card / Fees or interest",
+      "latency_ms": 175.0
+    },
+    {
+      "complaint_id": "22343570",
+      "source": "cfpb",
+      "gold": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "predicted": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "latency_ms": 220.5
+    },
+    {
+      "complaint_id": "21675164",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Managing an account",
+      "predicted": "Checking or savings account / Deposits and withdrawals",
+      "latency_ms": 238.4
+    },
+    {
+      "complaint_id": "22118474",
+      "source": "cfpb",
+      "gold": "Credit card / Fees or interest",
+      "predicted": "Credit card / Fees or interest",
+      "latency_ms": 197.5
+    },
+    {
+      "complaint_id": "20047982",
+      "source": "cfpb",
+      "gold": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "predicted": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "latency_ms": 269.6
+    },
+    {
+      "complaint_id": "19387352",
+      "source": "cfpb",
+      "gold": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "predicted": "Credit reporting / Improper use of your report",
+      "latency_ms": 214.9
+    },
+    {
+      "complaint_id": "19261123",
+      "source": "cfpb",
+      "gold": "Credit card / Fees or interest",
+      "predicted": "Credit card / Fees or interest",
+      "latency_ms": 179.8
+    },
+    {
+      "complaint_id": "19738486",
+      "source": "cfpb",
+      "gold": "Credit card / Billing disputes",
+      "predicted": "Credit card / Billing disputes",
+      "latency_ms": 177.1
+    },
+    {
+      "complaint_id": "19414391",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Managing an account",
+      "predicted": "Checking or savings account / Deposits and withdrawals",
+      "latency_ms": 238.9
+    },
+    {
+      "complaint_id": "19831639",
+      "source": "cfpb",
+      "gold": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "predicted": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "latency_ms": 242.8
+    },
+    {
+      "complaint_id": "19654366",
+      "source": "cfpb",
+      "gold": "Credit card / Billing disputes",
+      "predicted": "Credit card / Billing disputes",
+      "latency_ms": 187.7
+    },
+    {
+      "complaint_id": "20362362",
+      "source": "cfpb",
+      "gold": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "predicted": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "latency_ms": 259.6
+    },
+    {
+      "complaint_id": "21871355",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Managing an account",
+      "predicted": "Checking or savings account / Managing an account",
+      "latency_ms": 220.3
+    },
+    {
+      "complaint_id": "20753544",
+      "source": "cfpb",
+      "gold": "Credit reporting / Incorrect information on your report",
+      "predicted": "Credit reporting / Improper use of your report",
+      "latency_ms": 218.9
+    },
+    {
+      "complaint_id": "19754128",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Deposits and withdrawals",
+      "predicted": "Checking or savings account / Deposits and withdrawals",
+      "latency_ms": 188.5
+    },
+    {
+      "complaint_id": "22193727",
+      "source": "cfpb",
+      "gold": "Credit card / Fees or interest",
+      "predicted": "Credit card / Other",
+      "latency_ms": 138.9
+    },
+    {
+      "complaint_id": "21619001",
+      "source": "cfpb",
+      "gold": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "predicted": "Credit reporting / Improper use of your report",
+      "latency_ms": 212.5
+    },
+    {
+      "complaint_id": "21909484",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Deposits and withdrawals",
+      "predicted": "Checking or savings account / Managing an account",
+      "latency_ms": 183.3
+    },
+    {
+      "complaint_id": "23058735",
+      "source": "cfpb",
+      "gold": "Unknown / Needs review",
+      "predicted": "Unknown / Needs review",
+      "latency_ms": 139.9
+    },
+    {
+      "complaint_id": "22202800",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Managing an account",
+      "predicted": "Checking or savings account / Deposits and withdrawals",
+      "latency_ms": 203.6
+    },
+    {
+      "complaint_id": "19904397",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Managing an account",
+      "predicted": "Checking or savings account / Deposits and withdrawals",
+      "latency_ms": 233.8
+    },
+    {
+      "complaint_id": "21719311",
+      "source": "cfpb",
+      "gold": "Credit reporting / Improper use of your report",
+      "predicted": "Credit reporting / Improper use of your report",
+      "latency_ms": 240.2
+    },
+    {
+      "complaint_id": "23921571",
+      "source": "cfpb",
+      "gold": "Credit reporting / Incorrect information on your report",
+      "predicted": "Credit card / Other",
+      "latency_ms": 174.2
+    },
+    {
+      "complaint_id": "21931559",
+      "source": "cfpb",
+      "gold": "Credit reporting / Incorrect information on your report",
+      "predicted": "Credit reporting / Incorrect information on your report",
+      "latency_ms": 168.6
+    },
+    {
+      "complaint_id": "22623646",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Deposits and withdrawals",
+      "predicted": "Credit card / Other",
+      "latency_ms": 134.1
+    },
+    {
+      "complaint_id": "19280216",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Problems caused by my funds being low",
+      "predicted": "Checking or savings account / Problems caused by my funds being low",
+      "latency_ms": 191.4
+    },
+    {
+      "complaint_id": "19360278",
+      "source": "cfpb",
+      "gold": "Credit card / Other",
+      "predicted": "Credit card / Fees or interest",
+      "latency_ms": 157.5
+    },
+    {
+      "complaint_id": "22563106",
+      "source": "cfpb",
+      "gold": "Credit reporting / Improper use of your report",
+      "predicted": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "latency_ms": 277.8
+    },
+    {
+      "complaint_id": "23034633",
+      "source": "cfpb",
+      "gold": "Credit card / Fees or interest",
+      "predicted": "Credit card / Fees or interest",
+      "latency_ms": 232.8
+    },
+    {
+      "complaint_id": "21122167",
+      "source": "cfpb",
+      "gold": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "predicted": "Credit reporting / Improper use of your report",
+      "latency_ms": 194.6
+    },
+    {
+      "complaint_id": "22171773",
+      "source": "cfpb",
+      "gold": "Credit reporting / Improper use of your report",
+      "predicted": "Credit reporting / Incorrect information on your report",
+      "latency_ms": 173.8
+    },
+    {
+      "complaint_id": "21850951",
+      "source": "cfpb",
+      "gold": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "predicted": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "latency_ms": 250.4
+    },
+    {
+      "complaint_id": "20092971",
+      "source": "cfpb",
+      "gold": "Credit reporting / Incorrect information on your report",
+      "predicted": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "latency_ms": 261.3
+    },
+    {
+      "complaint_id": "20804612",
+      "source": "cfpb",
+      "gold": "Credit card / Billing disputes",
+      "predicted": "Credit card / Billing disputes",
+      "latency_ms": 181.0
+    },
+    {
+      "complaint_id": "21244088",
+      "source": "cfpb",
+      "gold": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "predicted": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "latency_ms": 244.6
+    },
+    {
+      "complaint_id": "21179361",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Managing an account",
+      "predicted": "Credit card / Billing disputes",
+      "latency_ms": 123.4
+    },
+    {
+      "complaint_id": "21867540",
+      "source": "cfpb",
+      "gold": "Credit card / Billing disputes",
+      "predicted": "Credit card / Billing disputes",
+      "latency_ms": 143.5
+    },
+    {
+      "complaint_id": "24021094",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Deposits and withdrawals",
+      "predicted": "Checking or savings account / Deposits and withdrawals",
+      "latency_ms": 197.3
+    },
+    {
+      "complaint_id": "19898273",
+      "source": "cfpb",
+      "gold": "Credit card / Billing disputes",
+      "predicted": "Credit card / Other",
+      "latency_ms": 188.9
+    },
+    {
+      "complaint_id": "22584297",
+      "source": "cfpb",
+      "gold": "Unknown / Needs review",
+      "predicted": "Unknown / Needs review",
+      "latency_ms": 180.2
+    },
+    {
+      "complaint_id": "21509356",
+      "source": "cfpb",
+      "gold": "Credit card / Other",
+      "predicted": "Credit card / Other",
+      "latency_ms": 192.7
+    },
+    {
+      "complaint_id": "23116658",
+      "source": "cfpb",
+      "gold": "Credit reporting / Incorrect information on your report",
+      "predicted": "Credit reporting / Incorrect information on your report",
+      "latency_ms": 175.1
+    },
+    {
+      "complaint_id": "23051481",
+      "source": "cfpb",
+      "gold": "Credit reporting / Improper use of your report",
+      "predicted": "Credit reporting / Improper use of your report",
+      "latency_ms": 172.2
+    },
+    {
+      "complaint_id": "23092660",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Deposits and withdrawals",
+      "predicted": "Checking or savings account / Deposits and withdrawals",
+      "latency_ms": 214.9
+    },
+    {
+      "complaint_id": "21696518",
+      "source": "cfpb",
+      "gold": "Credit card / Fees or interest",
+      "predicted": "Credit card / Other",
+      "latency_ms": 199.1
+    },
+    {
+      "complaint_id": "21462776",
+      "source": "cfpb",
+      "gold": "Unknown / Needs review",
+      "predicted": "Unknown / Needs review",
+      "latency_ms": 211.8
+    },
+    {
+      "complaint_id": "19938661",
+      "source": "cfpb",
+      "gold": "Credit card / Fees or interest",
+      "predicted": "Credit card / Fees or interest",
+      "latency_ms": 191.8
+    },
+    {
+      "complaint_id": "20001129",
+      "source": "cfpb",
+      "gold": "Credit reporting / Improper use of your report",
+      "predicted": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "latency_ms": 246.4
+    },
+    {
+      "complaint_id": "22757410",
+      "source": "cfpb",
+      "gold": "Credit reporting / Incorrect information on your report",
+      "predicted": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "latency_ms": 222.3
+    },
+    {
+      "complaint_id": "21191189",
+      "source": "cfpb",
+      "gold": "Credit reporting / Improper use of your report",
+      "predicted": "Checking or savings account / Managing an account",
+      "latency_ms": 146.4
+    },
+    {
+      "complaint_id": "20022968",
+      "source": "cfpb",
+      "gold": "Unknown / Needs review",
+      "predicted": "Unknown / Needs review",
+      "latency_ms": 184.2
+    },
+    {
+      "complaint_id": "23804343",
+      "source": "cfpb",
+      "gold": "Credit reporting / Incorrect information on your report",
+      "predicted": "Credit reporting / Improper use of your report",
+      "latency_ms": 219.5
+    },
+    {
+      "complaint_id": "21719790",
+      "source": "cfpb",
+      "gold": "Unknown / Needs review",
+      "predicted": "Credit reporting / Improper use of your report",
+      "latency_ms": 238.1
+    },
+    {
+      "complaint_id": "22234051",
+      "source": "cfpb",
+      "gold": "Credit card / Fees or interest",
+      "predicted": "Credit card / Fees or interest",
+      "latency_ms": 193.0
+    },
+    {
+      "complaint_id": "19356306",
+      "source": "cfpb",
+      "gold": "Credit reporting / Improper use of your report",
+      "predicted": "Credit reporting / Improper use of your report",
+      "latency_ms": 219.6
+    },
+    {
+      "complaint_id": "19847342",
+      "source": "cfpb",
+      "gold": "Credit card / Fees or interest",
+      "predicted": "Credit card / Fees or interest",
+      "latency_ms": 161.2
+    },
+    {
+      "complaint_id": "21726795",
+      "source": "cfpb",
+      "gold": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "predicted": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "latency_ms": 269.3
+    },
+    {
+      "complaint_id": "20693099",
+      "source": "cfpb",
+      "gold": "Credit card / Billing disputes",
+      "predicted": "Credit card / Billing disputes",
+      "latency_ms": 213.2
+    },
+    {
+      "complaint_id": "19792581",
+      "source": "cfpb",
+      "gold": "Credit card / Other",
+      "predicted": "Credit card / Other",
+      "latency_ms": 183.5
+    },
+    {
+      "complaint_id": "20825860",
+      "source": "cfpb",
+      "gold": "Credit reporting / Improper use of your report",
+      "predicted": "Credit reporting / Improper use of your report",
+      "latency_ms": 182.9
+    },
+    {
+      "complaint_id": "22675607",
+      "source": "cfpb",
+      "gold": "Credit reporting / Incorrect information on your report",
+      "predicted": "Credit reporting / Improper use of your report",
+      "latency_ms": 166.6
+    },
+    {
+      "complaint_id": "22558669",
+      "source": "cfpb",
+      "gold": "Credit reporting / Improper use of your report",
+      "predicted": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "latency_ms": 209.0
+    },
+    {
+      "complaint_id": "20331567",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Managing an account",
+      "predicted": "Checking or savings account / Managing an account",
+      "latency_ms": 177.2
+    },
+    {
+      "complaint_id": "20392942",
+      "source": "cfpb",
+      "gold": "Credit card / Fees or interest",
+      "predicted": "Credit card / Fees or interest",
+      "latency_ms": 159.5
+    },
+    {
+      "complaint_id": "22770471",
+      "source": "cfpb",
+      "gold": "Unknown / Needs review",
+      "predicted": "Checking or savings account / Deposits and withdrawals",
+      "latency_ms": 181.4
+    },
+    {
+      "complaint_id": "19695864",
+      "source": "cfpb",
+      "gold": "Unknown / Needs review",
+      "predicted": "Unknown / Needs review",
+      "latency_ms": 172.0
+    },
+    {
+      "complaint_id": "21425451",
+      "source": "cfpb",
+      "gold": "Credit card / Billing disputes",
+      "predicted": "Credit card / Billing disputes",
+      "latency_ms": 198.8
+    },
+    {
+      "complaint_id": "22702161",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Deposits and withdrawals",
+      "predicted": "Checking or savings account / Deposits and withdrawals",
+      "latency_ms": 252.6
+    },
+    {
+      "complaint_id": "19342237",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Managing an account",
+      "predicted": "Checking or savings account / Deposits and withdrawals",
+      "latency_ms": 269.0
+    },
+    {
+      "complaint_id": "20540457",
+      "source": "cfpb",
+      "gold": "Credit reporting / Incorrect information on your report",
+      "predicted": "Credit card / Other",
+      "latency_ms": 150.4
+    },
+    {
+      "complaint_id": "20983921",
+      "source": "cfpb",
+      "gold": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "predicted": "Credit reporting / Improper use of your report",
+      "latency_ms": 170.5
+    },
+    {
+      "complaint_id": "20609300",
+      "source": "cfpb",
+      "gold": "Credit reporting / Incorrect information on your report",
+      "predicted": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "latency_ms": 226.5
+    },
+    {
+      "complaint_id": "21727913",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Problems caused by my funds being low",
+      "predicted": "Checking or savings account / Problems caused by my funds being low",
+      "latency_ms": 240.6
+    },
+    {
+      "complaint_id": "20276773",
+      "source": "cfpb",
+      "gold": "Credit card / Fees or interest",
+      "predicted": "Credit card / Fees or interest",
+      "latency_ms": 223.3
+    },
+    {
+      "complaint_id": "22531079",
+      "source": "cfpb",
+      "gold": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "predicted": "Credit reporting / Improper use of your report",
+      "latency_ms": 187.8
+    },
+    {
+      "complaint_id": "22708496",
+      "source": "cfpb",
+      "gold": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "predicted": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "latency_ms": 204.4
+    },
+    {
+      "complaint_id": "20012978",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Problems caused by my funds being low",
+      "predicted": "Checking or savings account / Problems caused by my funds being low",
+      "latency_ms": 204.0
+    },
+    {
+      "complaint_id": "20787255",
+      "source": "cfpb",
+      "gold": "Credit card / Billing disputes",
+      "predicted": "Credit card / Billing disputes",
+      "latency_ms": 208.4
+    },
+    {
+      "complaint_id": "22163332",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Deposits and withdrawals",
+      "predicted": "Checking or savings account / Deposits and withdrawals",
+      "latency_ms": 227.1
+    },
+    {
+      "complaint_id": "20836028",
+      "source": "cfpb",
+      "gold": "Credit reporting / Improper use of your report",
+      "predicted": "Unknown / Needs review",
+      "latency_ms": 182.1
+    },
+    {
+      "complaint_id": "22228987",
+      "source": "cfpb",
+      "gold": "Credit card / Other",
+      "predicted": "Credit card / Other",
+      "latency_ms": 213.4
+    },
+    {
+      "complaint_id": "22073928",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Problems caused by my funds being low",
+      "predicted": "Checking or savings account / Problems caused by my funds being low",
+      "latency_ms": 223.8
+    },
+    {
+      "complaint_id": "23585336",
+      "source": "cfpb",
+      "gold": "Credit card / Other",
+      "predicted": "Credit card / Other",
+      "latency_ms": 159.9
+    },
+    {
+      "complaint_id": "21758223",
+      "source": "cfpb",
+      "gold": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "predicted": "Credit reporting / Improper use of your report",
+      "latency_ms": 261.0
+    },
+    {
+      "complaint_id": "22328914",
+      "source": "cfpb",
+      "gold": "Credit card / Billing disputes",
+      "predicted": "Credit card / Billing disputes",
+      "latency_ms": 202.9
+    },
+    {
+      "complaint_id": "21944467",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Problems caused by my funds being low",
+      "predicted": "Checking or savings account / Deposits and withdrawals",
+      "latency_ms": 248.7
+    },
+    {
+      "complaint_id": "19216161",
+      "source": "cfpb",
+      "gold": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "predicted": "Credit reporting / Incorrect information on your report",
+      "latency_ms": 190.6
+    },
+    {
+      "complaint_id": "23221580",
+      "source": "cfpb",
+      "gold": "Credit reporting / Incorrect information on your report",
+      "predicted": "Credit reporting / Improper use of your report",
+      "latency_ms": 191.7
+    },
+    {
+      "complaint_id": "20542439",
+      "source": "cfpb",
+      "gold": "Unknown / Needs review",
+      "predicted": "Credit reporting / Incorrect information on your report",
+      "latency_ms": 172.4
+    },
+    {
+      "complaint_id": "22349536",
+      "source": "cfpb",
+      "gold": "Unknown / Needs review",
+      "predicted": "Credit card / Other",
+      "latency_ms": 142.1
+    },
+    {
+      "complaint_id": "20614362",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Deposits and withdrawals",
+      "predicted": "Unknown / Needs review",
+      "latency_ms": 167.6
+    },
+    {
+      "complaint_id": "21387952",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Problems caused by my funds being low",
+      "predicted": "Credit reporting / Improper use of your report",
+      "latency_ms": 184.6
+    },
+    {
+      "complaint_id": "20194633",
+      "source": "cfpb",
+      "gold": "Unknown / Needs review",
+      "predicted": "Unknown / Needs review",
+      "latency_ms": 157.2
+    },
+    {
+      "complaint_id": "19980226",
+      "source": "cfpb",
+      "gold": "Credit card / Billing disputes",
+      "predicted": "Credit card / Billing disputes",
+      "latency_ms": 174.7
+    },
+    {
+      "complaint_id": "21283784",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Managing an account",
+      "predicted": "Checking or savings account / Managing an account",
+      "latency_ms": 233.8
+    },
+    {
+      "complaint_id": "22973504",
+      "source": "cfpb",
+      "gold": "Credit card / Billing disputes",
+      "predicted": "Checking or savings account / Managing an account",
+      "latency_ms": 195.3
+    },
+    {
+      "complaint_id": "20758347",
+      "source": "cfpb",
+      "gold": "Credit card / Billing disputes",
+      "predicted": "Credit card / Billing disputes",
+      "latency_ms": 149.2
+    },
+    {
+      "complaint_id": "21731441",
+      "source": "cfpb",
+      "gold": "Credit card / Billing disputes",
+      "predicted": "Credit card / Billing disputes",
+      "latency_ms": 173.3
+    },
+    {
+      "complaint_id": "21662961",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Problems caused by my funds being low",
+      "predicted": "Checking or savings account / Problems caused by my funds being low",
+      "latency_ms": 268.1
+    },
+    {
+      "complaint_id": "22176644",
+      "source": "cfpb",
+      "gold": "Credit card / Fees or interest",
+      "predicted": "Credit card / Fees or interest",
+      "latency_ms": 236.6
+    },
+    {
+      "complaint_id": "20167121",
+      "source": "cfpb",
+      "gold": "Credit reporting / Improper use of your report",
+      "predicted": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "latency_ms": 281.8
+    },
+    {
+      "complaint_id": "21022073",
+      "source": "cfpb",
+      "gold": "Credit card / Billing disputes",
+      "predicted": "Credit card / Billing disputes",
+      "latency_ms": 203.7
+    },
+    {
+      "complaint_id": "20066716",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Deposits and withdrawals",
+      "predicted": "Checking or savings account / Deposits and withdrawals",
+      "latency_ms": 243.7
+    },
+    {
+      "complaint_id": "20705185",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Deposits and withdrawals",
+      "predicted": "Checking or savings account / Deposits and withdrawals",
+      "latency_ms": 241.1
+    },
+    {
+      "complaint_id": "20963636",
+      "source": "cfpb",
+      "gold": "Credit reporting / Incorrect information on your report",
+      "predicted": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "latency_ms": 255.3
+    },
+    {
+      "complaint_id": "19387443",
+      "source": "cfpb",
+      "gold": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "predicted": "Credit reporting / Incorrect information on your report",
+      "latency_ms": 200.0
+    },
+    {
+      "complaint_id": "22683914",
+      "source": "cfpb",
+      "gold": "Credit reporting / Incorrect information on your report",
+      "predicted": "Credit reporting / Improper use of your report",
+      "latency_ms": 223.8
+    },
+    {
+      "complaint_id": "22438866",
+      "source": "cfpb",
+      "gold": "Unknown / Needs review",
+      "predicted": "Credit card / Other",
+      "latency_ms": 177.1
+    },
+    {
+      "complaint_id": "21851247",
+      "source": "cfpb",
+      "gold": "Credit reporting / Incorrect information on your report",
+      "predicted": "Credit reporting / Incorrect information on your report",
+      "latency_ms": 168.5
+    },
+    {
+      "complaint_id": "23252875",
+      "source": "cfpb",
+      "gold": "Credit reporting / Improper use of your report",
+      "predicted": "Credit reporting / Improper use of your report",
+      "latency_ms": 170.1
+    },
+    {
+      "complaint_id": "21189770",
+      "source": "cfpb",
+      "gold": "Credit reporting / Incorrect information on your report",
+      "predicted": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "latency_ms": 209.1
+    },
+    {
+      "complaint_id": "23036761",
+      "source": "cfpb",
+      "gold": "Credit card / Other",
+      "predicted": "Credit card / Other",
+      "latency_ms": 204.6
+    },
+    {
+      "complaint_id": "22517016",
+      "source": "cfpb",
+      "gold": "Unknown / Needs review",
+      "predicted": "Credit reporting / Incorrect information on your report",
+      "latency_ms": 208.7
+    },
+    {
+      "complaint_id": "23073017",
+      "source": "cfpb",
+      "gold": "Unknown / Needs review",
+      "predicted": "Checking or savings account / Deposits and withdrawals",
+      "latency_ms": 194.2
+    },
+    {
+      "complaint_id": "22063197",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Managing an account",
+      "predicted": "Checking or savings account / Deposits and withdrawals",
+      "latency_ms": 204.5
+    },
+    {
+      "complaint_id": "22336697",
+      "source": "cfpb",
+      "gold": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "predicted": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "latency_ms": 250.1
+    },
+    {
+      "complaint_id": "23104585",
+      "source": "cfpb",
+      "gold": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "predicted": "Credit reporting / Improper use of your report",
+      "latency_ms": 225.7
+    },
+    {
+      "complaint_id": "22984792",
+      "source": "cfpb",
+      "gold": "Credit card / Other",
+      "predicted": "Credit card / Other",
+      "latency_ms": 170.1
+    },
+    {
+      "complaint_id": "20147736",
+      "source": "cfpb",
+      "gold": "Credit reporting / Improper use of your report",
+      "predicted": "Credit reporting / Improper use of your report",
+      "latency_ms": 183.9
+    },
+    {
+      "complaint_id": "22338784",
+      "source": "cfpb",
+      "gold": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "predicted": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "latency_ms": 216.7
+    },
+    {
+      "complaint_id": "23445073",
+      "source": "cfpb",
+      "gold": "Credit reporting / Improper use of your report",
+      "predicted": "Credit reporting / Incorrect information on your report",
+      "latency_ms": 167.7
+    },
+    {
+      "complaint_id": "19575223",
+      "source": "cfpb",
+      "gold": "Credit reporting / Incorrect information on your report",
+      "predicted": "Credit reporting / Improper use of your report",
+      "latency_ms": 202.0
+    },
+    {
+      "complaint_id": "20094895",
+      "source": "cfpb",
+      "gold": "Credit card / Other",
+      "predicted": "Credit card / Other",
+      "latency_ms": 150.1
+    },
+    {
+      "complaint_id": "21964212",
+      "source": "cfpb",
+      "gold": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "predicted": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "latency_ms": 196.6
+    },
+    {
+      "complaint_id": "21943157",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Deposits and withdrawals",
+      "predicted": "Checking or savings account / Deposits and withdrawals",
+      "latency_ms": 173.4
+    },
+    {
+      "complaint_id": "23780063",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Managing an account",
+      "predicted": "Checking or savings account / Managing an account",
+      "latency_ms": 199.9
+    },
+    {
+      "complaint_id": "21030416",
+      "source": "cfpb",
+      "gold": "Credit card / Other",
+      "predicted": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "latency_ms": 239.8
+    },
+    {
+      "complaint_id": "19362950",
+      "source": "cfpb",
+      "gold": "Unknown / Needs review",
+      "predicted": "Checking or savings account / Managing an account",
+      "latency_ms": 165.0
+    },
+    {
+      "complaint_id": "19541840",
+      "source": "cfpb",
+      "gold": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "predicted": "Credit reporting / Improper use of your report",
+      "latency_ms": 188.1
+    },
+    {
+      "complaint_id": "22995184",
+      "source": "cfpb",
+      "gold": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "predicted": "Credit reporting / Incorrect information on your report",
+      "latency_ms": 159.2
+    },
+    {
+      "complaint_id": "19884805",
+      "source": "cfpb",
+      "gold": "Credit reporting / Improper use of your report",
+      "predicted": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "latency_ms": 225.3
+    },
+    {
+      "complaint_id": "23530768",
+      "source": "cfpb",
+      "gold": "Credit reporting / Incorrect information on your report",
+      "predicted": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "latency_ms": 249.6
+    },
+    {
+      "complaint_id": "21175496",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Deposits and withdrawals",
+      "predicted": "Checking or savings account / Managing an account",
+      "latency_ms": 206.9
+    },
+    {
+      "complaint_id": "21272852",
+      "source": "cfpb",
+      "gold": "Credit card / Billing disputes",
+      "predicted": "Credit card / Other",
+      "latency_ms": 163.2
+    },
+    {
+      "complaint_id": "20485537",
+      "source": "cfpb",
+      "gold": "Credit card / Other",
+      "predicted": "Credit card / Other",
+      "latency_ms": 137.5
+    },
+    {
+      "complaint_id": "21574021",
+      "source": "cfpb",
+      "gold": "Unknown / Needs review",
+      "predicted": "Unknown / Needs review",
+      "latency_ms": 143.6
+    },
+    {
+      "complaint_id": "19961063",
+      "source": "cfpb",
+      "gold": "Credit card / Fees or interest",
+      "predicted": "Credit card / Fees or interest",
+      "latency_ms": 170.2
+    },
+    {
+      "complaint_id": "19727342",
+      "source": "cfpb",
+      "gold": "Credit card / Other",
+      "predicted": "Credit card / Other",
+      "latency_ms": 153.5
+    },
+    {
+      "complaint_id": "20222023",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Problems caused by my funds being low",
+      "predicted": "Checking or savings account / Managing an account",
+      "latency_ms": 181.6
+    },
+    {
+      "complaint_id": "20569627",
+      "source": "cfpb",
+      "gold": "Unknown / Needs review",
+      "predicted": "Credit card / Other",
+      "latency_ms": 140.0
+    },
+    {
+      "complaint_id": "22635817",
+      "source": "cfpb",
+      "gold": "Credit card / Billing disputes",
+      "predicted": "Credit card / Billing disputes",
+      "latency_ms": 133.1
+    },
+    {
+      "complaint_id": "20132598",
+      "source": "cfpb",
+      "gold": "Credit reporting / Improper use of your report",
+      "predicted": "Credit reporting / Improper use of your report",
+      "latency_ms": 171.6
+    },
+    {
+      "complaint_id": "20580150",
+      "source": "cfpb",
+      "gold": "Credit reporting / Improper use of your report",
+      "predicted": "Credit reporting / Improper use of your report",
+      "latency_ms": 169.9
+    },
+    {
+      "complaint_id": "19352746",
+      "source": "cfpb",
+      "gold": "Credit card / Billing disputes",
+      "predicted": "Credit card / Billing disputes",
+      "latency_ms": 142.7
+    },
+    {
+      "complaint_id": "23094736",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Managing an account",
+      "predicted": "Checking or savings account / Managing an account",
+      "latency_ms": 176.1
+    },
+    {
+      "complaint_id": "20167573",
+      "source": "cfpb",
+      "gold": "Unknown / Needs review",
+      "predicted": "Unknown / Needs review",
+      "latency_ms": 135.4
+    },
+    {
+      "complaint_id": "20486721",
+      "source": "cfpb",
+      "gold": "Credit card / Billing disputes",
+      "predicted": "Credit card / Billing disputes",
+      "latency_ms": 168.1
+    },
+    {
+      "complaint_id": "21120205",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Managing an account",
+      "predicted": "Checking or savings account / Deposits and withdrawals",
+      "latency_ms": 256.3
+    },
+    {
+      "complaint_id": "22187990",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Managing an account",
+      "predicted": "Credit card / Other",
+      "latency_ms": 156.1
+    },
+    {
+      "complaint_id": "22513244",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Deposits and withdrawals",
+      "predicted": "Checking or savings account / Deposits and withdrawals",
+      "latency_ms": 178.9
+    },
+    {
+      "complaint_id": "21177652",
+      "source": "cfpb",
+      "gold": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "predicted": "Credit reporting / Improper use of your report",
+      "latency_ms": 184.0
+    },
+    {
+      "complaint_id": "22552069",
+      "source": "cfpb",
+      "gold": "Unknown / Needs review",
+      "predicted": "Unknown / Needs review",
+      "latency_ms": 187.3
+    },
+    {
+      "complaint_id": "19525140",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Problems caused by my funds being low",
+      "predicted": "Checking or savings account / Problems caused by my funds being low",
+      "latency_ms": 235.3
+    },
+    {
+      "complaint_id": "21769668",
+      "source": "cfpb",
+      "gold": "Credit reporting / Improper use of your report",
+      "predicted": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "latency_ms": 229.3
+    },
+    {
+      "complaint_id": "22444954",
+      "source": "cfpb",
+      "gold": "Credit card / Fees or interest",
+      "predicted": "Credit card / Fees or interest",
+      "latency_ms": 165.7
+    },
+    {
+      "complaint_id": "21577336",
+      "source": "cfpb",
+      "gold": "Credit reporting / Improper use of your report",
+      "predicted": "Credit reporting / Improper use of your report",
+      "latency_ms": 179.5
+    },
+    {
+      "complaint_id": "21496738",
+      "source": "cfpb",
+      "gold": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "predicted": "Credit reporting / Improper use of your report",
+      "latency_ms": 172.7
+    },
+    {
+      "complaint_id": "23027122",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Deposits and withdrawals",
+      "predicted": "Checking or savings account / Deposits and withdrawals",
+      "latency_ms": 217.3
+    },
+    {
+      "complaint_id": "20969294",
+      "source": "cfpb",
+      "gold": "Unknown / Needs review",
+      "predicted": "Credit card / Fees or interest",
+      "latency_ms": 248.4
+    },
+    {
+      "complaint_id": "23697808",
+      "source": "cfpb",
+      "gold": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "predicted": "Credit reporting / Improper use of your report",
+      "latency_ms": 230.5
+    },
+    {
+      "complaint_id": "21938634",
+      "source": "cfpb",
+      "gold": "Credit reporting / Incorrect information on your report",
+      "predicted": "Credit card / Other",
+      "latency_ms": 178.5
+    },
+    {
+      "complaint_id": "23115694",
+      "source": "cfpb",
+      "gold": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "predicted": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "latency_ms": 242.2
+    },
+    {
+      "complaint_id": "19779067",
+      "source": "cfpb",
+      "gold": "Credit card / Other",
+      "predicted": "Credit card / Other",
+      "latency_ms": 214.0
+    },
+    {
+      "complaint_id": "21562990",
+      "source": "cfpb",
+      "gold": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "predicted": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "latency_ms": 280.9
+    },
+    {
+      "complaint_id": "21578525",
+      "source": "cfpb",
+      "gold": "Unknown / Needs review",
+      "predicted": "Unknown / Needs review",
+      "latency_ms": 175.7
+    },
+    {
+      "complaint_id": "20489880",
+      "source": "cfpb",
+      "gold": "Credit reporting / Improper use of your report",
+      "predicted": "Credit reporting / Improper use of your report",
+      "latency_ms": 212.3
+    },
+    {
+      "complaint_id": "21176119",
+      "source": "cfpb",
+      "gold": "Credit card / Fees or interest",
+      "predicted": "Credit card / Fees or interest",
+      "latency_ms": 200.5
+    },
+    {
+      "complaint_id": "24151621",
+      "source": "cfpb",
+      "gold": "Credit reporting / Improper use of your report",
+      "predicted": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "latency_ms": 229.0
+    },
+    {
+      "complaint_id": "20933359",
+      "source": "cfpb",
+      "gold": "Unknown / Needs review",
+      "predicted": "Unknown / Needs review",
+      "latency_ms": 179.8
+    },
+    {
+      "complaint_id": "19732958",
+      "source": "cfpb",
+      "gold": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "predicted": "Credit reporting / Incorrect information on your report",
+      "latency_ms": 176.0
+    },
+    {
+      "complaint_id": "23049628",
+      "source": "cfpb",
+      "gold": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "predicted": "Credit reporting / Incorrect information on your report",
+      "latency_ms": 148.5
+    },
+    {
+      "complaint_id": "21850372",
+      "source": "cfpb",
+      "gold": "Credit reporting / Incorrect information on your report",
+      "predicted": "Credit reporting / Incorrect information on your report",
+      "latency_ms": 188.3
+    },
+    {
+      "complaint_id": "20880805",
+      "source": "cfpb",
+      "gold": "Credit reporting / Incorrect information on your report",
+      "predicted": "Credit reporting / Improper use of your report",
+      "latency_ms": 194.4
+    },
+    {
+      "complaint_id": "23071614",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Managing an account",
+      "predicted": "Checking or savings account / Managing an account",
+      "latency_ms": 222.9
+    },
+    {
+      "complaint_id": "23078942",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Problems caused by my funds being low",
+      "predicted": "Checking or savings account / Problems caused by my funds being low",
+      "latency_ms": 264.0
+    },
+    {
+      "complaint_id": "19525966",
+      "source": "cfpb",
+      "gold": "Unknown / Needs review",
+      "predicted": "Credit reporting / Improper use of your report",
+      "latency_ms": 195.3
+    },
+    {
+      "complaint_id": "20168314",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Problems caused by my funds being low",
+      "predicted": "Checking or savings account / Managing an account",
+      "latency_ms": 187.8
+    },
+    {
+      "complaint_id": "20125225",
+      "source": "cfpb",
+      "gold": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "predicted": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "latency_ms": 244.7
+    },
+    {
+      "complaint_id": "23072581",
+      "source": "cfpb",
+      "gold": "Credit card / Billing disputes",
+      "predicted": "Credit card / Billing disputes",
+      "latency_ms": 199.7
+    },
+    {
+      "complaint_id": "23270976",
+      "source": "cfpb",
+      "gold": "Unknown / Needs review",
+      "predicted": "Credit reporting / Improper use of your report",
+      "latency_ms": 223.0
+    },
+    {
+      "complaint_id": "23682361",
+      "source": "cfpb",
+      "gold": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "predicted": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "latency_ms": 265.5
+    },
+    {
+      "complaint_id": "21408073",
+      "source": "cfpb",
+      "gold": "Credit reporting / Improper use of your report",
+      "predicted": "Credit reporting / Incorrect information on your report",
+      "latency_ms": 215.3
+    },
+    {
+      "complaint_id": "20322828",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Problems caused by my funds being low",
+      "predicted": "Checking or savings account / Deposits and withdrawals",
+      "latency_ms": 239.2
+    },
+    {
+      "complaint_id": "20698493",
+      "source": "cfpb",
+      "gold": "Credit card / Fees or interest",
+      "predicted": "Credit card / Fees or interest",
+      "latency_ms": 222.9
+    },
+    {
+      "complaint_id": "20574595",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Problems caused by my funds being low",
+      "predicted": "Checking or savings account / Problems caused by my funds being low",
+      "latency_ms": 222.7
+    },
+    {
+      "complaint_id": "20762866",
+      "source": "cfpb",
+      "gold": "Credit card / Other",
+      "predicted": "Credit reporting / Improper use of your report",
+      "latency_ms": 216.9
+    },
+    {
+      "complaint_id": "20116163",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Managing an account",
+      "predicted": "Checking or savings account / Managing an account",
+      "latency_ms": 228.1
+    },
+    {
+      "complaint_id": "21576916",
+      "source": "cfpb",
+      "gold": "Credit reporting / Improper use of your report",
+      "predicted": "Credit reporting / Improper use of your report",
+      "latency_ms": 177.0
+    },
+    {
+      "complaint_id": "20869971",
+      "source": "cfpb",
+      "gold": "Credit card / Fees or interest",
+      "predicted": "Credit card / Fees or interest",
+      "latency_ms": 178.9
+    },
+    {
+      "complaint_id": "21123946",
+      "source": "cfpb",
+      "gold": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "predicted": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "latency_ms": 239.8
+    },
+    {
+      "complaint_id": "21139478",
+      "source": "cfpb",
+      "gold": "Credit card / Billing disputes",
+      "predicted": "Credit card / Billing disputes",
+      "latency_ms": 219.1
+    },
+    {
+      "complaint_id": "21949310",
+      "source": "cfpb",
+      "gold": "Credit reporting / Improper use of your report",
+      "predicted": "Credit reporting / Improper use of your report",
+      "latency_ms": 226.6
+    },
+    {
+      "complaint_id": "23279313",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Problems caused by my funds being low",
+      "predicted": "Checking or savings account / Managing an account",
+      "latency_ms": 192.0
+    },
+    {
+      "complaint_id": "24188563",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Problems caused by my funds being low",
+      "predicted": "Checking or savings account / Problems caused by my funds being low",
+      "latency_ms": 230.0
+    },
+    {
+      "complaint_id": "19981977",
+      "source": "cfpb",
+      "gold": "Credit reporting / Incorrect information on your report",
+      "predicted": "Credit reporting / Improper use of your report",
+      "latency_ms": 227.1
+    },
+    {
+      "complaint_id": "20832517",
+      "source": "cfpb",
+      "gold": "Credit card / Other",
+      "predicted": "Credit card / Other",
+      "latency_ms": 183.5
+    },
+    {
+      "complaint_id": "20759797",
+      "source": "cfpb",
+      "gold": "Credit reporting / Incorrect information on your report",
+      "predicted": "Credit reporting / Incorrect information on your report",
+      "latency_ms": 217.7
+    },
+    {
+      "complaint_id": "21389914",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Deposits and withdrawals",
+      "predicted": "Checking or savings account / Deposits and withdrawals",
+      "latency_ms": 230.3
+    },
+    {
+      "complaint_id": "21980178",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Managing an account",
+      "predicted": "Checking or savings account / Deposits and withdrawals",
+      "latency_ms": 226.7
+    },
+    {
+      "complaint_id": "20298063",
+      "source": "cfpb",
+      "gold": "Credit card / Fees or interest",
+      "predicted": "Credit card / Fees or interest",
+      "latency_ms": 180.0
+    },
+    {
+      "complaint_id": "19574171",
+      "source": "cfpb",
+      "gold": "Credit card / Billing disputes",
+      "predicted": "Credit card / Billing disputes",
+      "latency_ms": 154.6
+    },
+    {
+      "complaint_id": "22805512",
+      "source": "cfpb",
+      "gold": "Credit reporting / Improper use of your report",
+      "predicted": "Credit reporting / Improper use of your report",
+      "latency_ms": 215.5
+    },
+    {
+      "complaint_id": "21388377",
+      "source": "cfpb",
+      "gold": "Credit card / Other",
+      "predicted": "Credit card / Other",
+      "latency_ms": 161.8
+    },
+    {
+      "complaint_id": "21427648",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Deposits and withdrawals",
+      "predicted": "Checking or savings account / Managing an account",
+      "latency_ms": 204.0
+    },
+    {
+      "complaint_id": "20548238",
+      "source": "cfpb",
+      "gold": "Checking or savings account / Deposits and withdrawals",
+      "predicted": "Checking or savings account / Managing an account",
+      "latency_ms": 179.3
+    },
+    {
+      "complaint_id": "19912539",
+      "source": "cfpb",
+      "gold": "Credit card / Other",
+      "predicted": "Credit card / Other",
+      "latency_ms": 151.8
+    },
+    {
+      "complaint_id": "21839513",
+      "source": "cfpb",
+      "gold": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "predicted": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "latency_ms": 240.7
+    },
+    {
+      "complaint_id": "20100310",
+      "source": "cfpb",
+      "gold": "Credit reporting / Incorrect information on your report",
+      "predicted": "Credit reporting / Incorrect information on your report",
+      "latency_ms": 165.1
+    },
+    {
+      "complaint_id": "21703452",
+      "source": "cfpb",
+      "gold": "Credit reporting / Incorrect information on your report",
+      "predicted": "Credit reporting / Incorrect information on your report",
+      "latency_ms": 159.6
+    },
+    {
+      "complaint_id": "22572954",
+      "source": "cfpb",
+      "gold": "Credit reporting / Incorrect information on your report",
+      "predicted": "Unknown / Needs review",
+      "latency_ms": 130.9
+    },
+    {
+      "complaint_id": "20703780",
+      "source": "cfpb",
+      "gold": "Unknown / Needs review",
+      "predicted": "Credit reporting / Improper use of your report",
+      "latency_ms": 192.6
+    },
+    {
+      "complaint_id": "23319545",
+      "source": "cfpb",
+      "gold": "Credit reporting / Problem with a credit reporting company's investigation into an existing problem",
+      "predicted": "Credit reporting / Improper use of your report",
+      "latency_ms": 182.1
+    }
+  ]
+}

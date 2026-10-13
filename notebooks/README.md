@@ -7,7 +7,7 @@
 1. Open the notebook in Colab or Kaggle with a free GPU runtime. Do not enable paid billing.
 2. Upload/extract the project, set `PROJECT`, and mount Drive on Colab for persistent checkpoints.
 3. Run the two-step smoke test, then the full run with `--export-gguf`.
-4. Download the GGUF, place it in `models/`, start `sh run_model.sh`, and evaluate with `.venv/bin/python -m scripts.evaluate_server` (add `--test-file data/finetuning/test.csv` for all 900 reserved cases).
+4. Download the GGUF, place it in `models/`, start it with `COMPLAINTIQ_MODEL_PATH=models/Qwen2.5-1.5B-Instruct.Q4_K_M.gguf sh run_pilot.sh`, and evaluate with `.venv/bin/python -m scripts.evaluate_server` (add `--test-file data/finetuning/test.csv` for all 900 reserved cases).
 
 Never train on `validation.jsonl` or `test.jsonl`. Weights, adapters and checkpoints are excluded from Git.
 

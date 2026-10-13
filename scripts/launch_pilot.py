@@ -10,6 +10,7 @@ import socket
 import subprocess
 import sys
 import time
+import webbrowser
 from pathlib import Path
 from typing import TextIO
 from urllib.request import ProxyHandler, build_opener
@@ -28,6 +29,12 @@ def occupied(port):
         return sock.connect_ex(("127.0.0.1", port)) == 0
 
 
+def open_browser():
+    """Open the app only after it answers; opt in with COMPLAINTIQ_OPEN_BROWSER=1."""
+    if os.environ.get("COMPLAINTIQ_OPEN_BROWSER") == "1":
+        webbrowser.open("http://127.0.0.1:8501")
+
+
 def wait(url, child, seconds=90):
     end = time.monotonic() + seconds
     while time.monotonic() < end:
@@ -40,13 +47,38 @@ def wait(url, child, seconds=90):
     raise RuntimeError("Service readiness timed out. See logs in data/logs.")
 
 
+NEW_MODEL = ROOT / "models/complaintiq-qwen3-4b-Q4_K_M.gguf"
+
+
+def default_model() -> Path:
+    """COMPLAINTIQ_MODEL_PATH, else the fine-tuned Qwen3-4B GGUF in models/."""
+    configured = os.environ.get("COMPLAINTIQ_MODEL_PATH")
+    return Path(configured).resolve() if configured else NEW_MODEL.resolve()
+
+
+def default_evaluation(model: Path) -> Path:
+    configured = os.environ.get("COMPLAINTIQ_EVALUATION_PATH")
+    if configured:
+        return Path(configured)
+    qwen3 = ROOT / "artifacts/qwen3_evaluation.json"
+    if model.name == NEW_MODEL.name and qwen3.is_file():
+        return qwen3
+    return ROOT / "artifacts/finetuned_evaluation.json"
+
+
+def find_llama_server() -> str:
+    """COMPLAINTIQ_LLAMA_SERVER, PATH, then Homebrew."""
+    candidates = [
+        os.environ.get("COMPLAINTIQ_LLAMA_SERVER"),
+        shutil.which("llama-server"),
+        "/opt/homebrew/bin/llama-server",
+    ]
+    return next((c for c in candidates if c and Path(c).is_file()), "llama-server")
+
+
 def main():
-    model = Path(
-        os.environ.get(
-            "COMPLAINTIQ_MODEL_PATH", str(ROOT / "models/Qwen2.5-1.5B-Instruct.Q4_K_M.gguf")
-        )
-    ).resolve()
-    server = shutil.which("llama-server") or "/opt/homebrew/bin/llama-server"
+    model = default_model()
+    server = find_llama_server()
     if not model.is_file() or not Path(server).is_file():
         raise RuntimeError("Install llama.cpp and place the GGUF in models; see README.")
     if not (ROOT / "frontend/dist/index.html").is_file():
@@ -79,7 +111,7 @@ def main():
             get("http://127.0.0.1:8504/health")
             print("Reusing the matching local model server.", flush=True)
         else:
-            log = (folder / "model.log").open("a")
+            log = (folder / "model.log").open("a", encoding="utf-8")
             logs.append(log)
             child = subprocess.Popen(
                 [
@@ -118,6 +150,7 @@ def main():
             if health.get("model_version") != model.name or system.get("schema_version") != 1:
                 raise RuntimeError("Port 8501 is occupied by a different app or configuration.")
             print("Compatible pilot already running: http://127.0.0.1:8501", flush=True)
+            open_browser()
             # Do not stop a model just started for an existing app; remain as its supervisor.
         else:
             env = {
@@ -125,9 +158,9 @@ def main():
                 "COMPLAINTIQ_BACKEND": "slm",
                 "COMPLAINTIQ_MODEL_PATH": str(model),
                 "COMPLAINTIQ_MODEL_URL": "http://127.0.0.1:8504",
-                "COMPLAINTIQ_EVALUATION_PATH": str(ROOT / "artifacts/finetuned_evaluation.json"),
+                "COMPLAINTIQ_EVALUATION_PATH": str(default_evaluation(model)),
             }
-            log = (folder / "app.log").open("a")
+            log = (folder / "app.log").open("a", encoding="utf-8")
             logs.append(log)
             child = subprocess.Popen(
                 [
@@ -152,6 +185,7 @@ def main():
                 "ComplaintIQ is ready: http://127.0.0.1:8501\nKeep this terminal open. Ctrl+C stops services started here.",
                 flush=True,
             )
+            open_browser()
         while children:
             if any(child.poll() is not None for child in children):
                 raise RuntimeError("A service stopped. Inspect data/logs and restart the launcher.")

@@ -42,6 +42,13 @@ const date = (s: string) =>
   });
 const errorText = (e: unknown) =>
   e instanceof Error ? e.message : "Something went wrong. Please retry.";
+/* Display name of the loaded GGUF, e.g. "Qwen3 · 4B", taken from the server's model file. */
+const modelName = (version?: string) => {
+  const v = version ?? "";
+  if (/qwen3[-_.]?4b/i.test(v)) return "Qwen3 · 4B";
+  if (/qwen2\.5[-_.]?1\.5b/i.test(v)) return "Qwen2.5 · 1.5B";
+  return v.replace(/\.gguf$/i, "") || "Local SLM";
+};
 
 /* Lightweight toast notifications for completed actions. */
 type ToastItem = { id: number; text: string };
@@ -359,7 +366,7 @@ export default function App() {
             </strong>
             <p>
               {health?.backend === "slm"
-                ? "Fine-tuned Qwen2.5 · 1.5B"
+                ? `Fine-tuned ${modelName(health.model_version)}`
                 : health
                   ? "Traditional ML baseline"
                   : "Your saved cases remain available."}
@@ -391,7 +398,7 @@ export default function App() {
               <img src="/veltris-logo.png" alt="Veltris" />
             </span>
             <span className="topbar-divider" />
-            <span className="local-dot" /> On this Mac{" "}
+            <span className="local-dot" /> On this computer{" "}
             <span className="avatar">LO</span>
           </div>
         </div>
@@ -403,7 +410,7 @@ export default function App() {
           ) : path === "/analyze" ? (
             <Analyze go={go} health={health} />
           ) : path === "/imports" ? (
-            <Imports go={go} query={url.split("?")[1] ?? ""} />
+            <Imports go={go} query={url.split("?")[1] ?? ""} health={health} />
           ) : path === "/system" ? (
             <SystemPage health={health} />
           ) : path.startsWith("/cases/") ? (
@@ -424,7 +431,7 @@ export default function App() {
             <span>
               <ShieldCheck size={14} /> Human review is part of every decision.
             </span>
-            <span>Private workspace · Stored on this Mac</span>
+            <span>Private workspace · Stored on this computer</span>
           </footer>
         </main>
       </div>
@@ -1475,7 +1482,7 @@ function Analyze({ go, health }: { go: Go; health: Health | null }) {
           <div className="privacy-note">
             <ShieldCheck size={20} />
             <p>
-              Inference and case storage stay on this Mac. No external AI
+              Inference and case storage stay on this computer. No external AI
               service receives the narrative.
             </p>
           </div>
@@ -1484,7 +1491,15 @@ function Analyze({ go, health }: { go: Go; health: Health | null }) {
     </>
   );
 }
-function Imports({ go, query }: { go: Go; query: string }) {
+function Imports({
+  go,
+  query,
+  health,
+}: {
+  go: Go;
+  query: string;
+  health: Health | null;
+}) {
   const selected = new URLSearchParams(query).get("job");
   const [jobs, setJobs] = useState<Job[]>([]),
     [current, setCurrent] = useState<Job | null>(null),
@@ -1583,7 +1598,7 @@ function Imports({ go, query }: { go: Go; query: string }) {
         <Heading
           eyebrow="LOCAL INTELLIGENCE"
           title="Reading the customer's story."
-          description="The model runs on this Mac. Your case opens as soon as it is saved."
+          description="The model runs on this computer. Your case opens as soon as it is saved."
         />
       ) : (
         <Heading
@@ -1604,7 +1619,7 @@ function Imports({ go, query }: { go: Go; query: string }) {
         current &&
         current.source === "analysis" &&
         ["queued", "running", "complete"].includes(current.status) ? (
-          <AnalysisProgress job={current} />
+          <AnalysisProgress job={current} health={health} />
         ) : current ? (
           <Panel
             title={current.id}
@@ -1864,7 +1879,13 @@ function Imports({ go, query }: { go: Go; query: string }) {
     </>
   );
 }
-function AnalysisProgress({ job }: { job: Job }) {
+function AnalysisProgress({
+  job,
+  health,
+}: {
+  job: Job;
+  health: Health | null;
+}) {
   const started = useRef(Date.now());
   const [now, setNow] = useState(Date.now());
   useEffect(() => {
@@ -1877,7 +1898,9 @@ function AnalysisProgress({ job }: { job: Job }) {
     ["Saved to the local queue", "Durable before inference starts"],
     [
       "Classifying product & issue",
-      "Fine-tuned Qwen2.5 · first 2,000 characters",
+      health?.backend === "baseline"
+        ? "Baseline classifier · first 2,000 characters"
+        : `Fine-tuned ${modelName(health?.model_version)} · first 2,000 characters`,
     ],
     ["Applying workflow policy", "Priority, routing reason and next step"],
     ["Opening your case", "Original prediction stored unchanged"],
@@ -1889,7 +1912,7 @@ function AnalysisProgress({ job }: { job: Job }) {
           <Sparkles size={22} />
         </span>
         <div>
-          <h2>{stage === 3 ? "Case ready" : "Analyzing on this Mac"}</h2>
+          <h2>{stage === 3 ? "Case ready" : "Analyzing on this computer"}</h2>
           <p>
             {job.id} · {((now - started.current) / 1000).toFixed(1)}s
           </p>
@@ -1997,7 +2020,7 @@ function SystemPage({ health }: { health: Health | null }) {
               </div>
               <h2>
                 {health?.backend === "slm"
-                  ? "Qwen2.5 · 1.5B"
+                  ? modelName(health.model_version)
                   : health
                     ? "TF-IDF classifier"
                     : "Waiting for the local engine"}
@@ -2018,7 +2041,7 @@ function SystemPage({ health }: { health: Health | null }) {
             </div>
             <div>
               <dt>Execution</dt>
-              <dd>Local process on this Mac</dd>
+              <dd>Local process on this computer</dd>
             </div>
             <div>
               <dt>Input policy</dt>
@@ -2153,7 +2176,7 @@ function SystemPage({ health }: { health: Health | null }) {
               {busy ? "Creating backup…" : "Create backup now"}
             </button>
             <p className="field-help">
-              Backups contain complaint narratives. Keep this Mac and its
+              Backups contain complaint narratives. Keep this computer and its
               backups under your control. Restore with the documented
               maintenance command while the app is stopped.
             </p>

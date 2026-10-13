@@ -16,7 +16,7 @@ from complaintiq.models import LocalSLMClassifier, validate_prediction
 
 
 class ServerSLMClassifier(LocalSLMClassifier):
-    """Use one Metal model process, strict label decoding and explicit failures."""
+    """Use one local llama.cpp model process (Metal or CUDA), strict labels, explicit failures."""
 
     def __init__(self, model_path: str, taxonomy: dict[str, list[str]], server_url: str) -> None:
         path = Path(model_path).expanduser().resolve()

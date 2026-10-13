@@ -1,6 +1,6 @@
 # ComplaintIQ local pilot
 
-This version supports one local operator on one Mac. It retains the supplied fine-tuned GGUF and adds a human review workflow, persistent processing, recovery tools and a new desktop interface.
+This version supports one local operator on one Mac. It runs the fine-tuned Qwen3-4B GGUF and adds a human review workflow, persistent processing, recovery tools and a new desktop interface.
 
 ## Start and stop
 
@@ -12,7 +12,7 @@ sh run_pilot.sh
 
 Open http://127.0.0.1:8501. Keep the terminal open. Ctrl+C stops only the model/app processes started by this launcher. A compatible pre-existing model server is reused and left running. Port conflicts are reported rather than terminated automatically. The launcher requires the configured GGUF and the production frontend build; it does not download models.
 
-The original `run_model.sh` and `run_demo.sh` remain supported. Use one API process per database; the queue holds an OS file lock. Do not run the legacy Streamlit writer against the database during restoration or pilot use. For development, use a separate `COMPLAINTIQ_DB_PATH` and stop its API before restoring that database.
+`run_demo.sh` starts the same app with the baseline classifier only (no model server). Use one API process per database; the queue holds an OS file lock. Do not run a second writer against the database during restoration or pilot use. For development, use a separate `COMPLAINTIQ_DB_PATH` and stop its API before restoring that database.
 
 ## Review a complaint
 
@@ -65,4 +65,4 @@ All write requests require JSON. Browser writes require the same origin; allowed
 
 ## Model limits
 
-The measured reserved test remains 153 complaints: 88.89% product accuracy and 54.25% joint product/issue accuracy. The pilot redesign does not improve model accuracy. Three product families and nine label pairs remain supported. Priority/routing are explicit policies. Reviewed exports do not automatically retrain anything and must not contaminate future held-out evaluation sets.
+On the 153 reserved test complaints the Qwen3-4B GGUF scores 90.85% product accuracy and 58.82% joint product/issue accuracy (`artifacts/qwen3_evaluation.json`). The pilot redesign does not improve model accuracy. Three product families and nine label pairs remain supported. Priority/routing are explicit policies. Reviewed exports do not automatically retrain anything and must not contaminate future held-out evaluation sets.

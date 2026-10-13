@@ -160,7 +160,7 @@ class LocalSLMClassifier:
         self._lock = RLock()
 
     def classify(self, text: str) -> dict[str, Any]:
-        """Serialize shared llama.cpp access across Streamlit sessions."""
+        """Serialize shared llama.cpp access across concurrent requests."""
         with self._lock:
             return self._classify_locked(text)
 

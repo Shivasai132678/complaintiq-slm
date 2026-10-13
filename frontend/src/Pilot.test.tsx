@@ -84,6 +84,17 @@ afterEach(() => {
   cleanup();
   vi.resetAllMocks();
 });
+it("names the loaded model from the server's model file", async () => {
+  vi.mocked(pilot.health).mockResolvedValue({
+    backend: "slm",
+    model_version: "complaintiq-qwen3-4b-Q4_K_M.gguf",
+    slm_status: "ready",
+    training_status: "trained_exported",
+  });
+  render(<App />);
+  expect(await screen.findByText("Fine-tuned Qwen3 · 4B")).toBeInTheDocument();
+  expect(screen.queryByText(/Qwen2\.5/)).not.toBeInTheDocument();
+});
 it("keeps filters in the URL and requests the filtered server page", async () => {
   render(<App />);
   await screen.findByText("CQ-ONE");
@@ -298,7 +309,7 @@ it("shows staged progress while a single analysis is running", async () => {
     ],
   } as unknown as Job);
   render(<App />);
-  await screen.findByText("Analyzing on this Mac");
+  await screen.findByText("Analyzing on this computer");
   expect(screen.getByText("Classifying product & issue")).toBeInTheDocument();
 });
 it("confirms a saved review with a toast", async () => {

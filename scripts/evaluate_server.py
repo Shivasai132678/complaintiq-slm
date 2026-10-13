@@ -25,8 +25,16 @@ def evaluate(model_path: str, server_url: str, output: Path, test_path: Path | N
     taxonomy = BaselineClassifier().taxonomy
     model = ServerSLMClassifier(model_path, taxonomy, server_url)
     test_path = test_path or ROOT / "data" / "test.csv"
-    with test_path.open() as handle:
+    with test_path.open(encoding="utf-8", newline="") as handle:
         rows = list(csv.DictReader(handle))
+    provenance = (
+        "Fine-tuned locally from Qwen3-4B-Instruct-2507 with the QLoRA scripts in training/ and exported to "
+        "Q4_K_M; the larger 10-class 2026 test-set results are in "
+        "training/results/qwen3-4b-main/eval/results.md."
+        if "qwen3" in Path(model_path).name.lower()
+        else "Training provenance is based on the supplied Unsloth export; local testing does not "
+        "independently verify the cloud training configuration."
+    )
     with Path(model_path).open("rb") as handle:
         model_hash = hashlib.file_digest(handle, "sha256").hexdigest()
     report: dict[str, Any] = {
@@ -46,7 +54,7 @@ def evaluate(model_path: str, server_url: str, output: Path, test_path: Path | N
             "Three product classes and nine allowed product/issue pairs; results do not cover other financial products.",
             "Strict schema decoding enforces valid label pairs; validity alone does not establish accuracy.",
             "Only the first 2,000 normalized characters are used. Priority, routing and summary are separate rules/extractive methods.",
-            "Training provenance is based on the supplied Unsloth export; local testing does not independently verify the cloud training configuration.",
+            provenance,
         ],
         "predictions": [],
     }
